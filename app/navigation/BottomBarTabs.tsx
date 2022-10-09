@@ -4,10 +4,10 @@ import axios from 'axios';
 // import Icon from 'react-native-vector-icons'
 
 import RenderHtml from "react-native-render-html";
-import { Paragraph, Searchbar, Surface, Title, useTheme } from 'react-native-paper';
-import { HStack, VStack, Text, Button, Snackbar, TextInput, Chip } from '@react-native-material/core';
+import { HStack, VStack, Text, Button, Snackbar, TextInput, Chip, IconButton } from '@react-native-material/core';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import Icon, { Icons } from '../icons/icons';
 
 interface Song {
   artist: string, song: string, statistics: { votes: number, rating: number }
@@ -85,7 +85,13 @@ const SearchBar = ({setData}: any) =>{
     // <View>
     <VStack style={{padding: 10}}>
     {/* <TextInput color='#425F57' placeholder='Search your favorite song...'  textAlignVertical='bottom' style={{padding: 10}} variant='standard' value={searchQuery} onChangeText={(text: string) => handleSearchQueryChanged(text)}/> */}
-    <TextInput color='#425F57' placeholder='Search your favorite song...' textAlignVertical='bottom' variant='standard' value={searchQuery} onChangeText={handleSearchQueryChanged}/>
+    <TextInput 
+    leading={<Icon type={Icons.MaterialIcons} name='search'/>} 
+    trailing={searchQuery?<IconButton onPress={()=>handleSearchQueryChanged("")} icon={<Icon type={Icons.MaterialIcons} name='clear'/>}/>:null} 
+    color='#425F57' 
+    placeholder='Search your favorite song...' 
+    textAlignVertical='bottom' variant='standard' 
+    value={searchQuery} onChangeText={handleSearchQueryChanged}/>
     <HStack>
       {/* <Chip label='Top100' style={{backgroundColor: '#425F57'}}/> */}
       <Chip variant='outlined' label='Top100' style={{backgroundColor: '#425F5755'}}/>
@@ -128,6 +134,7 @@ const SongsScreen = () => {
     setIsLoading(false)
   }, [])
 
+  console.log(`size of datat list ${data.length}`)
   const onChangeSearch = (query: string) => setSearchQuery(query);
   
   const handleItemClick = (song: Song) => {
@@ -282,7 +289,9 @@ type Screen = {
   component: FC<any>,
   name: string,
   label: string,
-  icon?: any
+  iconFocused: string
+  iconType: any
+  iconNotFocused: string,
 }
 
 const tabs: Array<Screen> = [
@@ -290,13 +299,17 @@ const tabs: Array<Screen> = [
     component: SongStackScreen,
     name: 'Search',
     label: 'Search',
-    // icon: null
+    iconType: Icons.MaterialIcons,
+    iconFocused: 'search',
+    iconNotFocused: 'search',
   },
   {
     component: HomeScreen,
     name: 'Home',
     label: 'Home',
-    // icon: null
+    iconType: Icons.MaterialIcons,
+    iconFocused: 'home',
+    iconNotFocused: 'home-filled',
   },
 ]
 

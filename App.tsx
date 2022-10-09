@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useWindowDimensions, View } from "react-native"
+import { Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useWindowDimensions, View } from "react-native"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import RenderHtml from "react-native-render-html";
@@ -6,26 +6,21 @@ import { NavigationContainer } from '@react-navigation/native';
 import BottomBar from "./app/navigation/BottomBar";
 import { Searchbar, Surface } from "react-native-paper";
 import { AppBar } from '@react-native-material/core';
+import Platform from "./app/platform/Platform";
 
 
 const App = () => {
+  const [isPortrait, setIsPortrait] = useState(true)
+  Dimensions.addEventListener('change', ()=>{
+    setIsPortrait(Platform.isPortrait)
+  })
+  // console.log(isPortrait)
   return (
-    // <SafeAreaView>
-    //   <StatusBar 
-    //   hidden={true}
-    //   />
-    // <Surface elevation={4} style={{paddingVertical: 90}}>
+    <SafeAreaView>
       <NavigationContainer>
         <BottomBar />
       </NavigationContainer>
-    // </Surface>
-  
-      
-      
-      // </Surface>
-    // </SafeAreaView>
-    
-    
+    </SafeAreaView>
   );
 }
 
