@@ -35,7 +35,7 @@ const Card = ({song, onClick}: CardProps) => {
     <TouchableNativeFeedback onPress={onClick} background={TouchableNativeFeedback.Ripple('#425F57', false)}>
       <View style={{ padding: 10, backgroundColor: '#ffffff', borderRadius: 10, height: 80, marginBottom: 5, marginRight: 5, marginLeft: 5 }}>
         <HStack fill justify='between'>
-          <VStack fill justify='between'>
+          <VStack justify='between'>
             <Text variant='body1' style={{marginTop: 5}}>
               {song.artist} - {song.song}
             </Text>
@@ -57,28 +57,41 @@ const SearchBar = ({setData}: any) =>{
   const [searchQuery, setSearchQuery] = React.useState('');
   const [timeoutToken, setTimeoutToken] = React.useState(0);
   // console.log(searchQuery)
+  let token = 0
 
   const filterResults = async () =>{
-    console.log('searching' + searchQuery)
+    console.log('searching - ' + searchQuery)
     axios.get(`https://chordify-ws.herokuapp.com/api/songs?query=${searchQuery}&type=300&sort=desc`, {
         headers: {
           Authorization: '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
         }
       }).then(res => {
         setData(res.data.data)
-        console.log(res)
+        // console.log(res)
       }).catch(err => {
         console.log(err)
       })
   }
 
-  const handleSearchQueryChanged = (query: string) => {
-    console.log(query)
-    setSearchQuery(query)
-    clearTimeout(timeoutToken)
-    const token = setTimeout(filterResults, 1000)
-    setTimeoutToken(token)
-  }
+  useEffect(() => {
+    const token = setTimeout(() => {
+      console.log(searchQuery)
+      filterResults()
+    }, 1000)
+
+    return () => clearTimeout(token)
+  }, [searchQuery])
+
+  // const handleSearchQueryChanged = (query: string) => {
+  //   console.log(query)
+  //   // console.log(timeoutToken)
+  //   clearTimeout(token)
+  //   setTimeoutToken(token)
+  //   setSearchQuery(query)
+    
+  //   token = setTimeout(filterResults, 1000)
+    
+  // }
 
   return (
     // <TextInput color='#425F57' placeholder='Search your ❤️ 🎵...'  textAlignVertical='bottom' style={{padding: 10}} variant='standard' value={searchQuery} onChangeText={(text: string) => handleSearchQueryChanged(text)}/>
@@ -87,11 +100,11 @@ const SearchBar = ({setData}: any) =>{
     {/* <TextInput color='#425F57' placeholder='Search your favorite song...'  textAlignVertical='bottom' style={{padding: 10}} variant='standard' value={searchQuery} onChangeText={(text: string) => handleSearchQueryChanged(text)}/> */}
     <TextInput 
     leading={<Icon type={Icons.MaterialIcons} name='search'/>} 
-    trailing={searchQuery?<IconButton onPress={()=>handleSearchQueryChanged("")} icon={<Icon type={Icons.MaterialIcons} name='clear'/>}/>:null} 
+    trailing={searchQuery?<IconButton onPress={()=>setSearchQuery("")} icon={<Icon type={Icons.MaterialIcons} name='clear'/>}/>:null} 
     color='#425F57' 
     placeholder='Search your favorite song...' 
     textAlignVertical='bottom' variant='standard' 
-    value={searchQuery} onChangeText={handleSearchQueryChanged}/>
+    value={searchQuery} onChangeText={(text)=>setSearchQuery(text)}/>
     <HStack>
       {/* <Chip label='Top100' style={{backgroundColor: '#425F57'}}/> */}
       <Chip variant='outlined' label='Top100' style={{backgroundColor: '#425F5755'}}/>
@@ -308,8 +321,8 @@ const tabs: Array<Screen> = [
     name: 'Home',
     label: 'Home',
     iconType: Icons.MaterialIcons,
-    iconFocused: 'home',
-    iconNotFocused: 'home-filled',
+    iconFocused: 'music-note',
+    iconNotFocused: 'music-note',
   },
 ]
 
