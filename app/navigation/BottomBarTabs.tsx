@@ -171,7 +171,7 @@ const SongsScreen = () => {
   }
 
   return (
-    <SafeAreaView style={{ marginBottom: 125 }}>
+    <SafeAreaView>
       {/* {!isLoading && <MySnack/>} */}
       {/* <Surface elevation={4} style={{paddingTop: 60}}> */}
       {/* <Searchbar
@@ -184,6 +184,7 @@ const SongsScreen = () => {
     /> */}
       <SearchBar setData={setData} />
       <FlatList
+        style={{ marginBottom: 125 }}
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -253,9 +254,9 @@ const SongChordsScreen = (props: any) => {
 
   const { width } = useWindowDimensions()
   return (
-    // <SafeAreaView>
+    // <SafeAreaView style={{marginBottom: 125}}>
     
-    <ScrollView style={styles.container}>
+    <ScrollView style={{...styles.container, marginBottom: 60}}>
       <RenderHtml
         // tagsStyles={{ b: { color: '#425F57', }, p: {color: '#919090'}}}
         tagsStyles={{ b: { color: '#425F57', }, p: {color: '#000000'}}}
