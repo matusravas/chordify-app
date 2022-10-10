@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React, {FC} from 'react';
 import { StyleSheet, View, Image, Text, Dimensions, TouchableNativeFeedback } from 'react-native';
-import { Surface } from 'react-native-paper';
 import Icon, { Icons } from '../icons/icons';
 import tabs from './BottomBarTabs';
 
@@ -14,7 +13,7 @@ const BottomBar = () => {
   return (
     <View style={{
       width,
-      height,
+      height
     }}>
       {/* <Tab.Navigator screenOptions={{tabBarStyle: {...styles.shadow, ...styles.navBar}, headerShown: false, tabBarShowLabel: false}}> */}
       <Tab.Navigator screenOptions={{tabBarStyle: {...styles.navBar}, headerShown: false, tabBarShowLabel: false}}>

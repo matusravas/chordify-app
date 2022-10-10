@@ -13,24 +13,24 @@ import * as React from 'react';
 import { AppRegistry } from 'react-native';
 import { name as appName } from './app.json';
 import App from './App';
-import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+// import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: 'tomato',
-    secondary: 'yellow',
-  },
-};
+// const theme = {
+//   ...DefaultTheme,
+//   colors: {
+//     ...DefaultTheme.colors,
+//     primary: 'tomato',
+//     secondary: 'yellow',
+//   },
+// };
 
 // const { colors } = useTheme(); // use this inside component
 
 export default function Main() {
   return (
-    <PaperProvider theme={theme}>
+    // <PaperProvider theme={theme}>
       <App />
-    </PaperProvider>
+    // </PaperProvider>
   );
 }
 

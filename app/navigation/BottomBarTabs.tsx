@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import { FlatList, SafeAreaView, ScrollView, StyleSheet, useWindowDimensions, View, TouchableOpacity, TouchableNativeFeedback } from "react-native"
 import axios from 'axios';
 // import Icon from 'react-native-vector-icons'
@@ -33,18 +33,21 @@ const Card = ({song, onClick}: CardProps) => {
   // let song = s.song
   return (
     <TouchableNativeFeedback onPress={onClick} background={TouchableNativeFeedback.Ripple('#425F57', false)}>
-      <View style={{ padding: 10, backgroundColor: '#ffffff', borderRadius: 10, height: 80, marginBottom: 5, marginRight: 5, marginLeft: 5 }}>
+      <View style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 10, backgroundColor: '#ffffff', borderRadius: 10, height: 85, marginBottom: 5, marginRight: 5, marginLeft: 5 }}>
         <HStack fill justify='between'>
-          <VStack justify='between'>
+          <VStack fill={3} justify='between'>
             <Text variant='body1' style={{marginTop: 5}}>
               {song.artist} - {song.song}
             </Text>
+            <VStack>
             <Text variant='caption'>
-              votes: {song.statistics.votes} rating: {song.statistics.rating}
+              votes: {song.statistics.votes} | rating: {song.statistics.rating}
             </Text>
+            </VStack>
           </VStack>
-          <VStack fill>
-            {/* <Button title='Click me'/> */}
+          <VStack fill style={{alignItems: 'flex-end'}}>
+            <IconButton onPress={()=><MySnack/>} icon={<Icon type={Icons.MaterialIcons} name='favorite-outline' color='#91909080'/>}/>
+            
           </VStack>
         </HStack>
       </View>
@@ -55,7 +58,9 @@ const Card = ({song, onClick}: CardProps) => {
 
 const SearchBar = ({setData}: any) =>{
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [lastSearchQuery, setLastSearchQuery] = React.useState('');
   const [timeoutToken, setTimeoutToken] = React.useState(0);
+  const isMounted = useRef(false)
   // console.log(searchQuery)
   let token = 0
 
@@ -74,12 +79,15 @@ const SearchBar = ({setData}: any) =>{
   }
 
   useEffect(() => {
-    const token = setTimeout(() => {
-      console.log(searchQuery)
-      filterResults()
-    }, 1000)
-
-    return () => clearTimeout(token)
+    if (isMounted.current && searchQuery !== lastSearchQuery) {
+      setLastSearchQuery(searchQuery)
+      const token = setTimeout(() => {
+        console.log(searchQuery)
+        filterResults()
+      }, 1000)
+      return () => clearTimeout(token)
+    }
+    isMounted.current = true
   }, [searchQuery])
 
   // const handleSearchQueryChanged = (query: string) => {
@@ -94,24 +102,14 @@ const SearchBar = ({setData}: any) =>{
   // }
 
   return (
-    // <TextInput color='#425F57' placeholder='Search your ❤️ 🎵...'  textAlignVertical='bottom' style={{padding: 10}} variant='standard' value={searchQuery} onChangeText={(text: string) => handleSearchQueryChanged(text)}/>
-    // <View>
-    <VStack style={{padding: 10}}>
-    {/* <TextInput color='#425F57' placeholder='Search your favorite song...'  textAlignVertical='bottom' style={{padding: 10}} variant='standard' value={searchQuery} onChangeText={(text: string) => handleSearchQueryChanged(text)}/> */}
     <TextInput 
-    leading={<Icon type={Icons.MaterialIcons} name='search'/>} 
-    trailing={searchQuery?<IconButton onPress={()=>setSearchQuery("")} icon={<Icon type={Icons.MaterialIcons} name='clear'/>}/>:null} 
+    style={{padding: 10}}
+    leading={<Icon type={Icons.MaterialIcons} name='search' color="#425F57"/>} 
+    trailing={searchQuery?<IconButton onPress={()=>setSearchQuery("")} icon={<Icon type={Icons.MaterialIcons} name='clear' color="#425F57"/>}/>:null} 
     color='#425F57' 
     placeholder='Search your favorite song...' 
     textAlignVertical='bottom' variant='standard' 
     value={searchQuery} onChangeText={(text)=>setSearchQuery(text)}/>
-    <HStack>
-      {/* <Chip label='Top100' style={{backgroundColor: '#425F57'}}/> */}
-      <Chip variant='outlined' label='Top100' style={{backgroundColor: '#425F5755'}}/>
-      <Chip variant='outlined' label='Decade'/>
-    </HStack>
-    </VStack>
-    // </View>
     )
 }
 
@@ -127,8 +125,10 @@ const SongsScreen = () => {
   const [isLoading, setIsLoading] = useState(true)
   const navigation = useNavigation<any>();
   useEffect(() => {
+    
     const fetch = async () => {
       setIsLoading(true)
+      console.log('fetching')
       // axios.get('localhost:5000/chords?tab=coldplay/viva-la-vida-chords-675427', {
       // axios.get('http://10.0.2.2:5000/songs', {
       axios.get('https://chordify-ws.herokuapp.com/api/songs', {
@@ -171,7 +171,7 @@ const SongsScreen = () => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ marginBottom: 125 }}>
       {/* {!isLoading && <MySnack/>} */}
       {/* <Surface elevation={4} style={{paddingTop: 60}}> */}
       {/* <Searchbar
@@ -184,7 +184,6 @@ const SongsScreen = () => {
     /> */}
       <SearchBar setData={setData} />
       <FlatList
-        // style={{ marginTop: 5 }}
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -232,6 +231,7 @@ const SongChordsScreen = (props: any) => {
     //     })
 
     const fetch = async () => {
+      console.log('fetching')
       song?.chords_link?axios.get(`https://chordify-ws.herokuapp.com/api/song/chords?tab=${song.chords_link}`, {
         // axios.get('http://10.0.2.2:5000/song/chords', {
         headers: {
