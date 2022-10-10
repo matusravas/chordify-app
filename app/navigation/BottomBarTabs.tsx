@@ -66,7 +66,8 @@ const SearchBar = ({setData}: any) =>{
 
   const filterResults = async () =>{
     console.log('searching - ' + searchQuery)
-    axios.get(`https://chordify-ws.herokuapp.com/api/songs?query=${searchQuery}&type=300&sort=desc`, {
+    axios.get(`http://10.0.2.2:5000/songs?query=${searchQuery}&type=300&sort=desc`, {
+    // axios.get(`https://chordify-ws.herokuapp.com/api/songs?query=${searchQuery}&type=300&sort=desc`, {
         headers: {
           Authorization: '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
         }
@@ -113,15 +114,12 @@ const SearchBar = ({setData}: any) =>{
     )
 }
 
-interface NavigationProps {
-  name: String,
-  params: Object
-}
 
 const SongsScreen = () => {
 
   const [searchQuery, setSearchQuery] = React.useState('');
   const [data, setData] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const navigation = useNavigation<any>();
   useEffect(() => {
@@ -132,6 +130,7 @@ const SongsScreen = () => {
       // axios.get('localhost:5000/chords?tab=coldplay/viva-la-vida-chords-675427', {
       // axios.get('http://10.0.2.2:5000/songs', {
       axios.get('https://chordify-ws.herokuapp.com/api/songs', {
+      // axios.get('http://10.0.2.2:5000/songs', {
         headers: {
           Authorization: '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
         }
@@ -140,7 +139,7 @@ const SongsScreen = () => {
         // console.log(res.data.data)
         // console.log(data) 
       }).catch(err => {
-        console.log(err)
+        console.log(err.message)
       })
     }
     fetch()
@@ -187,6 +186,8 @@ const SongsScreen = () => {
         style={{ marginBottom: 125 }}
         data={data}
         renderItem={renderItem}
+        // onEndReachedThreshold={0}
+        // onEndReached={()=>setCurrentPage(currentPage+1)}
         keyExtractor={item => item.id}
       />
 
@@ -233,14 +234,16 @@ const SongChordsScreen = (props: any) => {
 
     const fetch = async () => {
       console.log('fetching')
-      song?.chords_link?axios.get(`https://chordify-ws.herokuapp.com/api/song/chords?tab=${song.chords_link}`, {
+      song?.chords_link?axios.get(`http://10.0.2.2:5000/song/chords?tab=${song.chords_link}`, {
+      // song?.chords_link?axios.get(`https://chordify-ws.herokuapp.com/api/song/chords?tab=${song.chords_link}`, {
         // axios.get('http://10.0.2.2:5000/song/chords', {
         headers: {
           Authorization: '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
         }
       }).then(res => {
         // setData((prevState)=>prevState.set({ html: res.data.data.chords}))
-        setData({ html: res.data.data.chords })
+        console.log(res.data.data)
+        setData({ html: res.data.data })
         // console.log(data) 
       }).catch(err => {
         console.log(err)

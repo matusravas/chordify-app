@@ -7,6 +7,7 @@ import BottomBar from "./app/navigation/BottomBar";
 import { Searchbar, Surface } from "react-native-paper";
 import { AppBar } from '@react-native-material/core';
 import Platform from "./app/platform/Platform";
+import SongsScreen from "./app/view/SongsScreen";
 
 
 const App = () => {
@@ -17,9 +18,10 @@ const App = () => {
   // console.log(isPortrait)
   return (
     <SafeAreaView>
-      <NavigationContainer>
+      <SongsScreen />
+      {/* <NavigationContainer>
         <BottomBar />
-      </NavigationContainer>
+      </NavigationContainer> */}
     </SafeAreaView>
   );
 }
