@@ -4,7 +4,7 @@ import { Playlist, Song, SongChords } from "../model/domain/types"
 
 export interface IRepository {
     
-    fetchSongs(query: string, page: number, type: number, sortOrder: string): Promise<Response<Array<Song>>>
+    fetchSongs(query: string, page: number, top100: boolean, type: number, sortOrder: string): Promise<Response<Array<Song>>>
     
     fetchSongDetails(chordsLink: string): Promise<Response<Song>>
     

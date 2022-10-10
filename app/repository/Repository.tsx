@@ -13,9 +13,9 @@ class Repository implements IRepository {
 
     private constructor() {}
 
-    fetchSongs(query: string, page: number, type: number=300, sortOrder: string='desc'): Promise<Response<Song[]>> {
-        throw new Error("Method not implemented.");
-        // return {...this.apiService.getSongs(query, page, type, sortOrder)} //todo map to domain
+    fetchSongs(query: string, page: number, top100: boolean=false, type: number=300, sortOrder: string='desc'): Promise<Response<Song[]>> {
+        // throw new Error("Method not implemented.");
+        return this.apiService.getSongs(query, page, top100, type, sortOrder) as unknown as Promise<Response<Song[]>> //todo map to domain
     }
     fetchSongDetails(chordsLink: string): Promise<Response<Song>> {
         throw new Error("Method not implemented.");

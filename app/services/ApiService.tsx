@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Response, SongChordsDto, SongDto } from "../model/api/types";
-import { Song, SongChords } from "../model/domain/types";
 import { IApiService } from "./IApiService";
 
 
@@ -17,14 +16,13 @@ class ApiService implements IApiService {
     static getInstance(): ApiService {
         return this._instance || (this._instance = new this());
     }
-
-    async getSongs(query: string, page: number, type: number, sortOrder: string): Promise<Response<SongDto[]>> {
+    
+    async getSongs(query: string, page: number, top100: boolean, type: number, sortOrder: string): Promise<Response<SongDto[]>> {
         return axios({
             method: 'GET',
-            url: `${this._baseURL}/songs?query=${query}&page=${page}&type=${type}&sort=${sortOrder}`,
+            url: `${this._baseURL}/songs?query=${query}&page=${page}&type=${type}&sort_order=${sortOrder}&top100=${top100}`,
             responseType: 'json',
             headers: {
-                Host: this._baseURL,
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization: this._apiToken
@@ -46,7 +44,6 @@ class ApiService implements IApiService {
             url: `${this._baseURL}/song?tab=${chordsLink}`,
             responseType: 'json',
             headers: {
-                Host: this._baseURL,
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization: this._apiToken
@@ -68,7 +65,6 @@ class ApiService implements IApiService {
             url: `${this._baseURL}/song/chords?tab=${chordsLink}`,
             responseType: 'json',
             headers: {
-                Host: this._baseURL,
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization: this._apiToken
