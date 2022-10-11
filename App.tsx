@@ -1,13 +1,9 @@
-import { Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useWindowDimensions, View } from "react-native"
-import axios from "axios"
-import { useEffect, useState } from "react"
-import RenderHtml from "react-native-render-html";
-import { NavigationContainer } from '@react-navigation/native';
-import BottomBar from "./app/navigation/BottomBar";
-import { Searchbar, Surface } from "react-native-paper";
-import { AppBar } from '@react-native-material/core';
+import { Dimensions, SafeAreaView, StyleSheet } from "react-native"
+import { useState } from "react"
 import Platform from "./app/platform/Platform";
 import SongsScreen from "./app/view/SongsScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import Router from "./app/navigation/Router";
 
 
 const App = () => {
@@ -17,12 +13,11 @@ const App = () => {
   })
   // console.log(isPortrait)
   return (
-    <SafeAreaView style={{flex:1}}>
-      <SongsScreen />
-      {/* <NavigationContainer>
-        <BottomBar />
-      </NavigationContainer> */}
-    </SafeAreaView>
+    // <SafeAreaView style={{backgroundColor:'#23262E'}}>
+      <NavigationContainer>
+        <Router />
+      </NavigationContainer>
+    // </SafeAreaView>
   );
 }
 

@@ -43,7 +43,7 @@ function useSongListViewModel() {
         const fetch = async() =>{
             const result = await repository.fetchSongs(searchQuery, currentPage, isTop100)
             if(result.ok) {
-                setSongs([...songs, ...result.data])
+                setSongs(result.data)
             }
             else if(result.error) setIsError(true); setErrorMessage(result.error?result.error: '')
         }

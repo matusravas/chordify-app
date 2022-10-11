@@ -33,7 +33,7 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
     return (
         <TextInput
             // style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#14161c20', borderStyle:'solid', borderTopWidth:0, borderWidth: 1, borderColor: focused?"#087EA4": "#F7F7F730",  borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
-            style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#14161c50', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
+            style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#14161C50', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
             leading={<Icon type={Icons.MaterialIcons} name='search' color={focused?"#087EA4": "#F7F7F730" }/>}
             trailing={query ? <IconButton onPress={() => setQuery("")} icon={<Icon type={Icons.MaterialIcons} name='clear' color="#F7F7F730" />} /> : null}
             color='#087EA4'

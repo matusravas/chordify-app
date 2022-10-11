@@ -4,19 +4,23 @@ import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
 import SongsList from './components/SongList';
 import {View} from 'react-native'
-import React, { useState } from 'react';
-import { Dialog, DialogHeader, DialogContent, Text } from '@react-native-material/core';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useCallback } from 'react';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const SongsScreen = () => {
     const [songs, searchQuery, currentPage, setSongs, setSearchQuery, setCurrentPage] = useSongListViewModel()
-    // const navigation = useNavigation<any>();
+    const bottomTabBarHeight = useBottomTabBarHeight()
+    const navigation = useNavigation<any>();
     console.log('SongsScreen rerender')
     
-    const handleCardClick = (song: Song) => {
+    const handleCardClick = useCallback((song: Song) => {
       console.log(song)
-      // navigation.navigate('Song', {song: song})
-    }
+      navigation.navigate('Song', {song: song})
+    },[])
+
+    const handleAddToFavorites = useCallback((song: Song) => {
+      console.log(song)
+    },[])
     
     const handlePageChanged = () => {
       console.log(`Page change: current page: ${currentPage} + 1` )
@@ -24,19 +28,14 @@ const SongsScreen = () => {
       // navigation.navigate('Song', {song: song})
     }
     
-    const handleAddToFavorites = (song: Song) => {
-      console.log(song)
-    }
-    
-    
     const handleSearch = (query: string) => {
       console.log(`handling search ${query}`)
-      // setSearchQuery(query)
+      setSearchQuery(query)
     }
     
   
     return (
-      <View style={{backgroundColor: '#23262E', flex: 1}}>
+      <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
         <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
         <SongsList songs={songs} 
               onCardClick={handleCardClick} 
