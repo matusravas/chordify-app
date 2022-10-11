@@ -9,6 +9,16 @@ const msp = (dim, limit) => {
     return (dim.scale * dim.width) >= limit || (dim.scale * dim.height) >= limit;
 };
 
+const getWidth = () => {
+    const dim = Dimensions.get('screen');
+    return dim.width;
+};
+
+const getHeight = () => {
+    const dim = Dimensions.get('screen');
+    return dim.height;
+};
+
 /**
  * Returns true if the screen is in portrait mode
  */
@@ -42,5 +52,7 @@ export default {
     isPortrait,
     isLandscape,
     isTablet,
-    isPhone
+    isPhone,
+    getWidth,
+    getHeight
 };

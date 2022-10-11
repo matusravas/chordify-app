@@ -17,7 +17,7 @@ const App = () => {
   })
   // console.log(isPortrait)
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex:1}}>
       <SongsScreen />
       {/* <NavigationContainer>
         <BottomBar />

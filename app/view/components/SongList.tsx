@@ -16,20 +16,23 @@ interface SongsListProps {
 
 const SongsList = ({songs, onCardClick, onAddToFavoritesClick, onPageChanged}: SongsListProps) =>{
     
+    console.log('SongsList rerender')
+
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
-            <SongCard song={song} onSongCardClick={()=>onCardClick(song)} onAddToFavoitesButtonClick={()=>onAddToFavoritesClick(song)}/>
+            <SongCard song={song} onSongCardClick={onCardClick} onAddToFavoitesButtonClick={onAddToFavoritesClick}/>
         )
     }
 
     return (
         <FlatList
-                style={{ marginBottom: 125 }}
-                data={songs}
-                renderItem={renderItem}
-                onEndReachedThreshold={0}
-                onEndReached={onPageChanged}
-                keyExtractor={item => item.id.toString()}
+            
+            // style={{ marginBottom: 125 }}
+            data={songs}
+            renderItem={renderItem}
+            // onEndReachedThreshold={0.5}
+            // onEndReached={onPageChanged}
+            keyExtractor={item => item.id.toString()}
         />
     )
 }
