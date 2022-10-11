@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import useSongListViewModel from '../view_model/SongListViewModel';
 import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
@@ -12,15 +12,25 @@ const SongsScreen = () => {
     const bottomTabBarHeight = useBottomTabBarHeight()
     const navigation = useNavigation<any>();
     console.log('SongsScreen rerender')
-    
-    const handleCardClick = useCallback((song: Song) => {
+    const theme = useTheme()
+    console.log(theme)
+    // const handleCardClick = useCallback((song: Song) => {
+    //   console.log(song)
+    //   navigation.navigate('Song', {song: song})
+    // },[])
+
+    // const handleAddToFavorites = useCallback((song: Song) => {
+    //   console.log(song)
+    // },[])
+
+    const handleCardClick = (song: Song) => {
       console.log(song)
       navigation.navigate('Song', {song: song})
-    },[])
+    }
 
-    const handleAddToFavorites = useCallback((song: Song) => {
+    const handleAddToFavorites = (song: Song) => {
       console.log(song)
-    },[])
+    }
     
     const handlePageChanged = () => {
       console.log(`Page change: current page: ${currentPage} + 1` )

@@ -27,7 +27,7 @@ const SongsList = ({songs, onCardClick, onAddToFavoritesClick, onPageChanged}: S
     return (
         <FlatList
             
-            // style={{ marginBottom: 60}}
+            // style={{ marginTop: 2}}
             data={songs}
             renderItem={renderItem}
             // onEndReachedThreshold={0.5}

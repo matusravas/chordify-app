@@ -2,7 +2,7 @@ import { Dimensions, SafeAreaView, StyleSheet } from "react-native"
 import { useState } from "react"
 import Platform from "./app/platform/Platform";
 import SongsScreen from "./app/view/SongsScreen";
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import Router from "./app/navigation/Router";
 
 
@@ -11,10 +11,18 @@ const App = () => {
   Dimensions.addEventListener('change', ()=>{
     setIsPortrait(Platform.isPortrait)
   })
-  // console.log(isPortrait)
+  console.log(DefaultTheme.colors)
   return (
     // <SafeAreaView style={{backgroundColor:'#23262E'}}>
-      <NavigationContainer>
+      <NavigationContainer theme={{
+        dark: true,
+        colors: {
+          ...DefaultTheme.colors,
+          background: '#111317',
+          card: '#111317'
+          // Todo set whatever colors you want
+        },
+      }}>
         <Router />
       </NavigationContainer>
     // </SafeAreaView>
