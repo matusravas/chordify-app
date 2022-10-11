@@ -1,11 +1,15 @@
+import { ResultSet, ResultSetRowList } from "react-native-sqlite-storage"
 import { Response } from "../model/api/types"
+import { PlaylistDto, SongDto } from "../model/db/types"
 import { Song, SongChords } from "../model/domain/types"
 
 export interface IDbService {
     
-    getSongs(query: string, type: number, sortOrder: string, page: number): Promise<Response<Array<Song>>>
+    insertSongToPlaylist(song: SongDto, playlistId: number): Promise<ResultSet[]>
     
-    getSongDetails(chordsLink: string): Promise<Response<Song>>
+    insertSong(song: SongDto): Promise<ResultSet[]>
     
-    getSongChords(chordsLink: string): Promise<Response<SongChords>>
+    insertPlaylist(playlist: PlaylistDto): Promise<ResultSet[]>
+    
+    findAllSongsInPlaylist(playlistId: number): Promise<ResultSetRowList>
 }

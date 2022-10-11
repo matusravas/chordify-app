@@ -1,3 +1,4 @@
+import { ResultSet } from "react-native-sqlite-storage"
 import { Response, SongChordsDto, SongDto as SongApi } from "../model/api/types"
 import { PlaylistDto, SongDto as SongDb } from "../model/db/types"
 import { Playlist, Song, SongChords } from "../model/domain/types"
@@ -13,7 +14,7 @@ export interface IRepository {
 
     createPlaylist(name: PlaylistDto): number
     
-    addSongToPlaylist(song: SongDb, playlistID: number): number
+    addSongToPlaylist(song: Song, playlistID: number): Promise<ResultSet[]>
     
     searchSavedSongs(query: string, numRows: number, sortOrder: string): Promise<Response<Array<Song>>>
     

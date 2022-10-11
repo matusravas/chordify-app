@@ -1,5 +1,5 @@
 import Repository from "../repository/Repository"
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useCallback} from 'react'
 import { Song } from "../model/domain/types"
 import { useEffectAfterMount } from "../utils/hooks"
 
@@ -51,7 +51,25 @@ function useSongListViewModel() {
         fetch()
     }, [searchQuery, currentPage])
 
-    return [songs, searchQuery, currentPage, setSongs, setSearchQuery, setCurrentPage] as const
+    const handleAddToPlaylist = (song: Song, playlistId: number =1)=>{
+        console.log(repository.addSongToPlaylist)
+        repository.addSongToPlaylist(song, playlistId).then(res=>{
+            console.log('inserting')
+            console.log(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+        // console.log(song, playlistId)
+        // const insert = async() => {
+        //     console.log('running insert')
+        //     const result = await repository.addSongToPlaylist(song, playlistId)
+        //     console.log(result)
+        // }
+        // insert()
+        
+    }
+
+    return [songs, searchQuery, currentPage, setSongs, setSearchQuery, setCurrentPage, handleAddToPlaylist] as const
 }
 
 export default useSongListViewModel

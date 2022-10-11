@@ -8,12 +8,11 @@ import React, { useCallback } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const SongsScreen = () => {
-    const [songs, searchQuery, currentPage, setSongs, setSearchQuery, setCurrentPage] = useSongListViewModel()
+    const [songs, searchQuery, currentPage, setSongs, setSearchQuery, setCurrentPage, handleAddToPlaylist] = useSongListViewModel()
     const bottomTabBarHeight = useBottomTabBarHeight()
     const navigation = useNavigation<any>();
     console.log('SongsScreen rerender')
     const theme = useTheme()
-    console.log(theme)
     // const handleCardClick = useCallback((song: Song) => {
     //   console.log(song)
     //   navigation.navigate('Song', {song: song})
@@ -28,9 +27,9 @@ const SongsScreen = () => {
       navigation.navigate('Song', {song: song})
     }
 
-    const handleAddToFavorites = (song: Song) => {
-      console.log(song)
-    }
+    // const handleAddToFavorites = (song: Song) => {
+    //   console.log(song)
+    // }
     
     const handlePageChanged = () => {
       console.log(`Page change: current page: ${currentPage} + 1` )
@@ -49,7 +48,7 @@ const SongsScreen = () => {
         <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
         <SongsList songs={songs} 
               onCardClick={handleCardClick} 
-              onAddToFavoritesClick={handleAddToFavorites}
+              onAddToFavoritesClick={handleAddToPlaylist}
               onPageChanged={handlePageChanged}
               />
       </View>
