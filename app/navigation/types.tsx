@@ -4,7 +4,7 @@ import PlaylistsScreen from '../view/PlaylistScreen';
 import SongStackScreen from './SongStack';
 
 type Screen = {
-    component: FC<any>,
+    component: FC<JSX.Element>,
     name: string,
     label: string,
     iconFocused: string

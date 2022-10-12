@@ -27,7 +27,18 @@ function useSongListViewModel() {
     const [errorMessage, setErrorMessage] = useState('')
     // const isMounted = useRef(false)
     
+    useEffect(()=>{
+        const search = async()=>{
+            const resultSongs = await repository.searchSongsInPlaylist(1, 'fec', 10, 'desc')
+            console.log(resultSongs)
+            // const resultSongPlaylist = await repository.findAllPlaylists('Favorites', 'desc')
+            // console.log(resultSongPlaylist)
+        }
+        search()
+    }, [])
+
     useEffectAfterMount(()=>{
+        console.log('After mount hook')
         // if(isMounted.current){
             // const fetch = async() =>{
             //     const result = await repository.fetchSongs(searchQuery, currentPage)

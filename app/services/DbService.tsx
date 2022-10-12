@@ -3,64 +3,78 @@ import { Song } from "../model/domain/types";
 import { IDbService } from "./IDbService";
 import {openDatabase, enablePromise, ResultSet, ResultSetRowList} from 'react-native-sqlite-storage';
 import { SongDto, PlaylistDto } from "../model/db/types";
-import { SongToPlaylistInsert } from "../model/db/sql/types";
+import { InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
 
 class DbService implements IDbService{
     static _instance: DbService
-    // private db; 
 
     private constructor(){
-        console.log('DbService private constructor')
         enablePromise(true)
         Promise.all([
             this.createSongTable(),
             this.createPlaylistTable(),
             this.createSongPlaylistTable()
         ]).then(res=>{
-            console.log('Tables should be created')
+            console.log('Tables created')
         }).catch(err=>{
             console.log(err)
         })
     }
 
-    async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SongToPlaylistInsert> {
-        const timestampNow = new Date().getTime()
-        // INTO song_playlist VALUES (?, ?, ?)
-        console.log(song)
-        const querySong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) 
-                    
-            `;
-        const result1 = await (await this.getDBConnection()).executeSql(querySong, 
-            [
-                song.id, song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords, timestampNow,
-            ]
-            )
-        if (result1[0].insertId > 0 && result1[0].rowsAffected && result1[0].rowsAffected > 0){
-            const queryPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) 
-                VALUES (?, ?, ?)
-                
-                `;
-            const result2 = await (await this.getDBConnection()).executeSql(queryPlaylist, 
-                [
-                    song.id, playlistId, timestampNow
-                ]
-                )
-            
-            return {songId: song.id, playlistId: playlistId, songPlaylistId: result2[0].insertId}
-        }
-        return {songId: song.id, playlistId: playlistId}
+
+    async removeSongFromPlaylist(song: SongDto, playlistId: number): Promise<SQLResult> {
+        // const deleteSong = `DELETE FROM song WHERE song.id = ?`;
+        // const resultSong = await (await this.getDBConnection()).executeSql(deleteSong, [song.id])
+        const deleteSongPlaylist = `DELETE FROM song_playlist as sp WHERE (sp.song_id = ? AND sp.playlist_id = ?`;
+        const resultSongPlaylist = await (await this.getDBConnection()).executeSql(deleteSongPlaylist, [song.id, playlistId])
+        return {ok: true}
     }
 
-    insertSong(song: SongDto): Promise<ResultSet[]> {
-        throw new Error("Method not implemented.");
+    async createPlaylist(playlist: PlaylistDto): Promise<SQLResult<number>> {
+        const createPlaylist = `INSERT INTO playlist (name, timestamp_created) VALUES (?, ?, ?)`;
+        const result = await (await this.getDBConnection()).executeSql(createPlaylist, [playlist.name, playlist.timestamp_created])
+        return {ok: true, data: result[0].insertId}  
     }
-    insertPlaylist(playlist: PlaylistDto): Promise<ResultSet[]> {
-        throw new Error("Method not implemented.");
+
+    async findSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string): Promise<SQLResult<Array<SongDto>>> {
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating'
+        const queryClause = query?`AND (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
+        const limitClause = numRows>0?`LIMIT ${numRows}` : ''
+        const orderClause = sortOrder?`ORDER BY sp.timestamp_added ${sortOrder.toUpperCase()}` : ''
+        const selectSong = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON sp.song_id = s.id WHERE (sp.playlist_id = ?) ${queryClause} ${orderClause} ${limitClause}`;
+        console.log(selectSong)
+        const db = await this.getDBConnection()
+        const result = await db.executeSql(selectSong, [playlistId])
+        await db.close()
+        // const result = db.transaction(tx=>{
+        //     tx.executeSql(selectSong, [playlistId], (tx, res)=>{
+        //         return res.rows.raw().map(item=>{
+        //             return {...item} as SongDto
+        //         })
+        //     })
+        // }).then(result=>result).catch(err=>err)
+        // console.log(result)
+        return {ok: true, data: result[0].rows.raw()}
     }
-    findAllSongsInPlaylist(playlistId: number): Promise<ResultSetRowList> {
-        throw new Error("Method not implemented.");
+
+    async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>> {
+        const timestampNow = new Date().getTime()
+        console.log(song)
+        const insertSong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const result1 = await (await this.getDBConnection()).executeSql(insertSong, 
+            [song.id, song.artist, song.name, song.chords_link, song.full_url,
+                 song.votes, song.rating, song.chords, timestampNow]
+            )
+        if (result1[0].insertId > 0 && result1[0].rowsAffected && result1[0].rowsAffected > 0){
+            const inserSongPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) VALUES (?, ?, ?)`;
+            const result2 = await (await this.getDBConnection()).executeSql(inserSongPlaylist, [song.id, playlistId, timestampNow])
+            
+            return {ok: true, data: {songId: song.id, playlistId: playlistId, songPlaylistId: result2[0].insertId}}
+        }
+        return {ok: true, data: {songId: song.id, playlistId: playlistId}}
     }
+    
     
     getDBConnection = async () => {
         const db = await openDatabase({name: 'chordify.db', location: 'default'});

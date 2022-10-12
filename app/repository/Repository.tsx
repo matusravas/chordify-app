@@ -1,13 +1,13 @@
 import axios from "axios";
 import { ResultSet } from "react-native-sqlite-storage";
 import { Response, SongChordsDto, SongDto as SongApi } from "../model/api/types";
-import { SongToPlaylistInsert } from "../model/db/sql/types";
+import { InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
 import { PlaylistDto, SongDto as SongDb } from "../model/db/types";
-import { Song } from "../model/domain/types";
+import { Playlist, Song } from "../model/domain/types";
 import ApiService from "../services/ApiService";
 import DbService from "../services/DbService";
 import { IRepository } from "./IRepository";
-import { mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDomainToDb } from "./mapper/song";
+import { mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "./mapper/song";
 
 
 class Repository implements IRepository {
@@ -55,12 +55,8 @@ class Repository implements IRepository {
         return result
     }
 
-
-    createPlaylist(playlist: PlaylistDto): number {
-        throw new Error("Method not implemented.");
-    }
     
-    addSongToPlaylist(song: Song, playlistID: number): Promise<SongToPlaylistInsert> {
+    addSongToPlaylist(song: Song, playlistID: number): Promise<SQLResult<InsertSongToPlaylist>> {
         // console.log(songchords)
         // const {song: song, chordsHtmlString: chords, chordsMetadata: chordsMetadata } = songchords
         // const songDto: SongDb = {chords_link: song.chordsLink, full_url: song.fullUrl, ...song, chords}
@@ -71,21 +67,35 @@ class Repository implements IRepository {
         //      votes: song.statistics.votes, rating: song.statistics.rating }, playlistID)
     }
 
-    searchSavedSongs(query: string, numRows: number, sortOrder: string): Promise<Response<Song[]>> {
+    searchSongsInPlaylist(playlistId: number, query: string='', numRows: number=-1, sortOrder: string='desc'): Promise<SQLResult<Array<Song>>> {
+        const result: Promise<SQLResult<Array<Song>>> = this.dbService.findSongsInPlaylist(playlistId, query, numRows, sortOrder).then(data => {
+            if(data.ok && data.data){
+                const songs = data.data.map(songDb => mapSongDbToDomain(songDb))
+                return {ok: data.ok, data: songs}
+            }
+            return {ok: data.ok}
+        }).catch(err => {
+            return {ok: false, error: err}
+        })
+
+        return result
+    }
+    
+    // searchSongsInPlaylist(query: string, playlistID: number, numRows: number, sortOrder: string): Promise<Response<Song[]>> {
+    //     throw new Error("Method not implemented.");
+    // }
+    createPlaylist(playlist: PlaylistDto): Promise<SQLResult<number>> {
         throw new Error("Method not implemented.");
     }
-    searchSongsInPlaylist(query: string, playlistID: number, numRows: number, sortOrder: string): Promise<Response<Song[]>> {
+    
+    findAllPlaylists(name: string = '', sortOrder: string='desc'): Promise<SQLResult<Array<Playlist>>> {
         throw new Error("Method not implemented.");
     }
-    searchAllPlaylists(sortOrder: string): Promise<Response<PlaylistDto>> {
-        throw new Error("Method not implemented.");
-    }
+
 
     static getInstance(): Repository {
         return this._instance || (this._instance = new this());
     }
-
-
 
 }
 
