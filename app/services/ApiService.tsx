@@ -31,33 +31,33 @@ class ApiService implements IApiService {
                 return status >= 200 || status <= 300 ? true : false
             }
         }).then(res => {
-            return {ok: res.data.ok, data: res.data.data as SongDto[]}
+            return {ok: res.data.ok, data: res.data.data}
         }).catch(err => {
             console.error(err)
-            return {ok: false, data: {} as SongDto[]}
+            return {ok: false}
         })
     }
 
-    async getSongDetails(chordsLink: string): Promise<Response<SongDto>> {
-        return axios({
-            method: 'GET',
-            url: `${this._baseURL}/song?tab=${chordsLink}`,
-            responseType: 'json',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: this._apiToken
-            },
-            validateStatus: function (status) {
-                return status >= 200 || status <= 300 ? true : false
-            }
-        }).then(res => {
-            return {ok: res.data.ok, data: res.data.data as SongDto}
-        }).catch(err => {
-            console.error(err)
-            return {ok: false, data: {} as SongDto}
-        })
-    }
+    // async getSongDetails(chordsLink: string): Promise<Response<SongDto>> {
+    //     return axios({
+    //         method: 'GET',
+    //         url: `${this._baseURL}/song?tab=${chordsLink}`,
+    //         responseType: 'json',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json',
+    //             Authorization: this._apiToken
+    //         },
+    //         validateStatus: function (status) {
+    //             return status >= 200 || status <= 300 ? true : false
+    //         }
+    //     }).then(res => {
+    //         return {ok: res.data.ok, data: res.data.data as SongDto}
+    //     }).catch(err => {
+    //         console.error(err)
+    //         return {ok: false, data: {} as SongDto}
+    //     })
+    // }
 
     async getSongChords(chordsLink: string): Promise<Response<SongChordsDto>> {
         return axios({
@@ -73,10 +73,10 @@ class ApiService implements IApiService {
                 return status >= 200 || status <= 300 ? true : false
             }
         }).then(res => {
-            return {ok: res.data.ok, data: res.data.data as SongChordsDto}
+            return {ok: res.data.ok, data: res.data.data}
         }).catch(err => {
             console.error(err)
-            return {ok: false, data: {} as SongChordsDto}
+            return {ok: false}
         })
     }
 }

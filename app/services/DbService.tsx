@@ -1,8 +1,9 @@
 import { Response } from "../model/api/types";
-import { Song, SongChords } from "../model/domain/types";
+import { Song } from "../model/domain/types";
 import { IDbService } from "./IDbService";
 import {openDatabase, enablePromise, ResultSet, ResultSetRowList} from 'react-native-sqlite-storage';
 import { SongDto, PlaylistDto } from "../model/db/types";
+import { SongToPlaylistInsert } from "../model/db/sql/types";
 
 class DbService implements IDbService{
     static _instance: DbService
@@ -22,21 +23,33 @@ class DbService implements IDbService{
         })
     }
 
-    async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<ResultSet[]> {
-        const timestampNow = new Date().getMilliseconds()
+    async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SongToPlaylistInsert> {
+        const timestampNow = new Date().getTime()
         // INTO song_playlist VALUES (?, ?, ?)
         console.log(song)
-        const query = `INSERT INTO song (artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        const querySong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) 
                     
             `;
-        console.log(timestampNow)
-        return await (await this.getDBConnection()).executeSql(query, 
+        const result1 = await (await this.getDBConnection()).executeSql(querySong, 
             [
-                song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords, timestampNow,
-                // song.id, playlistId, timestampNow
+                song.id, song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords, timestampNow,
             ]
             )
+        if (result1[0].insertId > 0 && result1[0].rowsAffected && result1[0].rowsAffected > 0){
+            const queryPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) 
+                VALUES (?, ?, ?)
+                
+                `;
+            const result2 = await (await this.getDBConnection()).executeSql(queryPlaylist, 
+                [
+                    song.id, playlistId, timestampNow
+                ]
+                )
+            
+            return {songId: song.id, playlistId: playlistId, songPlaylistId: result2[0].insertId}
+        }
+        return {songId: song.id, playlistId: playlistId}
     }
 
     insertSong(song: SongDto): Promise<ResultSet[]> {
@@ -66,12 +79,18 @@ class DbService implements IDbService{
       };
     
       private createPlaylistTable = async () => {
+        const timestampNow = new Date().getTime()
         const query = `CREATE TABLE IF NOT EXISTS playlist
-              (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                name TEXT NOT NULL, timestamp_created NUMBER NOT NULL, timestamp_visit NUMBER
-                );
+              (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, timestamp_created NUMBER NOT NULL, timestamp_visit NUMBER);
+
+                INSERT OR IGNORE INTO playlist (id, name, timestamp_created) VALUES (?, ?, ?);
             `;
-        await (await this.getDBConnection()).executeSql(query)
+        const query1 = `INSERT OR IGNORE INTO playlist (id, name, timestamp_created) VALUES (?, ?, ?);
+        `;
+        const result = await (await this.getDBConnection()).executeSql(query)
+        console.log(result)
+        // if (result[0].insertId !== undefined) 
+        await (await this.getDBConnection()).executeSql(query1, [1, 'Favorites', timestampNow])
       };
       
       private createSongPlaylistTable = async () => {

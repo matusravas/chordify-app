@@ -16,7 +16,7 @@ const SongCard = ({song, onSongCardClick, onAddToFavoitesButtonClick}: SongCardP
               </Text>
               <VStack>
               <Text variant='caption' style={{fontSize: 11}} color='#F7F7F750'>
-                votes: {song.statistics.votes} | rating: {song.statistics.rating}
+                votes: {song.votes} | rating: {song.rating}
               </Text>
               </VStack>
             </VStack>

@@ -1,5 +1,5 @@
 export type Response<T> = {
-    data: T,
+    data?: T,
     ok: boolean,
     error?: string
 }
@@ -27,6 +27,6 @@ export type ChordsMetadataDto = {
 
 export type SongChordsDto = {
     song: SongDto
-    chords_html_string: string,
+    chords: string,
     chords_metadata: ChordsMetadataDto
 }

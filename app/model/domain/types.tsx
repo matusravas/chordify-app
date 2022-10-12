@@ -4,12 +4,11 @@ export type Song = {
     name: string, 
     chordsLink: string, 
     fullUrl: string, 
-    statistics: Statistics
-}
-
-export type Statistics = { 
     votes: number, 
-    rating: number 
+    rating: number,
+    chords?: string,
+    chordsMetadata?: ChordsMetadata
+    timestampLastVisit?: string,
 }
 
 export type Playlist = {
@@ -26,8 +25,8 @@ export type ChordsMetadata = {
     tonality: string,
 }
 
-export type SongChords = {
-    song: Song
-    chordsHtmlString: string,
-    chords_metadata: ChordsMetadata
-}
+// export type SongChords = {
+//     song: Song
+//     chordsHtmlString: string,
+//     chordsMetadata?: ChordsMetadata
+// }

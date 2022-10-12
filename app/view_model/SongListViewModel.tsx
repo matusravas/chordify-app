@@ -23,6 +23,7 @@ function useSongListViewModel() {
     const [isTop100, setIsTop100] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [isError, setIsError] = useState(false)
+    const [message, setMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     // const isMounted = useRef(false)
     
@@ -42,7 +43,7 @@ function useSongListViewModel() {
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
         const fetch = async() =>{
             const result = await repository.fetchSongs(searchQuery, currentPage, isTop100)
-            if(result.ok) {
+            if(result.ok && result.data) {
                 setSongs(result.data)
             }
             else if(result.error) setIsError(true); setErrorMessage(result.error?result.error: '')
@@ -51,25 +52,35 @@ function useSongListViewModel() {
         fetch()
     }, [searchQuery, currentPage])
 
-    const handleAddToPlaylist = (song: Song, playlistId: number =1)=>{
-        console.log(repository.addSongToPlaylist)
-        repository.addSongToPlaylist(song, playlistId).then(res=>{
-            console.log('inserting')
-            console.log(res)
-        }).catch(err=>{
-            console.log(err)
-        })
-        // console.log(song, playlistId)
-        // const insert = async() => {
-        //     console.log('running insert')
-        //     const result = await repository.addSongToPlaylist(song, playlistId)
-        //     console.log(result)
-        // }
-        // insert()
-        
+
+    const handleChangeSearchQuery = (searchQuery: string) => {
+        setSearchQuery(searchQuery)
     }
 
-    return [songs, searchQuery, currentPage, setSongs, setSearchQuery, setCurrentPage, handleAddToPlaylist] as const
+    const handleAddToPlaylist = (song: Song, playlistId: number =1) => {
+        console.log(song, playlistId)
+        const fetchSongChordsAndInsert = async() => {
+            const resultApi = await repository.fetchSongChords(song.chordsLink)
+            console.log(resultApi)
+            if (resultApi.ok && resultApi.data && resultApi.data.chords){
+                const songToInsert = {chords: resultApi.data.chords, ...song}
+                const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
+                console.log(resultDb)
+            }
+        }
+        fetchSongChordsAndInsert()
+    }
+
+    return {
+        songs, 
+        searchQuery, 
+        currentPage, 
+        isError,
+        errorMessage,
+        message,
+        setSearchQuery: handleChangeSearchQuery, 
+        setSongAsFavorite: handleAddToPlaylist
+    }
 }
 
 export default useSongListViewModel
