@@ -5,7 +5,7 @@ export type Response<T> = {
 }
 
 export type SongDto = {
-    id: number|string,
+    id: number,
     artist: string, 
     name: string, 
     chords_link: string, 
