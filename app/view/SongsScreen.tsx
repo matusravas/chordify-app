@@ -9,7 +9,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const SongsScreen = () => {
     // const [songs, searchQuery, currentPage, setSearchQuery, handleAddToPlaylist] = useSongListViewModel()
-    const {songs, searchQuery, currentPage, isError, errorMessage, message, setSearchQuery, setSongAsFavorite} = useSongListViewModel()
+    const {songs, searchQuery, currentPage, isError, errorMessage, message, setSearchQuery, handleFavoritesChange} = useSongListViewModel()
     const bottomTabBarHeight = useBottomTabBarHeight()
     const navigation = useNavigation<any>();
     console.log('SongsScreen rerender')
@@ -38,18 +38,21 @@ const SongsScreen = () => {
       // navigation.navigate('Song', {song: song})
     }
     
-    const handleSearch = (query: string) => {
-      console.log(`handling search ${query}`)
-      setSearchQuery(query)
-    }
+    // const handleSearch = (query: string) => {
+    //   console.log(`handling search ${query}`)
+    //   setSearchQuery(query)
+    // }
     
+    const handleScrollPositionChange = ()=>{
+        // Todo when search is performed scroll to the top of the lis
+    }
   
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
-        <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
+        <SearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
         <SongsList songs={songs} 
               onCardClick={handleCardClick} 
-              onAddToFavoritesClick={setSongAsFavorite}
+              onFavoritesButtonClick={handleFavoritesChange}
               onPageChanged={handlePageChanged}
               />
       </View>

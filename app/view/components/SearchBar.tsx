@@ -43,8 +43,8 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
             onFocus={()=>setFocused(true)}
             onBlur={()=>setFocused(false)}
             // inputStyle={{borderWidth: 0}}
-            inputContainerStyle={{borderBottomColor: 'yellow',}}
-            inputStyle={{color: "#F7F7F7", fontSize: 15, borderBottomColor: 'yellow'}}
+            // inputContainerStyle={{borderBottomColor: 'yellow',}}
+            inputStyle={{color: "#F7F7F7", fontSize: 15}}
             placeholder='Search your favorite song...'
             textAlignVertical='bottom' variant='standard'
             value={query} onChangeText={(text) => setQuery(text)} 

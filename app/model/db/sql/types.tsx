@@ -6,6 +6,10 @@ export type InsertSongToPlaylist = {
     songPlaylistId?: number
 }
 
+export type FavoriteSongIds = {
+    song_id: number
+}
+
 export type SQLResult<T=any> = {
     ok: boolean,
     error?: string,

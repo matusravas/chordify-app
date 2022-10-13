@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ResultSet } from "react-native-sqlite-storage";
 import { Response, SongChordsDto, SongDto as SongApi } from "../model/api/types";
-import { InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
+import { FavoriteSongIds, InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
 import { PlaylistDto, SongDto as SongDb } from "../model/db/types";
 import { Playlist, Song } from "../model/domain/types";
 import ApiService from "../services/ApiService";
@@ -19,8 +19,18 @@ class Repository implements IRepository {
     private constructor() {}
 
 
-    findFavoriteSongs(songIds: number[]): Promise<SQLResult<number>> {
-        return this.dbService.findFavoriteSongsByIds(songIds)
+    findFavoriteSongsIds(songIds: number[]): Promise<Array<number>> {
+        const results =  this.dbService.findFavoriteSongIdsBySongIds(songIds).then(data=>{
+            if(data.ok && data.data){
+                const ids = data.data.map(e=>e.song_id)
+                console.log(ids)
+                return ids
+            }
+            return []
+        }).catch(err=>{
+            return []
+        })
+        return results
     }
 
     fetchSongs(query: string, page: number, top100: boolean=false, type: number=300, sortOrder: string='desc'): Promise<Response<Song[]>> {

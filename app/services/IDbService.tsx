@@ -7,7 +7,7 @@ export interface IDbService {
     
     insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>>
     
-    findFavoriteSongsByIds(songIds: Array<number>): Promise<SQLResult>
+    findFavoriteSongIdsBySongIds(songIds: Array<number>): Promise<SQLResult>
     
     findSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string, count: number): Promise<SQLResult<SongDto>>
     

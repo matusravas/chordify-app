@@ -3,7 +3,7 @@ import { Song } from "../model/domain/types";
 import { IDbService } from "./IDbService";
 import {openDatabase, enablePromise, ResultSet, ResultSetRowList, SQLiteDatabase} from 'react-native-sqlite-storage';
 import { SongDto, PlaylistDto } from "../model/db/types";
-import { InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
+import { FavoriteSongIds as FavoriteSongId, InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
 
 class DbService implements IDbService{
     static _instance: DbService
@@ -23,7 +23,7 @@ class DbService implements IDbService{
     }
 
 
-    async findFavoriteSongsByIds(songIds: Array<number>): Promise<SQLResult>{
+    async findFavoriteSongIdsBySongIds(songIds: Array<number>): Promise<SQLResult<FavoriteSongId>>{
         const selectSongs = `SELECT sp.song_id FROM song_playlist as sp WHERE (sp.playlist_id = 1 AND sp.song_id IN (${[...songIds]}))`
         console.log(selectSongs)
         return this.executeQuery(selectSongs)
@@ -54,8 +54,9 @@ class DbService implements IDbService{
         // const insertSongPlaylist = `INSERT OR IGNORE INTO song_playlist (song_id, playlist_id, timestamp_added) VALUES (?, ?, ?)`;
         // ! Todo this is not executed, WHEN INSERTING FIRST ITEM TO SP THE SELECT RETURNS 0ROWS BECAUSE NOTHING IS THERE!!!! 
         // ! THIS WOULD ONLY WORKS IF ALREADY SOM ROWS!!!! 
-        const insertSongPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) SELECT ?, ?, ? FROM song_playlist as sp WHERE (sp.song_id != ? OR sp.playlist_id != ?) LIMIT 1`
-        const result2 = this.executeQuery(insertSongPlaylist, [song.id, playlistId, timestampNow, song.id, playlistId])
+        // const insertSongPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) SELECT ?, ?, ? FROM song_playlist as sp WHERE (sp.song_id != ? OR sp.playlist_id != ?) LIMIT 1`
+        const insertSongPlaylist = `INSERT INTO song_playlist (id, song_id, playlist_id, timestamp_added) VALUES (?, ?, ?, ?)`
+        const result2 = this.executeQuery(insertSongPlaylist, [song.id * playlistId, song.id, playlistId, timestampNow])
         // return [result1, result2]
         return new Promise<SQLResult<InsertSongToPlaylist>>((resolve, reject) => {
             Promise.all([result1, result2]).then(results=>{

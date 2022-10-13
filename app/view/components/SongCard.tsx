@@ -5,7 +5,7 @@ import Icon, { Icons } from '../../icons/icons';
 import { SongCardProps } from '../../model/prop_types/types';
 import Platform from '../../platform/Platform';
 
-const SongCard = ({song, onSongCardClick, onAddToFavoitesButtonClick}: SongCardProps) => (
+const SongCard = ({song, onSongCardClick, onFavoritesButtonClick}: SongCardProps) => (
       <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#087EA410', false, Platform.getWidth()/(2.05))}>
       {/* <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#087EA4', false, Platform.getWidth()/(2.05))}> */}
         <View style={{ paddingBottom: 10, paddingLeft: 10, backgroundColor: '#0d0f12', borderRadius: 8, height: 85, marginBottom: 2, marginHorizontal: 3 }}>
@@ -21,7 +21,7 @@ const SongCard = ({song, onSongCardClick, onAddToFavoitesButtonClick}: SongCardP
               </VStack>
             </VStack>
             <VStack fill style={{alignItems: 'flex-end', paddingTop: 2}} >
-              <IconButton onPress={()=>onAddToFavoitesButtonClick(song)} icon={<Icon type={Icons.MaterialIcons} name='favorite-outline' color='#F7F7F720'/>}/>
+              <IconButton onPress={()=>onFavoritesButtonClick(song)} icon={<Icon type={Icons.MaterialIcons} name={song.isFavorite?'favorite':'favorite-outline'} color={song.isFavorite?'#087EA4':'#F7F7F720'}/>}/>
             </VStack>
           </HStack>
         </View>

@@ -7,6 +7,7 @@ export type Song = {
     votes: number, 
     rating: number,
     chords?: string,
+    isFavorite: boolean,
     chordsMetadata?: ChordsMetadata
     timestampLastVisit?: string,
 }

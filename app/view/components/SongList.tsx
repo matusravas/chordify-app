@@ -10,17 +10,17 @@ interface RenderItemProps {
 interface SongsListProps {
     songs: Song[], 
     onCardClick: (song: Song)=>void, 
-    onAddToFavoritesClick: (song: Song)=>void,
+    onFavoritesButtonClick: (song: Song)=>void,
     onPageChanged: ()=>void
 }
 
-const SongsList = ({songs, onCardClick, onAddToFavoritesClick, onPageChanged}: SongsListProps) =>{
+const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
     
     console.log('SongsList rerender')
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
-            <SongCard song={song} onSongCardClick={onCardClick} onAddToFavoitesButtonClick={onAddToFavoritesClick}/>
+            <SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick}/>
         )
     }
 
