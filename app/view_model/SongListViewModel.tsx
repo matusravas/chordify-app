@@ -29,6 +29,7 @@ function useSongListViewModel() {
     
     useEffect(()=>{
         const search = async()=>{
+            console.log('Going to search')
             const resultSongs = await repository.searchSongsInPlaylist(1, 'fec', 10, 'desc')
             console.log(resultSongs)
             // const resultSongPlaylist = await repository.findAllPlaylists('Favorites', 'desc')
@@ -53,7 +54,10 @@ function useSongListViewModel() {
     useEffect(()=>{
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
         const fetch = async() =>{
+            
             const result = await repository.fetchSongs(searchQuery, currentPage, isTop100)
+            const favs = await repository.findFavoriteSongs(result.data?result.data.map(s=>s.id): [])
+            console.log(favs.data)
             if(result.ok && result.data) {
                 setSongs(result.data)
             }

@@ -7,9 +7,14 @@ export interface IDbService {
     
     insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>>
     
+    findFavoriteSongsByIds(songIds: Array<number>): Promise<SQLResult>
+    
+    findSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string, count: number): Promise<SQLResult<SongDto>>
+    
+    findSongInPlaylistById(songId: number): Promise<SQLResult<SongDto>>
+
+    createPlaylist(playlist: PlaylistDto): Promise<SQLResult>
+
     removeSongFromPlaylist(song: SongDto, playlistId: number): Promise<SQLResult>
     
-    findSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string, count: number): Promise<SQLResult<Array<SongDto>>>
-
-    createPlaylist(playlist: PlaylistDto): Promise<SQLResult<number>>
 }

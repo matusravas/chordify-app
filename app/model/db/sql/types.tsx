@@ -1,11 +1,14 @@
+import { ResultSet } from "react-native-sqlite-storage"
+
 export type InsertSongToPlaylist = {
     songId: number,
     playlistId: number
     songPlaylistId?: number
 }
 
-export type SQLResult<T = {}> = {
+export type SQLResult<T=any> = {
     ok: boolean,
     error?: string,
-    data?: T
+    result?: ResultSet,
+    data?: Array<T> //|T
 }

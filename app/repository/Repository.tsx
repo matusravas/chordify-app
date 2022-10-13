@@ -18,6 +18,11 @@ class Repository implements IRepository {
 
     private constructor() {}
 
+
+    findFavoriteSongs(songIds: number[]): Promise<SQLResult<number>> {
+        return this.dbService.findFavoriteSongsByIds(songIds)
+    }
+
     fetchSongs(query: string, page: number, top100: boolean=false, type: number=300, sortOrder: string='desc'): Promise<Response<Song[]>> {
         // return this.apiService.getSongs(query, page, top100, type, sortOrder) as unknown as Promise<Response<Song[]>> //todo map to domain
         const result: Promise<Response<Song[]>> = this.apiService.getSongs(query, page, top100, type, sortOrder).then(data=>{
@@ -67,28 +72,26 @@ class Repository implements IRepository {
         //      votes: song.statistics.votes, rating: song.statistics.rating }, playlistID)
     }
 
-    searchSongsInPlaylist(playlistId: number, query: string='', numRows: number=-1, sortOrder: string='desc'): Promise<SQLResult<Array<Song>>> {
-        const result: Promise<SQLResult<Array<Song>>> = this.dbService.findSongsInPlaylist(playlistId, query, numRows, sortOrder).then(data => {
-            if(data.ok && data.data){
-                const songs = data.data.map(songDb => mapSongDbToDomain(songDb))
-                return {ok: data.ok, data: songs}
+    searchSongsInPlaylist(playlistId: number, query: string='', numRows: number=-1, sortOrder: string='desc'): Promise<SQLResult<Song>> {
+        const result: Promise<SQLResult<Song>> = this.dbService.findSongsInPlaylist(playlistId, query, numRows, sortOrder).then(res => {
+            // if(res.ok && res.data && Array.isArray(res.data)){
+            if(res.ok && res.data){
+                const songs = res.data.map(songDb => mapSongDbToDomain(songDb))
+                return {ok: res.ok, data: songs}
             }
-            return {ok: data.ok}
+            return {ok: res.ok}
         }).catch(err => {
             return {ok: false, error: err}
         })
-
         return result
     }
     
-    // searchSongsInPlaylist(query: string, playlistID: number, numRows: number, sortOrder: string): Promise<Response<Song[]>> {
-    //     throw new Error("Method not implemented.");
-    // }
+    
     createPlaylist(playlist: PlaylistDto): Promise<SQLResult<number>> {
         throw new Error("Method not implemented.");
     }
     
-    findAllPlaylists(name: string = '', sortOrder: string='desc'): Promise<SQLResult<Array<Playlist>>> {
+    findAllPlaylists(name: string = '', sortOrder: string='desc'): Promise<SQLResult<Playlist>> {
         throw new Error("Method not implemented.");
     }
 

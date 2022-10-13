@@ -6,7 +6,7 @@ export type SongDto = {
     full_url: string, 
     votes: number,
     rating: number,
-    chords: string
+    chords?: string
     timestamp_last_visit?: string
 }
 

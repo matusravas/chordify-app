@@ -14,7 +14,9 @@ export interface IRepository {
     // DB queries
     addSongToPlaylist(song: Song, playlistID: number): Promise<SQLResult<InsertSongToPlaylist>>
     
-    searchSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string): Promise<SQLResult<Array<Song>>>
+    searchSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string): Promise<SQLResult<Song>>
     
-    findAllPlaylists(name: string, sortOrder: string): Promise<SQLResult<Array<Playlist>>>
+    findFavoriteSongs(songIds: Array<number>): Promise<SQLResult<number>>
+    
+    findAllPlaylists(name: string, sortOrder: string): Promise<SQLResult<Playlist>>
 }

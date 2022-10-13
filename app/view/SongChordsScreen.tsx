@@ -19,7 +19,7 @@ const SongChordsScreen = (props: any) => {
       const fetch = async () => {
         console.log('fetching')
         // song?.chords_link?axios.get(`http://10.0.2.2:5000/song/chords?tab=${song.chords_link}`, {
-        song?.chords_link?axios.get(`https://chordify-ws.herokuapp.com/api/song/chords?tab=${song.chords_link}`, {
+        song?.chordsLink?axios.get(`https://chordify-ws.herokuapp.com/api/song/chords?tab=${song.chordsLink}`, {
           // axios.get('http://10.0.2.2:5000/song/chords', {
           headers: {
             Authorization: '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
