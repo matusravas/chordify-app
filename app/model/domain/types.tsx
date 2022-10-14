@@ -1,3 +1,9 @@
+export type Data<T> = {
+    // ok: boolean,
+    data?: T,
+    error?: string
+}
+
 export type Song = {
     id: number,
     artist: string, 

@@ -24,7 +24,7 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
             const token = setTimeout(() => {
                 console.log(query)
                 onSearch(query)
-            }, 200)
+            }, 500)
             return () => clearTimeout(token)
         }
     }, [query])

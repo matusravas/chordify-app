@@ -19,12 +19,6 @@ interface SongsListProps {
 
 const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
     console.log('SongsList rerender')
-    // const [position, SetPosition] = useState(0)
-    console.log('Scroll position')
-
-    // useEffectAfterMount(()=>{
-    //     flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
-    // }, [songs])
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
