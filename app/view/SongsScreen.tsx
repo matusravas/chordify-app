@@ -13,6 +13,7 @@ const SongsScreen = () => {
     const bottomTabBarHeight = useBottomTabBarHeight()
     const navigation = useNavigation<any>();
     console.log('SongsScreen rerender')
+    console.log(songs.length > 0? `${songs[23].name} ${songs[23].isFavorite}`: '---')
     const theme = useTheme()
     // const handleCardClick = useCallback((song: Song) => {
     //   console.log(song)

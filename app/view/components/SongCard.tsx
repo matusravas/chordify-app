@@ -29,5 +29,5 @@ const SongCard = ({song, onSongCardClick, onFavoritesButtonClick}: SongCardProps
 )
 
 // export default memo(SongCard)
-export default memo(SongCard, (prev, next)=>prev.song.id === next.song.id)
+export default memo(SongCard, (prev, next)=>prev.song.id === next.song.id && prev.song.isFavorite === next.song.isFavorite)
 // export default SongCard

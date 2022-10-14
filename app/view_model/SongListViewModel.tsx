@@ -87,15 +87,18 @@ function useSongListViewModel() {
                     const idx = songs.findIndex(s=>s.id === song.id)
                     let newSongs = [...songs]
                     // console.log(idx)
-                    if(idx !== -1){
-                        const newSong: Song = {...songs[idx], isFavorite: true}
-                        console.log(newSong)
-                        // Todo newSongs are not rendered with isFavorite true
-                        
-                        newSongs[idx] = Object.assign({isFavorite: true}, newSongs[idx])   //{...songs[idx], isFavorite: true}
-                        // console.log(newSongs)
-                        setSongs(newSongs)
-                    }
+                    if(idx !== -1) newSongs[idx] = {...songs[idx], isFavorite: true}; setSongs(newSongs)
+                        // console.log(newSong)
+                        // // Todo newSongs are not rendered with isFavorite true
+                        // const songss = songs.map(e=>{
+                        //     if(e.id === song.id) e.isFavorite = true
+                        //     return e
+                        // })
+                        // newSongs[idx] = Object.assign({}, newSongs[idx], {isFavorite: true})   //{...songs[idx], isFavorite: true}
+                        // console.log(newSongs[idx])
+                        // console.log(songss[idx])
+                    
+                    
                     
                 }
             }
