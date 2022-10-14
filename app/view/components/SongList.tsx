@@ -16,18 +16,12 @@ interface SongsListProps {
 }
 
 const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
-    const [selectedItem, setSelectedItem] = useState(0)
     console.log('SongsList rerender')
-    console.log(songs[22].isFavorite)
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
             <SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick}/>
         )
-    }
-
-    const handleSelectedItem = (idx: number) =>{
-        setSelectedItem(idx)
     }
 
     return (
