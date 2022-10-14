@@ -79,29 +79,42 @@ function useSongListViewModel() {
 
     const handleFavoritesChange = (song: Song, playlistId: number =1) => {
         console.log(song, playlistId)
-        switch(song.isFavorite){
-            case false: {
+        if(!song.isFavorite){
                 const fetchSongChordsIfNotExistsAndInsert = async() => {
-                    // Todo no need to fetch if the song was inserted and then removed, 
-                    // Todo bcs it remained in song table even if it was removed from song_playlist
-                    const resultApi = await repository.fetchSongChords(song.chordsLink)
-                    console.log(resultApi)
-                    if (resultApi.ok && resultApi.data && resultApi.data.chords){
-                        const songToInsert = {chords: resultApi.data.chords, ...song}
+                    let songToInsert = undefined
+                    const songDb = await repository.searchAlreadySavedSong(song.id)
+                    // console.log('SongDb----')
+                    // console.log(songDb)
+                    if(songDb.ok && songDb.data && songDb.data[0] && songDb.data[0].chords){
+                        console.log('Will insert fromDB')
+                        songToInsert = {chords: songDb.data[0].chords, ...song}   
+                    }
+                    else{
+                        console.log('Will insert API')
+                        const resultApi = await repository.fetchSongChords(song.chordsLink)
+                        // console.log('Result Api ---')
+                        // console.log(resultApi)
+                        if (resultApi.ok && resultApi.data && resultApi.data.chords){
+                            songToInsert = {chords: resultApi.data.chords, ...song}
+                            // updateFavoriteSongs(song)
+                        }
+                    }
+                    if(songToInsert) {
                         const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
-                        // console.log(resultDb)
                         updateFavoriteSongs(song)
                     }
                 }
                 fetchSongChordsIfNotExistsAndInsert()
             }
-            case true: {
-                const resultDb = repository.removeSongFromPlaylist(song.id, playlistId)
-                console.log('remove')
-                console.log(resultDb)
-                updateFavoriteSongs(song)
+            else {
+                const removeSong = async() => {
+                    const resultDb = await repository.removeSongFromPlaylist(song.id, playlistId)
+                    console.log('remove')
+                    console.log(resultDb)
+                    updateFavoriteSongs(song)
+                }
+                removeSong()
             }
-        }
     }
 
     return {

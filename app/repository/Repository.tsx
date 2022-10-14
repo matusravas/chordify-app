@@ -78,7 +78,7 @@ class Repository implements IRepository {
     fetchSongChords(chordsLink: string): Promise<Response<Song>> {
         const result: Promise<Response<Song>> = this.apiService.getSongChords(chordsLink).then(data=>{
             if (data.ok && data.data) { 
-                console.log(data)
+                // console.log(data)
                 const song = mapSongChordsApiToDomain(data.data)
                 return {data: song, ok: data.ok}
             }
@@ -107,6 +107,20 @@ class Repository implements IRepository {
             if(res.ok && res.data){
                 const songs = res.data.map(songDb => mapSongDbToDomain(songDb))
                 return {ok: res.ok, data: songs}
+            }
+            return {ok: res.ok}
+        }).catch(err => {
+            return {ok: false, error: err}
+        })
+        return result
+    }
+    
+    
+    searchAlreadySavedSong(songId: number): Promise<SQLResult<Song>> {
+        const result: Promise<SQLResult<Song>> = this.dbService.findSavedSong(songId).then(res => {
+            if(res.ok && res.data){
+                const song = res.data.map(songDb => mapSongDbToDomain(songDb, true))
+                return {ok: res.ok, data: song}
             }
             return {ok: res.ok}
         }).catch(err => {

@@ -25,7 +25,7 @@ class DbService implements IDbService{
 
     async findFavoriteSongIdsBySongIds(songIds: Array<number>): Promise<SQLResult<FavoriteSongId>>{
         const selectSongs = `SELECT sp.song_id FROM song_playlist as sp WHERE (sp.playlist_id = 1 AND sp.song_id IN (${[...songIds]}))`
-        console.log(selectSongs)
+        // console.log(selectSongs)
         return this.executeQuery(selectSongs)
     }
 
@@ -39,7 +39,7 @@ class DbService implements IDbService{
     }
     
     
-    async findSongInPlaylistById(songId: number): Promise<SQLResult<SongDto>> {
+    async findSavedSong(songId: number): Promise<SQLResult<SongDto>> {
         const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.chords'
         const selectSong = `SELECT ${values} FROM song as s WHERE (s.id = ?)`
         return this.executeQuery(selectSong, [songId])
@@ -144,7 +144,7 @@ class DbService implements IDbService{
             this.getDBConnection().then(db=>{
                 db.transaction(tx=>{
                     tx.executeSql(query, params, (_tx, result)=>{
-                        console.log(result)
+                        // console.log(result)
                         resolve({data: result.rows.raw(), result: result, ok: true})
                     })
                 })

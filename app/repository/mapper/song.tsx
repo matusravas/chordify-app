@@ -15,9 +15,9 @@ export const mapSongDomainToApi = (song: Song): SongApi => {
     return songApi
 }
 
-export const mapSongDbToDomain = (songDb: SongDb): Song => {
+export const mapSongDbToDomain = (songDb: SongDb, showChords: boolean=false): Song => {
     const {full_url: fullUrl, chords_link: chordsLink, timestamp_last_visit: timestampLastVisit, chords, ...rest} = songDb
-    const song: Song = {chordsLink, fullUrl, timestampLastVisit, isFavorite: false, ...rest}
+    const song: Song = {chordsLink, fullUrl, timestampLastVisit, isFavorite: false, ...rest, ...(showChords && { chords: chords })}
     return song
 }
 
