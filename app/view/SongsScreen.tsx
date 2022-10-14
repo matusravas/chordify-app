@@ -3,8 +3,8 @@ import useSongListViewModel from '../view_model/SongListViewModel';
 import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
 import SongsList from './components/SongList';
-import {View} from 'react-native'
-import React, { useCallback } from 'react';
+import {View, FlatList} from 'react-native'
+import React, { useCallback, useRef } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const SongsScreen = () => {
@@ -12,6 +12,7 @@ const SongsScreen = () => {
     const {songs, searchQuery, currentPage, isError, errorMessage, message, setSearchQuery, handleFavoritesChange} = useSongListViewModel()
     const bottomTabBarHeight = useBottomTabBarHeight()
     const navigation = useNavigation<any>();
+    const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
     console.log('SongsScreen rerender')
     const theme = useTheme()
     // const handleCardClick = useCallback((song: Song) => {
@@ -38,10 +39,11 @@ const SongsScreen = () => {
       // navigation.navigate('Song', {song: song})
     }
     
-    // const handleSearch = (query: string) => {
-    //   console.log(`handling search ${query}`)
-    //   setSearchQuery(query)
-    // }
+    const handleSearch = (query: string) => {
+      // console.log(`handling search ${query}`)
+      setSearchQuery(query)
+      flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
+    }
     
     const handleScrollPositionChange = ()=>{
         // Todo when search is performed scroll to the top of the lis
@@ -49,8 +51,10 @@ const SongsScreen = () => {
   
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
-        <SearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
-        <SongsList songs={songs} 
+        <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
+        <SongsList 
+              flatListRef={flatListRef}
+              songs={songs} 
               onCardClick={handleCardClick} 
               onFavoritesButtonClick={handleFavoritesChange}
               onPageChanged={handlePageChanged}

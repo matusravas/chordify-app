@@ -24,7 +24,7 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
             const token = setTimeout(() => {
                 console.log(query)
                 onSearch(query)
-            }, 1000)
+            }, 200)
             return () => clearTimeout(token)
         }
     }, [query])
@@ -35,9 +35,9 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
             // style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#14161c20', borderStyle:'solid', borderTopWidth:0, borderWidth: 1, borderColor: focused?"#087EA4": "#F7F7F730",  borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
             // style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#0d0f12EE', borderStyle: 'solid', borderWidth: 1, borderColor: focused?"#087EA4": '#00000000',  borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
             style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#0d0f12EE', borderBottomLeftRadius: 15, borderBottomRightRadius: 15}}
-            leading={<Icon type={Icons.MaterialIcons} name='search' size={22} color={focused?"#087EA4": "#F7F7F730" }/>}
+            leading={<Icon type={Icons.MaterialIcons} name='search' size={22} color={focused?"#1FC159": "#F7F7F730" }/>}
             trailing={query ? <IconButton onPress={() => setQuery("")} icon={<Icon size={22} type={Icons.MaterialIcons} name='clear' color="#F7F7F730" />} /> : null}
-            color='#087EA4'
+            color='#1FC159'
             // caretHidden={true}
             placeholderTextColor='#F7F7F740'
             onFocus={()=>setFocused(true)}

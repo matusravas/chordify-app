@@ -74,6 +74,7 @@ function useSongListViewModel() {
     // },[searchOffline])
 
     const handleChangeSearchQuery = (searchQuery: string) => {
+        // setSongs([])
         setSearchQuery(searchQuery)
     }
 

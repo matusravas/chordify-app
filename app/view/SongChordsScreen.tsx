@@ -54,7 +54,7 @@ const SongChordsScreen = (props: any) => {
       style={{ marginBottom: bottomTabBarHeight, padding: 10}}>
         
         <RenderHtml
-          tagsStyles={{ b: { color: '#087EA4'}, body: {color: '#F7F7F7AA', fontSize: 11, margin: 0, padding: 0}}}
+          tagsStyles={{ b: { color: '#1FC159'}, body: {color: '#F7F7F7AA', fontSize: 11, margin: 0, padding: 0}}}
           contentWidth={width} 
           source={data}
         />

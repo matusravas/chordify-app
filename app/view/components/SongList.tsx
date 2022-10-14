@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { FlatList, ListRenderItem} from "react-native"
 import { Song } from "../../model/domain/types"
+import { useEffectAfterMount } from "../../utils/hooks"
 import SongCard from "./SongCard"
 
 interface RenderItemProps {
@@ -10,19 +11,20 @@ interface RenderItemProps {
 
 interface SongsListProps {
     songs: Song[], 
+    flatListRef: React.MutableRefObject<FlatList<Song>>,
     onCardClick: (song: Song)=>void, 
     onFavoritesButtonClick: (song: Song)=>void,
     onPageChanged: ()=>void
 }
 
-const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
+const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
     console.log('SongsList rerender')
-    const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
+    // const [position, SetPosition] = useState(0)
     console.log('Scroll position')
 
-    useEffect(()=>{
-        flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
-    }, [songs])
+    // useEffectAfterMount(()=>{
+    //     flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
+    // }, [songs])
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
@@ -35,7 +37,6 @@ const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: 
             ref={flatListRef}
             data={songs}
             renderItem={renderItem}
-
             keyExtractor={item => (item.id + (+item.isFavorite)).toString()}
         />
     )
