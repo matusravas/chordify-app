@@ -34,13 +34,17 @@ function useSongListViewModel() {
                             if (favoritesData.data?.includes(song.id)) song.isFavorite = true
                             return song
                         })
-                        setSongs(songsWithFavorites)  
+                        console.log('songsWithFavorites[0].name')
+                        setSongs(songsWithFavorites) 
+                        // console.log(songs) 
                     }
                     else {
+                        console.log('songsData.data')
                         setSongs(songsData.data)
                     }
                 }
                 else if(songsData.error) {
+                    console.log('!!!!!!!!!!!!!!!!!!!!!')
                     // setSearchOffline(true)
                     // Todo search for offline in case no data from server. Handle the logic in REPOSITORY???
                     // setIsError(true)
@@ -56,10 +60,13 @@ function useSongListViewModel() {
 
     const updateFavoriteSongs = (song: Song) => {
         console.log('Update fav')
-        console.log(song)
+        console.log(songs.length)
         const idx = songs.findIndex(s=>s.id === song.id)
         let newSongs = [...songs]
-        if(idx !== -1) newSongs[idx] = {...songs[idx], isFavorite: !song.isFavorite}; setSongs(newSongs)
+        if(idx !== -1) {
+            newSongs[idx] = {...songs[idx], isFavorite: !song.isFavorite}
+            setSongs(newSongs)
+        }
     }
     
 
@@ -69,6 +76,7 @@ function useSongListViewModel() {
 
 
     const handleFavoritesChange = (song: Song, playlistId: number =1) => {
+        console.log(songs.length)
         console.log(song, playlistId)
         if(!song.isFavorite){
             const searchSongChordsAndInsertToFavorites = async() => {
@@ -79,6 +87,9 @@ function useSongListViewModel() {
                         // console.log(data)
                         songToInsert = {chords: data.data.chords, ...song}
                         console.log(songToInsert.id)
+                        console.log('---------------------')
+
+                        console.log(songs[0].name)
                         const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
                         console.log(resultDb)
                         updateFavoriteSongs(song)

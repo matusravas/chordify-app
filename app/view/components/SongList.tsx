@@ -17,8 +17,10 @@ interface SongsListProps {
     onPageChanged: ()=>void
 }
 
+// const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
 const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
     console.log('SongsList rerender')
+    console.log(songs[0]?.name)
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
@@ -30,8 +32,9 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onP
         <FlatList
             ref={flatListRef}
             data={songs}
+            // extraData={new Date().getTime()}
             renderItem={renderItem}
-            keyExtractor={item => (item.id + (+item.isFavorite)).toString()}
+            keyExtractor={item => (item.id).toString()}
         />
     )
 }

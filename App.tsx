@@ -1,7 +1,6 @@
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native"
 import { useState } from "react"
 import Platform from "./app/platform/Platform";
-import SongsScreen from "./app/view/SongsScreen";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import Router from "./app/navigation/Router";
 
