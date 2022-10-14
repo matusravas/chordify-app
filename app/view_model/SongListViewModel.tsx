@@ -25,11 +25,11 @@ function useSongListViewModel() {
             try {
                 const songsData = await repository.fetchSongs(searchQuery, currentPage, isTop100)
                 if(songsData.data && songsData.data.length > 0){
-                    console.log(songsData.data.length)
+                    // console.log(songsData.data.length)
                     const favoritesData = await repository.findFavoriteSongsIds(songsData.data.map(song => song.id))
-                    console.log(favoritesData)
+                    // console.log(favoritesData)
                     if (favoritesData.data && favoritesData.data.length > 0) {
-                        console.log('Got favs')
+                        // console.log('Got favs')
                         const songsWithFavorites = songsData.data.map(song => {
                             if (favoritesData.data?.includes(song.id)) song.isFavorite = true
                             return song
@@ -55,6 +55,8 @@ function useSongListViewModel() {
 
 
     const updateFavoriteSongs = (song: Song) => {
+        console.log('Update fav')
+        console.log(song)
         const idx = songs.findIndex(s=>s.id === song.id)
         let newSongs = [...songs]
         if(idx !== -1) newSongs[idx] = {...songs[idx], isFavorite: !song.isFavorite}; setSongs(newSongs)
@@ -74,7 +76,9 @@ function useSongListViewModel() {
                 try{
                     const data = await repository.searchSong(song)
                     if(data.data && data.data.chords){
+                        // console.log(data)
                         songToInsert = {chords: data.data.chords, ...song}
+                        console.log(songToInsert.id)
                         const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
                         console.log(resultDb)
                         updateFavoriteSongs(song)

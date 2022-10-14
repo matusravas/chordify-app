@@ -5,7 +5,9 @@ import { Song, } from "../model/domain/types"
 
 export interface IDbService {
     
-    insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>>
+    insertSong(song: SongDto): Promise<SQLResult>
+    
+    insertSongToPlaylist(songId: number, playlistId: number): Promise<SQLResult>
     
     findFavoriteSongIdsBySongIds(songIds: Array<number>): Promise<SQLResult>
     

@@ -4,41 +4,38 @@ import axios from 'axios';
 import RenderHtml, { Document } from "react-native-render-html";
 import Html from "react-native-render-html";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import Repository from '../repository/Repository';
+import { Song } from '../model/domain/types';
+
+// interface SongChordsScreenProps {
+
+// }
 
 
 const SongChordsScreen = (props: any) => {
-    const [data, setData] = useState<any>({ html: ''})
-    const song = props.route.params.song
+    const repository = Repository.getInstance()
+    // const [data, setData] = useState<any>({ html: ''})
+    const [chords, setChords] = useState<any>('')
+    const [song, setSong] = useState<Song>(props.route.params.song)
     const bottomTabBarHeight = useBottomTabBarHeight()
-    console.log(song)
-    useEffect(() => {
-      // fetch('http://chordify-ws.herokuapp.com/api/chords?tab=coldplay/viva-la-vida-chords-675427').then(data=>{
-      //       console.log(data)
-      //     })
-  
-      const fetch = async () => {
-        console.log('fetching')
-        // song?.chords_link?axios.get(`http://10.0.2.2:5000/song/chords?tab=${song.chords_link}`, {
-        song?.chordsLink?axios.get(`https://chordify-ws.herokuapp.com/api/song/chords?tab=${song.chordsLink}`, {
-          // axios.get('http://10.0.2.2:5000/song/chords', {
-          headers: {
-            Authorization: '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
+
+    useEffect(()=>{
+      const getSong = async() => {
+        try{
+          const data = await repository.searchSong(song)
+          if(data.data && data.data.chords){
+            setChords(data.data.chords)
           }
-        }).then(res => {
-          // setData((prevState)=>prevState.set({ html: res.data.data.chords}))
-          console.log(res.data.data)
-          setData({ html: res.data.data.chords })
-          // console.log(data) 
-        }).catch(err => {
-          console.log(err)
-        }):null
+        }catch(err){
+
+        }
       }
-      fetch()
+      getSong()
     }, [])
   
-    useEffect(() => {
+    // useEffect(() => {
       
-    }, [data])
+    // }, [data])
   
     const { width } = useWindowDimensions()
     return (
@@ -56,7 +53,7 @@ const SongChordsScreen = (props: any) => {
         <RenderHtml
           tagsStyles={{ b: { color: '#1FC159'}, body: {color: '#F7F7F7AA', fontSize: 11, margin: 0, padding: 0}}}
           contentWidth={width} 
-          source={data}
+          source={{html: chords}}
         />
       </ScrollView>
 

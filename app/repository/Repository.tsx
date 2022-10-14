@@ -37,52 +37,62 @@ class Repository implements IRepository {
     
     searchSong(song: Song): Promise<Data<Song>> {
         return new Promise<Data<Song>>((resolve, reject) => { 
-            this.dbService.findSavedSong(song.id).then(resDb => {
-                console.log(resDb)
-                if(resDb.ok && resDb.data && resDb.data[0] && resDb.data[0].id){
-                    const song = resDb.data.map(songDb => mapSongDbToDomain(songDb, true))
+            this.dbService.findSavedSong(song.id).then(result => {
+                // console.log(resDb)
+                if(result.ok && result.data && result.data[0] && result.data[0].id){
+                    const song = result.data.map(songDb => mapSongDbToDomain(songDb, true))
                     console.log('Resolve DB')
-                    // resolve({data: song[0], ok: true})
-                    resolve({data: song[0]})
+                    return {found: true, data: song[0]}
                 }
-            this.apiService.getSongChords(song.chordsLink).then(resApi=>{
-                if(resApi.ok && resApi.data){
-                    const song = mapSongChordsApiToDomain(resApi.data)
-                    console.log('Resolve API')
-                    // resolve({data: song, ok: true})
-                    resolve({data: song})
+                else return {found: false}
+            }).then(resultDb=>{
+                if(resultDb.found && resultDb.data) resolve({data: resultDb.data})
+                else{
+                    this.apiService.getSongChords(song.chordsLink).then(resApi=>{
+                        if(resApi.ok && resApi.data){
+                            const song = mapSongChordsApiToDomain(resApi.data)
+                            console.log('Resolve API')
+                            resolve({data: song})
+                        }
+                        else{
+                            reject('Could not fetch song')
+                        }
+                    })
                 }
-            }).catch(errApi=>{
-                console.log(errApi)
-                // reject({ok: false, error: 'Song can not be fetched'})
-                reject('Unable to fetch songs')
+            }).catch(errDb => {
+                console.log(errDb)
+                reject('Unable to find songs')
             })
-        }).catch(errDb => {
-            console.log(errDb)
-            // reject({ok: false, error: `Song not found in saved`})
-            reject('Unable to find songs')
-        })
     })}
-
-
-    searchLastSavedSongs(limit: number=50): Promise<SQLResult<Song>> {
-        const result = this.dbService.findLastSavedSongs(limit).then(data=>{
-            if(data.ok && data.data){
-                const songs = data.data.map(s=>{
-                    const song = mapSongDbToDomain(s)
-                    return song
-                })
-                return {ok: data.ok, data: songs}
-            }
-            else{
-                return {ok: data.ok, data: []} 
-            }
-            
-        }).catch(err=>{
-            return {ok: false, data: []}
-        })
-        return result
-    }
+    // searchSong(song: Song): Promise<Data<Song>> {
+    //     return new Promise<Data<Song>>((resolve, reject) => { 
+    //         this.dbService.findSavedSong(song.id).then(resDb => {
+    //             // console.log(resDb)
+    //             if(resDb.ok && resDb.data && resDb.data[0] && resDb.data[0].id){
+    //                 const song = resDb.data.map(songDb => mapSongDbToDomain(songDb, true))
+    //                 console.log('Resolve DB')
+    //                 // resolve({data: song[0], ok: true})
+    //                 return resolve({data: song[0]})
+    //             }
+    //         console.log('Continuing')
+    //         this.apiService.getSongChords(song.chordsLink).then(resApi=>{
+    //             if(resApi.ok && resApi.data){
+    //                 const song = mapSongChordsApiToDomain(resApi.data)
+    //                 console.log('Resolve API')
+    //                 // resolve({data: song, ok: true})
+    //                 resolve({data: song})
+    //             }
+    //         }).catch(errApi=>{
+    //             console.log(errApi)
+    //             // reject({ok: false, error: 'Song can not be fetched'})
+    //             reject('Unable to fetch songs')
+    //         })
+    //     }).catch(errDb => {
+    //         console.log(errDb)
+    //         // reject({ok: false, error: `Song not found in saved`})
+    //         reject('Unable to find songs')
+    //     })
+    // })}
 
 
     fetchSongs(query: string, page: number, top100: boolean=false, type: number=300, sortOrder: string='desc'): Promise<Data<Array<Song>>> {
@@ -105,7 +115,7 @@ class Repository implements IRepository {
         return new Promise<boolean>((resolve, reject) => {
             this.dbService.deleteSongFromPlaylist(songId, playlistId).then(data=>{
                 if(data.ok && data.result && data.result.rowsAffected > 0) resolve(true)
-                resolve(false)
+                else resolve(false)
             }).catch(err=>{
                 reject('Can not remove song from favorites')
             })
@@ -115,12 +125,39 @@ class Repository implements IRepository {
     addSongToPlaylist(song: Song, playlistID: number): Promise<boolean> {
         const songDb = mapSongDomainToDb(song)
         return new Promise<boolean>((resolve, reject) => {
-            this.dbService.insertSongToPlaylist(songDb, playlistID).then(data => {
-                if(data.ok && data.result && data.result.rowsAffected > 0) resolve(true)
+            this.dbService.insertSong(songDb).then(result=>{
+                if(result.ok && result.result && result.result.rowsAffected > 0) return result.result.insertId
+                else if (result.ok && result.result && result.result.rowsAffected === 0) return songDb.id 
+                else return songDb.id 
+            }).then(songId=>{
+                return this.dbService.insertSongToPlaylist(songId, playlistID)
+            }).then(result2=>{
+                if(result2.ok && result2.result && result2.result.rowsAffected > 0) resolve(true)
+                else if (result2.ok && result2.result && result2.result.rowsAffected === 0) resolve(false)
+                else resolve(false)
             }).catch(err=>{
-                reject('Can not add song to playlist')
+                reject('Something went wrong during insertion')
             })
         })
+    }
+
+    searchLastSavedSongs(limit: number=50): Promise<SQLResult<Song>> {
+        const result = this.dbService.findLastSavedSongs(limit).then(data=>{
+            if(data.ok && data.data){
+                const songs = data.data.map(s=>{
+                    const song = mapSongDbToDomain(s)
+                    return song
+                })
+                return {ok: data.ok, data: songs}
+            }
+            else{
+                return {ok: data.ok, data: []} 
+            }
+            
+        }).catch(err=>{
+            return {ok: false, data: []}
+        })
+        return result
     }
 
     // searchSongsInPlaylist(playlistId: number, query: string='', numRows: number=-1, sortOrder: string='desc'): Promise<SQLResult<Song>> {

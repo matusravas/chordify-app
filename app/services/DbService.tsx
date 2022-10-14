@@ -53,31 +53,44 @@ class DbService implements IDbService{
         return this.executeQuery(selectLastSongs, [limit])
     }
 
-    async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>> {
+    async insertSong(song: SongDto): Promise<SQLResult> {
         const timestampNow = new Date().getTime()
         const insertSong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        const result1 = this.executeQuery(insertSong, [song.id, song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords?song.chords:'', timestampNow])
-        // if (result1.result?.rowsAffected && result1.result?.rowsAffected > 0){
-        // const insertSongPlaylist = `INSERT OR IGNORE INTO song_playlist (song_id, playlist_id, timestamp_added) VALUES (?, ?, ?)`;
-        // ! Todo this is not executed, WHEN INSERTING FIRST ITEM TO SP THE SELECT RETURNS 0ROWS BECAUSE NOTHING IS THERE!!!! 
-        // ! THIS WOULD ONLY WORKS IF ALREADY SOM ROWS!!!! 
-        // const insertSongPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) SELECT ?, ?, ? FROM song_playlist as sp WHERE (sp.song_id != ? OR sp.playlist_id != ?) LIMIT 1`
-        const insertSongPlaylist = `INSERT INTO song_playlist (id, song_id, playlist_id, timestamp_added) VALUES (?, ?, ?, ?)`
-        const result2 = this.executeQuery(insertSongPlaylist, [song.id * playlistId, song.id, playlistId, timestampNow])
-        // return [result1, result2]
-        return new Promise<SQLResult<InsertSongToPlaylist>>((resolve, reject) => {
-            Promise.all([result1, result2]).then(results=>{
-                const songId = results[0].result?.insertId
-                if (songId !== undefined) resolve({ok: true, data: [{songId: songId, playlistId: playlistId, songPlaylistId: results[1].result?.insertId}]})
-                else resolve({ok: true})
-                
-                // return {song_id: res1.result?.insertId}
-            }).catch(err=>{
-                reject({ok: false, error: err})
-            })
-        })
+        return this.executeQuery(insertSong, [song.id, song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords?song.chords:'', timestampNow])
     }
+    
+    async insertSongToPlaylist(songId: number, playlistId: number): Promise<SQLResult> {
+        const timestampNow = new Date().getTime()
+        const insertSongPlaylist = `INSERT INTO song_playlist (id, song_id, playlist_id, timestamp_added) VALUES (?, ?, ?, ?)`
+        return this.executeQuery(insertSongPlaylist, [songId * playlistId, songId, playlistId, timestampNow])
+    }
+
+    // async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>> {
+    //     const timestampNow = new Date().getTime()
+    //     const insertSong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
+    //                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    //     const result1 = this.executeQuery(insertSong, [song.id, song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords?song.chords:'', timestampNow])
+    //     // if (result1.result?.rowsAffected && result1.result?.rowsAffected > 0){
+    //     // const insertSongPlaylist = `INSERT OR IGNORE INTO song_playlist (song_id, playlist_id, timestamp_added) VALUES (?, ?, ?)`;
+    //     // ! Todo this is not executed, WHEN INSERTING FIRST ITEM TO SP THE SELECT RETURNS 0ROWS BECAUSE NOTHING IS THERE!!!! 
+    //     // ! THIS WOULD ONLY WORKS IF ALREADY SOM ROWS!!!! 
+    //     // const insertSongPlaylist = `INSERT INTO song_playlist (song_id, playlist_id, timestamp_added) SELECT ?, ?, ? FROM song_playlist as sp WHERE (sp.song_id != ? OR sp.playlist_id != ?) LIMIT 1`
+    //     const insertSongPlaylist = `INSERT INTO song_playlist (id, song_id, playlist_id, timestamp_added) VALUES (?, ?, ?, ?)`
+    //     const result2 = this.executeQuery(insertSongPlaylist, [song.id * playlistId, song.id, playlistId, timestampNow])
+    //     // return [result1, result2]
+    //     return new Promise<SQLResult<InsertSongToPlaylist>>((resolve, reject) => {
+    //         Promise.all([result1, result2]).then(results=>{
+    //             const songId = results[0].result?.insertId
+    //             if (songId !== undefined) resolve({ok: true, data: [{songId: songId, playlistId: playlistId, songPlaylistId: results[1].result?.insertId}]})
+    //             else resolve({ok: true})
+                
+    //             // return {song_id: res1.result?.insertId}
+    //         }).catch(err=>{
+    //             reject({ok: false, error: err})
+    //         })
+    //     })
+    // }
 
     async createPlaylist(playlist: PlaylistDto): Promise<SQLResult> {
         const createPlaylist = `INSERT INTO playlist (name, timestamp_created) VALUES (?, ?, ?)`
