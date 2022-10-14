@@ -34,8 +34,8 @@ class DbService implements IDbService{
         const queryClause = query?`AND (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
         const limitClause = numRows>0?`LIMIT ${numRows}` : ''
         const orderClause = sortOrder?`ORDER BY sp.timestamp_added ${sortOrder.toUpperCase()}` : ''
-        const selectSong = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON sp.song_id = s.id WHERE (sp.playlist_id = ?) ${queryClause} ${orderClause} ${limitClause}`;
-        return this.executeQuery(selectSong, [playlistId])
+        const selectSongs = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON sp.song_id = s.id WHERE (sp.playlist_id = ?) ${queryClause} ${orderClause} ${limitClause}`;
+        return this.executeQuery(selectSongs, [playlistId])
     }
     
     
@@ -43,6 +43,14 @@ class DbService implements IDbService{
         const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.chords'
         const selectSong = `SELECT ${values} FROM song as s WHERE (s.id = ?)`
         return this.executeQuery(selectSong, [songId])
+    }
+    
+    async findLastSavedSongs(limit: number): Promise<SQLResult<SongDto>> {
+        // Todo pagginagtion
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.chords'
+        // const selectSong = `SELECT ${values} FROM song INNER JOIN song_playlist as sp ON s.id = sp.id WHERE (s.id = ?)`
+        const selectLastSongs = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON s.id = sp.id ORDER BY sp.timestamp_added DESC LIMIT ?`
+        return this.executeQuery(selectLastSongs, [limit])
     }
 
     async insertSongToPlaylist(song: SongDto, playlistId: number): Promise<SQLResult<InsertSongToPlaylist>> {
@@ -76,9 +84,9 @@ class DbService implements IDbService{
         return this.executeQuery(createPlaylist, [playlist.name, playlist.timestamp_created]) 
     }
     
-    async removeSongFromPlaylist(song: SongDto, playlistId: number): Promise<SQLResult> {
+    async deleteSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult> {
         const deleteSongPlaylist = `DELETE FROM song_playlist as sp WHERE (sp.song_id = ? AND sp.playlist_id = ?)`
-        return this.executeQuery(deleteSongPlaylist, [song.id, playlistId])
+        return this.executeQuery(deleteSongPlaylist, [songId, playlistId])
     }
 
     
@@ -136,6 +144,7 @@ class DbService implements IDbService{
             this.getDBConnection().then(db=>{
                 db.transaction(tx=>{
                     tx.executeSql(query, params, (_tx, result)=>{
+                        console.log(result)
                         resolve({data: result.rows.raw(), result: result, ok: true})
                     })
                 })

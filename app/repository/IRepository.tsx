@@ -16,7 +16,11 @@ export interface IRepository {
     
     searchSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string): Promise<SQLResult<Song>>
     
-    findFavoriteSongsIds(songIds: Array<number>): Promise<Array<number>>
+    searchLastSavedSongs(limit?: number): Promise<SQLResult<Song>>
+    
+    findFavoriteSongsIds(songIds: Array<number>): Promise<SQLResult<number>>
     
     findAllPlaylists(name: string, sortOrder: string): Promise<SQLResult<Playlist>>
+
+    removeSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult>
 }

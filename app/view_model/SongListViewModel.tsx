@@ -46,7 +46,7 @@ function useSongListViewModel() {
             if(fetchedSongs.ok && fetchedSongs.data){
                 const favoritesIds = await repository.findFavoriteSongsIds(fetchedSongs.data.map(s=>s.id))
                 const songs = fetchedSongs.data?.map(song=>{
-                    if (favoritesIds.includes(song.id)) song.isFavorite = true
+                    if (favoritesIds.ok && favoritesIds.data && favoritesIds.data.includes(song.id)) song.isFavorite = true
                     return song
                 })
                 setSongs(songs)  
@@ -61,6 +61,11 @@ function useSongListViewModel() {
         fetch()
     }, [searchQuery, currentPage])
 
+    const updateFavoriteSongs = (song: Song) => {
+        const idx = songs.findIndex(s=>s.id === song.id)
+        let newSongs = [...songs]
+        if(idx !== -1) newSongs[idx] = {...songs[idx], isFavorite: !song.isFavorite}; setSongs(newSongs)
+    }
     
     // useEffectAfterMount(()=>{
     //     if(searchOffline === true){
@@ -74,40 +79,29 @@ function useSongListViewModel() {
 
     const handleFavoritesChange = (song: Song, playlistId: number =1) => {
         console.log(song, playlistId)
-        if(!song.isFavorite){
-            const fetchSongChordsAndInsert = async() => {
-                // Todo no need to fetch if the song was inserted and the removed, 
-                // Todo bcs it remained in song table even if it was removed from song_playlist
-                const resultApi = await repository.fetchSongChords(song.chordsLink)
-                console.log(resultApi)
-                if (resultApi.ok && resultApi.data && resultApi.data.chords){
-                    const songToInsert = {chords: resultApi.data.chords, ...song}
-                    const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
-                    // console.log(resultDb)
-                    const idx = songs.findIndex(s=>s.id === song.id)
-                    let newSongs = [...songs]
-                    // console.log(idx)
-                    if(idx !== -1) newSongs[idx] = {...songs[idx], isFavorite: true}; setSongs(newSongs)
-                        // console.log(newSong)
-                        // // Todo newSongs are not rendered with isFavorite true
-                        // const songss = songs.map(e=>{
-                        //     if(e.id === song.id) e.isFavorite = true
-                        //     return e
-                        // })
-                        // newSongs[idx] = Object.assign({}, newSongs[idx], {isFavorite: true})   //{...songs[idx], isFavorite: true}
-                        // console.log(newSongs[idx])
-                        // console.log(songss[idx])
-                    
-                    
-                    
+        switch(song.isFavorite){
+            case false: {
+                const fetchSongChordsIfNotExistsAndInsert = async() => {
+                    // Todo no need to fetch if the song was inserted and then removed, 
+                    // Todo bcs it remained in song table even if it was removed from song_playlist
+                    const resultApi = await repository.fetchSongChords(song.chordsLink)
+                    console.log(resultApi)
+                    if (resultApi.ok && resultApi.data && resultApi.data.chords){
+                        const songToInsert = {chords: resultApi.data.chords, ...song}
+                        const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
+                        // console.log(resultDb)
+                        updateFavoriteSongs(song)
+                    }
                 }
+                fetchSongChordsIfNotExistsAndInsert()
             }
-            fetchSongChordsAndInsert()
+            case true: {
+                const resultDb = repository.removeSongFromPlaylist(song.id, playlistId)
+                console.log('remove')
+                console.log(resultDb)
+                updateFavoriteSongs(song)
+            }
         }
-        else{
-            console.log('remove')
-        }
-        
     }
 
     return {

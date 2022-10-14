@@ -13,8 +13,10 @@ export interface IDbService {
     
     findSongInPlaylistById(songId: number): Promise<SQLResult<SongDto>>
 
+    findLastSavedSongs(limit: number): Promise<SQLResult<SongDto>>
+
     createPlaylist(playlist: PlaylistDto): Promise<SQLResult>
 
-    removeSongFromPlaylist(song: SongDto, playlistId: number): Promise<SQLResult>
+    deleteSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult>
     
 }

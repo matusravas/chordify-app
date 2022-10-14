@@ -19,18 +19,37 @@ class Repository implements IRepository {
     private constructor() {}
 
 
-    findFavoriteSongsIds(songIds: number[]): Promise<Array<number>> {
+    findFavoriteSongsIds(songIds: number[]): Promise<SQLResult<number>> {
         const results =  this.dbService.findFavoriteSongIdsBySongIds(songIds).then(data=>{
             if(data.ok && data.data){
                 const ids = data.data.map(e=>e.song_id)
-                console.log(ids)
-                return ids
+                // console.log(ids)
+                return {ok: data.ok, data: ids}
             }
-            return []
+            return {ok: data.ok, data: []}
         }).catch(err=>{
-            return []
+            return {ok: false, data: []}
         })
         return results
+    }
+
+    searchLastSavedSongs(limit: number=50): Promise<SQLResult<Song>> {
+        const result = this.dbService.findLastSavedSongs(limit).then(data=>{
+            if(data.ok && data.data){
+                const songs = data.data.map(s=>{
+                    const song = mapSongDbToDomain(s)
+                    return song
+                })
+                return {ok: data.ok, data: songs}
+            }
+            else{
+                return {ok: data.ok, data: []} 
+            }
+            
+        }).catch(err=>{
+            return {ok: false, data: []}
+        })
+        return result
     }
 
     fetchSongs(query: string, page: number, top100: boolean=false, type: number=300, sortOrder: string='desc'): Promise<Response<Song[]>> {
@@ -94,6 +113,10 @@ class Repository implements IRepository {
             return {ok: false, error: err}
         })
         return result
+    }
+
+    removeSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult>{
+        return this.dbService.deleteSongFromPlaylist(songId, playlistId)
     }
     
     
