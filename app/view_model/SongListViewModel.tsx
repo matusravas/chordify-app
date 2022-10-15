@@ -71,6 +71,7 @@ function useSongListViewModel() {
     
 
     const handleChangeSearchQuery = (searchQuery: string) => {
+        setSongs([])
         setSearchQuery(searchQuery)
     }
 

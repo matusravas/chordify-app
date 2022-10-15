@@ -6,6 +6,7 @@ import SongsList from './components/SongList';
 import {View, FlatList} from 'react-native'
 import React, { useCallback, useRef } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { ActivityIndicator } from '@react-native-material/core';
 
 const SongsScreen = () => {
     // const [songs, searchQuery, currentPage, setSearchQuery, handleAddToPlaylist] = useSongListViewModel()
@@ -42,7 +43,7 @@ const SongsScreen = () => {
     const handleSearch = (query: string) => {
       // console.log(`handling search ${query}`)
       setSearchQuery(query)
-      flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
+      flatListRef.current.scrollToOffset({ animated: false, offset: 0 })
     }
     
     const handleScrollPositionChange = ()=>{
@@ -52,6 +53,7 @@ const SongsScreen = () => {
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
         <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
+        {songs.length === 0 && <ActivityIndicator size="large"  color='#1FC159'/>}
         <SongsList 
               flatListRef={flatListRef}
               songs={songs} 

@@ -6,10 +6,14 @@ import Html from "react-native-render-html";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import Repository from '../repository/Repository';
 import { Song } from '../model/domain/types';
+import { useNavigation } from '@react-navigation/native';
 
 // interface SongChordsScreenProps {
 
 // }
+
+
+const styles = {html: { b: { color: '#1FC159'}, body: {color: '#F7F7F7AA', fontSize: 11, margin: 0, padding: 0}}}
 
 
 const SongChordsScreen = (props: any) => {
@@ -19,6 +23,10 @@ const SongChordsScreen = (props: any) => {
     const [html, setHtml] = useState<any>({html: ''})
     const [song, setSong] = useState<Song>(props.route.params.song)
     const bottomTabBarHeight = useBottomTabBarHeight()
+    const { width } = useWindowDimensions()
+    // const navigation = useNavigation()
+    // Todo on back pressed pop it from stack
+    console.log('Chords rerender')
 
     useEffect(()=>{
       const getSong = async() => {
@@ -38,8 +46,7 @@ const SongChordsScreen = (props: any) => {
     // useEffect(() => {
       
     // }, [data])
-  
-    const { width } = useWindowDimensions()
+    
     return (
       // <SafeAreaView style={{marginBottom: 125}}>
       // <View>
@@ -54,11 +61,11 @@ const SongChordsScreen = (props: any) => {
       // ! https://stackoverflow.com/questions/68966120/react-native-render-html-you-seem-to-update-the-x-prop-of-the-y-component-in-s
        
       style={{ marginBottom: bottomTabBarHeight, padding: 10}}>
-         <RenderHtml
-          tagsStyles={{ b: { color: '#1FC159'}, body: {color: '#F7F7F7AA', fontSize: 11, margin: 0, padding: 0}}}
+         {html.html && <RenderHtml
+          tagsStyles={styles.html}
           contentWidth={width} 
           source={html}
-        />
+        />}
       </ScrollView>
 
     )

@@ -32,7 +32,7 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onP
         <FlatList
             ref={flatListRef}
             data={songs}
-            // extraData={new Date().getTime()}
+            showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             keyExtractor={item => (item.id).toString()}
         />
