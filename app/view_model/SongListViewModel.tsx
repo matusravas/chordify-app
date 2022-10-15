@@ -13,6 +13,7 @@ function useSongListViewModel() {
     const [searchQuery, setSearchQuery] = useState('')
     const [isTop100, setIsTop100] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
     const [searchOffline, setSearchOffline] = useState(false)
     const [message, setMessage] = useState('')
@@ -20,6 +21,8 @@ function useSongListViewModel() {
     
     
     useEffect(()=>{
+        setIsLoading(true)
+        setSongs([])
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
         const fetch = async() =>{
             try {
@@ -52,6 +55,8 @@ function useSongListViewModel() {
                 }
             }catch(err){
 
+            }finally{
+                setIsLoading(false)
             }
         }
         fetch()
@@ -71,7 +76,7 @@ function useSongListViewModel() {
     
 
     const handleChangeSearchQuery = (searchQuery: string) => {
-        setSongs([])
+        // setSongs([])
         setSearchQuery(searchQuery)
     }
 
@@ -116,6 +121,7 @@ function useSongListViewModel() {
         songs, 
         searchQuery, 
         currentPage, 
+        isLoading,
         isError,
         errorMessage,
         message,

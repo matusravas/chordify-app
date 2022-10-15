@@ -10,7 +10,7 @@ import { ActivityIndicator } from '@react-native-material/core';
 
 const SongsScreen = () => {
     // const [songs, searchQuery, currentPage, setSearchQuery, handleAddToPlaylist] = useSongListViewModel()
-    const {songs, searchQuery, currentPage, isError, errorMessage, message, setSearchQuery, handleFavoritesChange} = useSongListViewModel()
+    const {songs, searchQuery, currentPage, isLoading, setSearchQuery, handleFavoritesChange} = useSongListViewModel()
     const bottomTabBarHeight = useBottomTabBarHeight()
     const navigation = useNavigation<any>();
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
@@ -53,7 +53,7 @@ const SongsScreen = () => {
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
         <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
-        {songs.length === 0 && <ActivityIndicator size="large"  color='#1FC159'/>}
+        {isLoading && <ActivityIndicator style={{marginTop: 10}} size="large" color='#1FC159'/>}
         <SongsList 
               flatListRef={flatListRef}
               songs={songs} 
