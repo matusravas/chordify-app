@@ -15,7 +15,7 @@ export interface IDbService {
     
     findSavedSong(songId: number): Promise<SQLResult<SongDto>>
 
-    findLastSavedSongs(limit: number): Promise<SQLResult<SongDto>>
+    findLastSavedSongs(query: string, numRows: number, sortOrder: string): Promise<SQLResult<SongDto>>
 
     createPlaylist(playlist: PlaylistDto): Promise<SQLResult>
 

@@ -31,7 +31,7 @@ const SongChordsScreen = (props: any) => {
     useEffect(()=>{
       const getSong = async() => {
         try{
-          const data = await repository.searchSong(song)
+          const data = await repository.searchSongChords(song)
           if(data.data && data.data.chords){
             // setChords(data.data.chords)
             setHtml({html: data.data.chords})

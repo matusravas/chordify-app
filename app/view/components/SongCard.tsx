@@ -8,7 +8,7 @@ import Platform from '../../platform/Platform';
 const SongCard = ({song, onSongCardClick, onFavoritesButtonClick}: SongCardProps) => (
       <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#1FC15910', false, Platform.getWidth()/(2.05))}>
       {/* <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#087EA4', false, Platform.getWidth()/(2.05))}> */}
-        <View style={{paddingHorizontal: 10, backgroundColor: '#0d0f12', borderRadius: 8, height: 80, marginBottom: 2, marginHorizontal: 3 }}>
+        <View style={{paddingHorizontal: 10, backgroundColor: '#0d0f12', borderRadius: 5, height: 80, marginBottom: 2, marginHorizontal: 2 }}>
           <HStack fill justify='between'> // #F7F7F7
             <VStack fill={4} justify='between' style={{paddingBottom: 10, paddingTop: 10}}>
               <Text numberOfLines={1} ellipsizeMode='tail' variant='body1' style={{marginTop: 5, fontSize: 15}} color='#F7F7F7AA'>

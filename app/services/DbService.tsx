@@ -32,9 +32,10 @@ class DbService implements IDbService{
     async findSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string): Promise<SQLResult<SongDto>> {
         const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating'
         const queryClause = query?`AND (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
-        const limitClause = numRows>0?`LIMIT ${numRows}` : ''
+        const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
         const orderClause = sortOrder?`ORDER BY sp.timestamp_added ${sortOrder.toUpperCase()}` : ''
         const selectSongs = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON sp.song_id = s.id WHERE (sp.playlist_id = ?) ${queryClause} ${orderClause} ${limitClause}`;
+        console.log(selectSongs)
         return this.executeQuery(selectSongs, [playlistId])
     }
     
@@ -44,14 +45,17 @@ class DbService implements IDbService{
         const selectSong = `SELECT ${values} FROM song as s WHERE (s.id = ?)`
         return this.executeQuery(selectSong, [songId])
     }
-    
-    async findLastSavedSongs(limit: number): Promise<SQLResult<SongDto>> {
-        // Todo pagginagtion
-        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.chords'
-        // const selectSong = `SELECT ${values} FROM song INNER JOIN song_playlist as sp ON s.id = sp.id WHERE (s.id = ?)`
-        const selectLastSongs = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON s.id = sp.id ORDER BY sp.timestamp_added DESC LIMIT ?`
-        return this.executeQuery(selectLastSongs, [limit])
+
+    async findLastSavedSongs(query: string, numRows: number, sortOrder: string): Promise<SQLResult<SongDto>> {
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating'
+        const queryClause = query?`WHERE (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
+        const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
+        // const orderClause = sortOrder?`ORDER BY sp.timestamp_added ${sortOrder.toUpperCase()}` : ''
+        // const selectSong = `SELECT ${values} FROM song as s WHERE (s.id = ?)`
+        const selectSong = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON s.id = sp.id ${queryClause} ORDER BY sp.timestamp_added ${sortOrder.toUpperCase()} ${limitClause}`
+        return this.executeQuery(selectSong)
     }
+
 
     async insertSong(song: SongDto): Promise<SQLResult> {
         const timestampNow = new Date().getTime()

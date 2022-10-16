@@ -7,7 +7,7 @@ import { Data, Playlist, Song } from "../model/domain/types"
 export interface IRepository {
 
     // ------------------------------------------------------------------------
-    searchSong(song: Song): Promise<Data<Song>>
+    searchSongChords(song: Song): Promise<Data<Song>>
 
     findFavoriteSongsIds(songIds: Array<number>): Promise<Data<Array<number>>>
     

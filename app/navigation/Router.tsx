@@ -12,10 +12,10 @@ const Router = () => {
   const TabBar = createBottomTabNavigator();
   console.log('Bottom bar')
   return (
-    <View style={{
-      width,
-      height
-    }}>
+    // <View style={{
+    //   width,
+    //   height
+    // }}>
       <TabBar.Navigator screenOptions={{ tabBarStyle: { ...styles.navBar}, headerShown: false, tabBarShowLabel: false }}>
 
         {routes.map(screen => (
@@ -35,7 +35,7 @@ const Router = () => {
             }} />
         ))}
       </TabBar.Navigator>
-    </View>
+    // </View>
   );
 }
 
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     height: 60,
     position: 'absolute',
     // backgroundColor: "#212024",
-    backgroundColor: "#000000",
+    backgroundColor: "#111317",
     borderTopWidth: 0,
     // elevation: 0},
     borderTopEndRadius: 10,

@@ -1,7 +1,8 @@
 export type Data<T> = {
     // ok: boolean,
     data?: T,
-    error?: string
+    // error?: string,
+    online?: boolean
 }
 
 export type Song = {

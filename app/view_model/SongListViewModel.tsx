@@ -2,29 +2,51 @@ import Repository from "../repository/Repository"
 import React, {useState, useEffect, useRef, useCallback} from 'react'
 import { Song } from "../model/domain/types"
 import { useEffectAfterMount } from "../utils/hooks"
+import NetInfo, {useNetInfo} from "@react-native-community/netinfo";
 
+// const useInternetInfo = () => {
+//     const {isInternetReachable} = useNetInfo()
+    
+//     useEffect(()=> {
+//         if(isInternetReachable === null){
+//             NetInfo.refresh()
+//         }
+//     }, [isInternetReachable])
+//     return {isOnline: isInternetReachable}
+// }
 
 
 function useSongListViewModel() {
-
+    // const {isOnline} = useInternetInfo()
+    // console.log(`Is reachable ${isOnline}`)
+    // const _ingoreNetworkInfo = netInfo.isConnected? true: false
     const repository = Repository.getInstance()
-
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
     const [isTop100, setIsTop100] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
+    const [isOnline, setIsOnline] = useState(true)
+    const [isFetched, setIsFetched] = useState(false)
     const [isError, setIsError] = useState(false)
     const [searchOffline, setSearchOffline] = useState(false)
     const [message, setMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     
+    // console.log(netInfo.isInternetReachable)
+    // console.log(`Is online: ${netInfo.isInternetReachable}`)
+    // console.log(`Is reachable: ${netInfo.isInternetReachable}`)
+    // useEffect(()=>{
+    //     setIsOnline(netInfo.isInternetReachable? true: false)
+    // },[netInfo])
     
     useEffect(()=>{
         setIsLoading(true)
+        // setIsOnline(netInfo.isConnected? true: false)
         setSongs([])
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
         const fetch = async() =>{
+            // Todo catch is not working properly in AXIOS Service level
             try {
                 const songsData = await repository.fetchSongs(searchQuery, currentPage, isTop100)
                 if(songsData.data && songsData.data.length > 0){
@@ -45,16 +67,17 @@ function useSongListViewModel() {
                         console.log('songsData.data')
                         setSongs(songsData.data)
                     }
+                    if(songsData.online!==undefined) setIsOnline(songsData.online)
                 }
-                else if(songsData.error) {
-                    console.log('!!!!!!!!!!!!!!!!!!!!!')
-                    // setSearchOffline(true)
-                    // Todo search for offline in case no data from server. Handle the logic in REPOSITORY???
-                    // setIsError(true)
-                    // setErrorMessage(data.error?data.error: '')
-                }
+                // else if(songsData.error) {
+                //     console.log('!!!!!!!!!!!!!!!!!!!!!')
+                //     // setSearchOffline(true)
+                //     // Todo search for offline in case no data from server. Handle the logic in REPOSITORY???
+                //     // setIsError(true)
+                //     // setErrorMessage(data.error?data.error: '')
+                // }
             }catch(err){
-
+                console.log('catch')
             }finally{
                 setIsLoading(false)
             }
@@ -63,7 +86,7 @@ function useSongListViewModel() {
     }, [searchQuery, currentPage])
 
 
-    const updateFavoriteSongs = (song: Song) => {
+    const updateFavoriteSongs = useCallback((song: Song) => {
         console.log('Update fav')
         console.log(songs.length)
         const idx = songs.findIndex(s=>s.id === song.id)
@@ -72,23 +95,23 @@ function useSongListViewModel() {
             newSongs[idx] = {...songs[idx], isFavorite: !song.isFavorite}
             setSongs(newSongs)
         }
-    }
+    }, [songs])
     
 
-    const handleChangeSearchQuery = (searchQuery: string) => {
+    const handleChangeSearchQuery = useCallback((searchQuery: string) => {
         // setSongs([])
         setSearchQuery(searchQuery)
-    }
+    },[])
 
 
-    const handleFavoritesChange = (song: Song, playlistId: number =1) => {
+    const handleFavoritesChange = useCallback((song: Song, playlistId: number =1) => {
         console.log(songs.length)
         console.log(song, playlistId)
         if(!song.isFavorite){
             const searchSongChordsAndInsertToFavorites = async() => {
                 let songToInsert = undefined
                 try{
-                    const data = await repository.searchSong(song)
+                    const data = await repository.searchSongChords(song)
                     if(data.data && data.data.chords){
                         // console.log(data)
                         songToInsert = {chords: data.data.chords, ...song}
@@ -115,13 +138,14 @@ function useSongListViewModel() {
             }
             removeSong()
         }
-    }
+    }, [songs])
 
     return {
         songs, 
         searchQuery, 
         currentPage, 
         isLoading,
+        isOnline,
         isError,
         errorMessage,
         message,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {memo, useState} from 'react';
 import { IconButton } from '@react-native-material/core';
 import { TextInput, View, TouchableOpacity, Keyboard } from 'react-native';
 import Icon, { Icons } from '../../icons/icons';
@@ -20,10 +20,10 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
         if (query !== searchQuery) {
             const token = setTimeout(() => {
                 console.log(query)
-                Keyboard.dismiss()
-                setFocused(false)
+                // Keyboard.dismiss()
+                // setFocused(false)
                 onSearch(query)
-            }, 500)
+            }, 1000)
             return () => clearTimeout(token)
         }
     }, [query])
@@ -44,7 +44,7 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
             selectionColor='#1FC159'
             placeholderTextColor='#F7F7F740'
             onFocus={()=>setFocused(true)}
-            onBlur={()=>{setFocused(false)}}
+            onBlur={()=>{Keyboard.dismiss();setFocused(false)}}
             // inputStyle={{borderWidth: 0}}
             // inputContainerStyle={{borderBottomColor: 'yellow',}}
             // inputStyle={{color: "#F7F7F7", fontSize: 15}}
@@ -62,4 +62,4 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
     )
 }
 
-export default SearchBar
+export default memo(SearchBar)

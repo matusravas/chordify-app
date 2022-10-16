@@ -3,6 +3,7 @@ import { FlatList, ListRenderItem} from "react-native"
 import { Song } from "../../model/domain/types"
 import { useEffectAfterMount } from "../../utils/hooks"
 import SongCard from "./SongCard"
+import NothingHere from "./NothingHere"
 
 interface RenderItemProps {
     item: Song,
@@ -11,6 +12,7 @@ interface RenderItemProps {
 
 interface SongsListProps {
     songs: Song[], 
+    isFetched: boolean,
     flatListRef: React.MutableRefObject<FlatList<Song>>,
     onCardClick: (song: Song)=>void, 
     onFavoritesButtonClick: (song: Song)=>void,
@@ -18,9 +20,8 @@ interface SongsListProps {
 }
 
 // const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
-const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
+const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, isFetched}: SongsListProps) =>{
     console.log('SongsList rerender')
-    console.log(songs[0]?.name)
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
@@ -31,10 +32,12 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onP
     return (
         <FlatList
             ref={flatListRef}
+            contentContainerStyle={{ flexGrow: 1 }}
             data={songs}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             keyExtractor={item => (item.id).toString()}
+            ListEmptyComponent={isFetched?NothingHere:null}
         />
     )
 }

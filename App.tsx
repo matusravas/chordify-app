@@ -3,6 +3,12 @@ import { useState } from "react"
 import Platform from "./app/platform/Platform";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import Router from "./app/navigation/Router";
+// import NetInfo from "@react-native-community/netinfo";
+
+// const unsubscribe = NetInfo.addEventListener(state => {
+//   console.log("Connection type", state.type);
+//   console.log("Is connected?", state.isConnected);
+// });
 
 
 const App = () => {

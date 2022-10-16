@@ -11,14 +11,14 @@ class ApiService implements IApiService {
     private _baseURL = 'https://chordify-ws.herokuapp.com/api'
     // private const _baseURL = 'http://10.0.2.2:5000'
 
-    private constructor(){}
+    private constructor() { }
 
     static getInstance(): ApiService {
         return this._instance || (this._instance = new this());
     }
-    
+
     async getSongs(query: string, page: number, top100: boolean, type: number, sortOrder: string): Promise<Response<SongDto[]>> {
-        return axios({
+        return new Promise<Response<SongDto[]>>((resolve, reject) => axios({
             method: 'GET',
             url: `${this._baseURL}/songs?query=${query}&page=${page}&type=${type}&sort_order=${sortOrder}&top100=${top100}`,
             responseType: 'json',
@@ -27,15 +27,17 @@ class ApiService implements IApiService {
                 'Content-Type': 'application/json',
                 Authorization: this._apiToken
             },
-            validateStatus: function (status) {
-                return status >= 200 || status <= 300 ? true : false
-            }
+            // validateStatus: function (status) {
+            //     return status >= 200 || status <= 300 ? true : false
+            // }
         }).then(res => {
-            return {ok: res.data.ok, data: res.data.data}
+            // reject('Axios error')
+            resolve({ ok: res.data.ok, data: res.data.data })
         }).catch(err => {
-            console.error(err)
-            return {ok: false}
+            // console.error(err)
+            reject('Axios error')
         })
+        )
     }
 
     // async getSongDetails(chordsLink: string): Promise<Response<SongDto>> {
@@ -60,7 +62,7 @@ class ApiService implements IApiService {
     // }
 
     async getSongChords(chordsLink: string): Promise<Response<SongChordsDto>> {
-        return axios({
+        return new Promise<Response<SongChordsDto>>((resolve, reject) => axios({
             method: 'GET',
             url: `${this._baseURL}/song/chords?tab=${chordsLink}`,
             responseType: 'json',
@@ -73,11 +75,12 @@ class ApiService implements IApiService {
                 return status >= 200 || status <= 300 ? true : false
             }
         }).then(res => {
-            return {ok: res.data.ok, data: res.data.data}
+            resolve({ ok: res.data.ok, data: res.data.data })
         }).catch(err => {
             console.error(err)
-            return {ok: false}
+            reject('Can not fetch song chords')
         })
+        )
     }
 }
 
