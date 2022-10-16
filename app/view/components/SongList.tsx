@@ -16,16 +16,17 @@ interface SongsListProps {
     flatListRef: React.MutableRefObject<FlatList<Song>>,
     onCardClick: (song: Song)=>void, 
     onFavoritesButtonClick: (song: Song)=>void,
+    onMoreButtonClick: (song: Song)=>void,
     onPageChanged: ()=>void
 }
 
 // const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
-const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, isFetched}: SongsListProps) =>{
+const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onMoreButtonClick, isFetched}: SongsListProps) =>{
     console.log('SongsList rerender')
 
     const renderItem = ({item: song}: RenderItemProps) => {
         return (
-            <SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick}/>
+            <SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick} onMoreButtonClick={onMoreButtonClick}/>
         )
     }
     

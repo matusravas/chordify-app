@@ -1,8 +1,8 @@
 import { ResultSet } from "react-native-sqlite-storage"
 import { Response, SongChordsDto, SongDto as SongApi } from "../model/api/types"
-import { InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types"
+import { InsertSongToPlaylist, PlaylistDto, SQLResult } from "../model/db/sql/types"
 import { PlaylistDto, SongDto as SongDb } from "../model/db/types"
-import { Data, Playlist, PlaylistInfo, Song } from "../model/domain/types"
+import { Data, Playlist, Song } from "../model/domain/types"
 
 export interface IRepository {
 
@@ -17,7 +17,7 @@ export interface IRepository {
 
     removeSongFromPlaylist(songId: number, playlistId: number): Promise<boolean> // status true/false
 
-    findPlaylistInfo(): Promise<Array<PlaylistInfo>> 
+    findPlaylistInfo(): Promise<Array<Playlist>> 
     // ------------------------------------------------------------------------
     
     

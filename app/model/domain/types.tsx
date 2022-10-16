@@ -19,19 +19,19 @@ export type Song = {
     timestampLastVisit?: string,
 }
 
-export type PlaylistInfo = {
+export type Playlist = {
     songsCount: number,
     playlistId: number,
     playlistName: string,
     timestampVisit: number
 }
 
-export type Playlist = {
-    id?: number, 
-    name: string,
-    timestampCreated?: number,
-    timestampLastVisit?: number,
-}
+// export type Playlist = {
+//     id?: number, 
+//     name: string,
+//     timestampCreated?: number,
+//     timestampLastVisit?: number,
+// }
 
 export type ChordsMetadata = {
     capo: string,

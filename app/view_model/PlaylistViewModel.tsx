@@ -1,6 +1,6 @@
 import Repository from "../repository/Repository"
 import React, {useState, useEffect, useRef, useCallback} from 'react'
-import { PlaylistInfo, Song } from "../model/domain/types"
+import { Playlist, Song } from "../model/domain/types"
 import { useEffectAfterMount } from "../utils/hooks"
 import NetInfo, {useNetInfo} from "@react-native-community/netinfo";
 
@@ -21,7 +21,7 @@ function usePlaylistViewModel() {
     // console.log(`Is reachable ${isOnline}`)
     // const _ingoreNetworkInfo = netInfo.isConnected? true: false
     const repository = Repository.getInstance()
-    const [playlists, setPlaylists] = useState([] as PlaylistInfo[])
+    const [playlists, setPlaylists] = useState([] as Playlist[])
     
     useEffect(()=>{
         const search =async () => {

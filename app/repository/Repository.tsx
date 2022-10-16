@@ -3,7 +3,7 @@ import { ResultSet } from "react-native-sqlite-storage";
 import { Response, SongChordsDto, SongDto as SongApi } from "../model/api/types";
 import { FavoriteSongIds, InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types";
 import { PlaylistDto, SongDto as SongDb } from "../model/db/types";
-import { Data, Playlist, PlaylistInfo, Song } from "../model/domain/types";
+import { Data, Playlist, Song } from "../model/domain/types";
 import ApiService from "../services/ApiService";
 import DbService from "../services/DbService";
 import { IRepository } from "./IRepository";
@@ -155,8 +155,8 @@ class Repository implements IRepository {
     }
 
 
-    findPlaylistInfo(): Promise<Array<PlaylistInfo>> {
-        return new Promise<Array<PlaylistInfo>>((resolve, reject) => {
+    findPlaylistInfo(): Promise<Array<Playlist>> {
+        return new Promise<Array<Playlist>>((resolve, reject) => {
             this.dbService.findPlaylistInfo().then(data=>{
                 if(data.ok && data.data){
                     const playlistInfos = data.data.map(playlistInfo=>{

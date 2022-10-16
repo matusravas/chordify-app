@@ -2,33 +2,23 @@ import React, {  } from 'react';
 import { FlatList, View } from "react-native"
 import { Text } from '@react-native-material/core';
 import usePlaylistViewModel from '../view_model/PlaylistViewModel';
-import { PlaylistInfo } from '../model/domain/types';
+import { Playlist } from '../model/domain/types';
+import PlaylistCard from './components/PlaylistCard';
 
 interface RenderItemProps {
-  item: PlaylistInfo,
+  item: Playlist,
   index: number
 }
 
-interface CardProps {
-  p: PlaylistInfo
-}
-
 const PlaylistsScreen = (props: any) => {
-  const {playlists} = usePlaylistViewModel()
+    const {playlists} = usePlaylistViewModel()
 
-  const Card = ({p}: CardProps) => (
-    <View style={{flex: 1, justifyContent: 'center', margin: 5, alignItems: 'center', height: 100, backgroundColor: '#ffffff', padding: 10, borderRadius: 5}}>
-        <Text variant='body2' color='#000000'>
-          Songs {p.songsCount} | Playlist: {p.playlistName} | {(new Date(p.timestampVisit)).toISOString()}
-        </Text>
-      </View>
-  )
 
-const renderItem = ({item, index}: RenderItemProps) => (
-      <Card p={item}/>
-)
+    const renderItem = ({item}: RenderItemProps) => (
+          <PlaylistCard playlist={item}/>
+    )
+
     return (
-      // <View></View>
         <FlatList
             contentContainerStyle={{ flexGrow: 1 }}
             data={playlists}

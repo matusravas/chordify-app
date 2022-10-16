@@ -9,6 +9,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffectAfterMount } from '../utils/hooks';
+import ModalMenu from './components/ModalMenu';
 
 
 const SongsScreen = () => {
@@ -16,6 +17,7 @@ const SongsScreen = () => {
     const {songs, searchQuery, currentPage, isLoading, setSearchQuery, searchSongs, handleFavoritesChange} = useSongListViewModel()
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [showSnack, setShowSnack] = useState(true)
+    const [showModel, setShowModal] = useState(false)
     const navigation = useNavigation<any>();
     const {isConnected} = useNetInfo()
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
@@ -43,6 +45,12 @@ const SongsScreen = () => {
     const handleCardClick = useCallback((song: Song) => {
       console.log(song)
       navigation.navigate('Song', {song: song})
+    },[])
+    
+    
+    const handleMoreButtonClick = useCallback((song: Song) => {
+      console.log(song)
+      setShowModal(true)
     },[])
 
     // const handleAddToFavorites = (song: Song) => {
@@ -75,11 +83,13 @@ const SongsScreen = () => {
               songs={songs} 
               onCardClick={handleCardClick} 
               onFavoritesButtonClick={handleFavoritesChange}
+              onMoreButtonClick={handleMoreButtonClick}
               onPageChanged={handlePageChanged}
               />
         {(!isConnected && showSnack) &&<Box >
           <Snackbar  action={<Button variant="text" title="Dismiss" color="#1FC159BB" compact onPress={()=>{setShowSnack(false)}}/>} message="You are currently offline..." style={{ position: "absolute", backgroundColor: '#111317DD', start: 16, end: 16, bottom: 8 }}/>
         </Box>}
+        {showModel && <ModalMenu hideModal={setShowModal}/>}
       </View>
     );
   };
