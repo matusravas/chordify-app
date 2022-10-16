@@ -56,10 +56,10 @@ const routes: Array<Screen> = [
   {
     component: PlaylistsScreen,
     name: 'Home',
-    label: 'Home',
+    label: 'Your Library',
     iconType: Icons.MaterialIcons,
-    iconFocused: 'music-note',
-    iconNotFocused: 'music-note',
+    iconFocused: 'library-music',
+    iconNotFocused: 'library-music',
   },
 ]
 

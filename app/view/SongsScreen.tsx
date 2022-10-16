@@ -8,6 +8,8 @@ import React, { memo, useCallback, useRef, useState } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
 
+const theme={ colors: { accent: 'red' }}
+
 const SongsScreen = () => {
     // const [songs, searchQuery, currentPage, setSearchQuery, handleAddToPlaylist] = useSongListViewModel()
     const {songs, searchQuery, currentPage, isLoading, isOnline, setSearchQuery, handleFavoritesChange} = useSongListViewModel()
@@ -69,7 +71,7 @@ const SongsScreen = () => {
               onPageChanged={handlePageChanged}
               />
         {(!isOnline && showSnack) &&<Box >
-          <Snackbar action={<Button variant="text" title="Dismiss" color="#1FC159" compact onPress={()=>{setShowSnack(false)}}/>} message="You are currently offline..." style={{ position: "absolute", backgroundColor: '#111317DD', start: 16, end: 16, bottom: 16 }}/>
+          <Snackbar  action={<Button variant="text" title="Dismiss" color="#1FC159BB" compact onPress={()=>{setShowSnack(false)}}/>} message="You are currently offline..." style={{ position: "absolute", backgroundColor: '#111317DD', start: 16, end: 16, bottom: 8 }}/>
         </Box>}
       </View>
     );
