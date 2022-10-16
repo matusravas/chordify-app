@@ -39,50 +39,51 @@ function useSongListViewModel() {
     // useEffect(()=>{
     //     setIsOnline(netInfo.isInternetReachable? true: false)
     // },[netInfo])
-    
-    useEffect(()=>{
+
+    const searchSongs = useCallback(async() => {
+        // Todo catch is not working properly in AXIOS Service level
         setIsLoading(true)
-        // setIsOnline(netInfo.isConnected? true: false)
         setSongs([])
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
-        const fetch = async() =>{
-            // Todo catch is not working properly in AXIOS Service level
-            try {
-                const songsData = await repository.fetchSongs(searchQuery, currentPage, isTop100)
-                if(songsData.data && songsData.data.length > 0){
-                    // console.log(songsData.data.length)
-                    const favoritesData = await repository.findFavoriteSongsIds(songsData.data.map(song => song.id))
-                    // console.log(favoritesData)
-                    if (favoritesData.data && favoritesData.data.length > 0) {
-                        // console.log('Got favs')
-                        const songsWithFavorites = songsData.data.map(song => {
-                            if (favoritesData.data?.includes(song.id)) song.isFavorite = true
-                            return song
-                        })
-                        console.log('songsWithFavorites[0].name')
-                        setSongs(songsWithFavorites) 
-                        // console.log(songs) 
-                    }
-                    else {
-                        console.log('songsData.data')
-                        setSongs(songsData.data)
-                    }
-                    if(songsData.online!==undefined) setIsOnline(songsData.online)
+        try {
+            const songsData = await repository.fetchSongs(searchQuery, currentPage, isTop100)
+            if(songsData.data && songsData.data.length > 0){
+                // console.log(songsData.data.length)
+                const favoritesData = await repository.findFavoriteSongsIds(songsData.data.map(song => song.id))
+                // console.log(favoritesData)
+                if (favoritesData.data && favoritesData.data.length > 0) {
+                    // console.log('Got favs')
+                    const songsWithFavorites = songsData.data.map(song => {
+                        if (favoritesData.data?.includes(song.id)) song.isFavorite = true
+                        return song
+                    })
+                    console.log('songsWithFavorites[0].name')
+                    setSongs(songsWithFavorites) 
+                    // console.log(songs) 
                 }
-                // else if(songsData.error) {
-                //     console.log('!!!!!!!!!!!!!!!!!!!!!')
-                //     // setSearchOffline(true)
-                //     // Todo search for offline in case no data from server. Handle the logic in REPOSITORY???
-                //     // setIsError(true)
-                //     // setErrorMessage(data.error?data.error: '')
-                // }
-            }catch(err){
-                console.log('catch')
-            }finally{
-                setIsLoading(false)
+                else {
+                    console.log('songsData.data')
+                    setSongs(songsData.data)
+                }
+                if(songsData.online!==undefined) setIsOnline(songsData.online)
             }
+            // else if(songsData.error) {
+            //     console.log('!!!!!!!!!!!!!!!!!!!!!')
+            //     // setSearchOffline(true)
+            //     // Todo search for offline in case no data from server. Handle the logic in REPOSITORY???
+            //     // setIsError(true)
+            //     // setErrorMessage(data.error?data.error: '')
+            // }
+        }catch(err){
+            console.log('catch')
+        }finally{
+            setIsLoading(false)
         }
-        fetch()
+    }, [searchQuery])
+    
+    
+    useEffect(()=>{
+        searchSongs()
     }, [searchQuery, currentPage])
 
 
@@ -149,6 +150,7 @@ function useSongListViewModel() {
         isError,
         errorMessage,
         message,
+        searchSongs,
         setSearchQuery: handleChangeSearchQuery, 
         handleFavoritesChange
     }

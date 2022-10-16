@@ -4,18 +4,20 @@ import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
 import SongsList from './components/SongList';
 import {View, FlatList} from 'react-native'
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { useEffectAfterMount } from '../utils/hooks';
 
-const theme={ colors: { accent: 'red' }}
 
 const SongsScreen = () => {
     // const [songs, searchQuery, currentPage, setSearchQuery, handleAddToPlaylist] = useSongListViewModel()
-    const {songs, searchQuery, currentPage, isLoading, isOnline, setSearchQuery, handleFavoritesChange} = useSongListViewModel()
+    const {songs, searchQuery, currentPage, isLoading, setSearchQuery, searchSongs, handleFavoritesChange} = useSongListViewModel()
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [showSnack, setShowSnack] = useState(true)
     const navigation = useNavigation<any>();
+    const {isConnected} = useNetInfo()
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
     console.log('SongsScreen rerender')
     // console.log(isOnline)
@@ -32,6 +34,11 @@ const SongsScreen = () => {
     // const handleAddToFavorites = useCallback((song: Song) => {
     //   console.log(song)
     // },[])
+
+    useEffectAfterMount(()=>{
+      // if(isConnected) 
+      searchSongs()
+    }, [isConnected])
 
     const handleCardClick = useCallback((song: Song) => {
       console.log(song)
@@ -70,7 +77,7 @@ const SongsScreen = () => {
               onFavoritesButtonClick={handleFavoritesChange}
               onPageChanged={handlePageChanged}
               />
-        {(!isOnline && showSnack) &&<Box >
+        {(!isConnected && showSnack) &&<Box >
           <Snackbar  action={<Button variant="text" title="Dismiss" color="#1FC159BB" compact onPress={()=>{setShowSnack(false)}}/>} message="You are currently offline..." style={{ position: "absolute", backgroundColor: '#111317DD', start: 16, end: 16, bottom: 8 }}/>
         </Box>}
       </View>
