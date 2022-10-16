@@ -6,6 +6,13 @@ export type InsertSongToPlaylist = {
     songPlaylistId?: number
 }
 
+export type PlaylistInfoDto = {
+    count: number,
+    playlist_id: number,
+    name: string,
+    timestamp_visit: number
+}
+
 export type FavoriteSongIds = {
     song_id: number
 }

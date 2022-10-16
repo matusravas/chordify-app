@@ -3,7 +3,7 @@ import { Song } from "../model/domain/types";
 import { IDbService } from "./IDbService";
 import {openDatabase, enablePromise, ResultSet, ResultSetRowList, SQLiteDatabase} from 'react-native-sqlite-storage';
 import { SongDto, PlaylistDto } from "../model/db/types";
-import { FavoriteSongIds as FavoriteSongId, InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
+import { FavoriteSongIds as FavoriteSongId, InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types";
 
 class DbService implements IDbService{
     static _instance: DbService
@@ -57,6 +57,13 @@ class DbService implements IDbService{
     }
 
 
+    async findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> {
+        const selectQuery = `SELECT COUNT(*) AS count, SP.PLAYLIST_ID, P.NAME, S.TIMESTAMP_VISIT FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
+         ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID ORDER BY S.TIMESTAMP_VISIT DESC`
+        return this.executeQuery(selectQuery)
+    }
+    
+    
     async insertSong(song: SongDto): Promise<SQLResult> {
         const timestampNow = new Date().getTime()
         const insertSong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 

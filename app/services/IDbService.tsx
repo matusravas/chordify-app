@@ -1,5 +1,5 @@
 import { ResultSet, ResultSetRowList } from "react-native-sqlite-storage"
-import { InsertSongToPlaylist, SQLResult } from "../model/db/sql/types"
+import { InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types"
 import { PlaylistDto, SongDto } from "../model/db/types"
 import { Song, } from "../model/domain/types"
 
@@ -16,6 +16,8 @@ export interface IDbService {
     findSavedSong(songId: number): Promise<SQLResult<SongDto>>
 
     findLastSavedSongs(query: string, numRows: number, sortOrder: string): Promise<SQLResult<SongDto>>
+
+    findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> 
 
     createPlaylist(playlist: PlaylistDto): Promise<SQLResult>
 

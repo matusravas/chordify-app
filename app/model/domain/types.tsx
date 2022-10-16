@@ -19,6 +19,13 @@ export type Song = {
     timestampLastVisit?: string,
 }
 
+export type PlaylistInfo = {
+    songsCount: number,
+    playlistId: number,
+    playlistName: string,
+    timestampVisit: number
+}
+
 export type Playlist = {
     id?: number, 
     name: string,

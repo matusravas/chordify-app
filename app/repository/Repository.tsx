@@ -1,13 +1,13 @@
 import axios from "axios";
 import { ResultSet } from "react-native-sqlite-storage";
 import { Response, SongChordsDto, SongDto as SongApi } from "../model/api/types";
-import { FavoriteSongIds, InsertSongToPlaylist, SQLResult } from "../model/db/sql/types";
+import { FavoriteSongIds, InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types";
 import { PlaylistDto, SongDto as SongDb } from "../model/db/types";
-import { Data, Playlist, Song } from "../model/domain/types";
+import { Data, Playlist, PlaylistInfo, Song } from "../model/domain/types";
 import ApiService from "../services/ApiService";
 import DbService from "../services/DbService";
 import { IRepository } from "./IRepository";
-import { mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "./mapper/song";
+import { mapPlaylistInfoDbToDomain, mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "./mapper/song";
 
 
 class Repository implements IRepository {
@@ -150,6 +150,22 @@ class Repository implements IRepository {
                 else resolve(false)
             }).catch(err => {
                 reject('Something went wrong during insertion')
+            })
+        })
+    }
+
+
+    findPlaylistInfo(): Promise<Array<PlaylistInfo>> {
+        return new Promise<Array<PlaylistInfo>>((resolve, reject) => {
+            this.dbService.findPlaylistInfo().then(data=>{
+                if(data.ok && data.data){
+                    const playlistInfos = data.data.map(playlistInfo=>{
+                        return mapPlaylistInfoDbToDomain(playlistInfo)
+                    })
+                    resolve(playlistInfos)
+                }
+            }).catch(err=>{
+                reject('Can not find any playlist data')
             })
         })
     }
