@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { StyleSheet } from "react-native"
 import { Icons } from '../icons/icons';
-import PlaylistsScreen from '../view/PlaylistScreen';
+import PlaylistsScreen from '../view/PlaylistsScreen';
+import PlaylistStackScreen from './PlaylistStack';
 import SongStackScreen from './SongStack';
 
 
@@ -54,8 +55,8 @@ const routes: Array<Screen> = [
     iconNotFocused: 'search',
   },
   {
-    component: PlaylistsScreen,
-    name: 'Home',
+    component: PlaylistStackScreen,
+    name: 'Library',
     label: 'Your Library',
     iconType: Icons.MaterialIcons,
     iconFocused: 'library-music',

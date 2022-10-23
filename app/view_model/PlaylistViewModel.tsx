@@ -1,12 +1,12 @@
 import Repository from "../repository/Repository"
-import React, {useState, useEffect, useRef, useCallback} from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Playlist, Song } from "../model/domain/types"
 import { useEffectAfterMount } from "../utils/hooks"
-import NetInfo, {useNetInfo} from "@react-native-community/netinfo";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 
 // const useInternetInfo = () => {
 //     const {isInternetReachable} = useNetInfo()
-    
+
 //     useEffect(()=> {
 //         if(isInternetReachable === null){
 //             NetInfo.refresh()
@@ -22,21 +22,27 @@ function usePlaylistViewModel() {
     // const _ingoreNetworkInfo = netInfo.isConnected? true: false
     const repository = Repository.getInstance()
     const [playlists, setPlaylists] = useState([] as Playlist[])
-    
-    useEffect(()=>{
-        const search =async () => {
-            try{
-                const playlistInfos = await repository.findPlaylistInfo()
-                if(playlistInfos && playlistInfos.length > 0) setPlaylists(playlistInfos)
-            }catch{
 
+    // useEffect(() => {
+    //     search()
+    // }, [])
+
+    const search = async () => {
+        try {
+            let result = await repository.findPlaylistInfo()
+            if (result.ok && result.data && result.data.length > 0) {
+                // result.unshift({id: 0, name: 'Last saved', songsCount: 0, timestampVisit: 0})
+                setPlaylists(result.data)
             }
+            // setPlaylists(result)
+        } catch {
+
         }
-        search()
-    }, [])
+    }
 
     return {
-        playlists
+        playlists,
+        search
     }
 }
 

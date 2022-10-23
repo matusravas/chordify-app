@@ -7,6 +7,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import Repository from '../repository/Repository';
 import { Song } from '../model/domain/types';
 import { useNavigation } from '@react-navigation/native';
+import { ChordsScreenProps, SongChordsScreenRouteProps } from '../navigation/types';
 
 // interface SongChordsScreenProps {
 
@@ -16,12 +17,15 @@ import { useNavigation } from '@react-navigation/native';
 const styles = {html: { b: { color: '#1FC159'}, body: {color: '#F7F7F7AA', fontSize: 11, margin: 0, padding: 0}}}
 
 
-const SongChordsScreen = (props: any) => {
+const ChordsScreen = ({navigation, route}: ChordsScreenProps) => {
+    // props.params.
+    const song = route.params.song
+    
     const repository = Repository.getInstance()
     // const [data, setData] = useState<any>({ html: ''})
     const [chords, setChords] = useState<any>('')
     const [html, setHtml] = useState<any>({html: ''})
-    const [song, setSong] = useState<Song>(props.route.params.song)
+    // const [song, setSong] = useState<Song>(route.params.song)
     const bottomTabBarHeight = useBottomTabBarHeight()
     const { width } = useWindowDimensions()
     // const navigation = useNavigation()
@@ -29,15 +33,17 @@ const SongChordsScreen = (props: any) => {
     console.log('Chords rerender')
 
     useEffect(()=>{
+      navigation.setOptions({headerTitle: song.name})
       const getSong = async() => {
         try{
           const data = await repository.searchSongChords(song)
+          console.log(data)
           if(data.data && data.data.chords){
             // setChords(data.data.chords)
             setHtml({html: data.data.chords})
           }
         }catch(err){
-
+          console.log(err)
         }
       }
       getSong()
@@ -60,7 +66,7 @@ const SongChordsScreen = (props: any) => {
       // Todo 
       // ! https://stackoverflow.com/questions/68966120/react-native-render-html-you-seem-to-update-the-x-prop-of-the-y-component-in-s
        
-      style={{ marginBottom: bottomTabBarHeight, padding: 10}}>
+      style={{ marginBottom: bottomTabBarHeight, paddingLeft: 10, paddingRight: 10}}>
          {html.html && <RenderHtml
           tagsStyles={styles.html}
           contentWidth={width} 
@@ -72,6 +78,6 @@ const SongChordsScreen = (props: any) => {
   
   }
 
-export default memo(SongChordsScreen)
+export default memo(ChordsScreen, (prev,next)=> prev.route.params.song.id === next.route.params.song.id)
 // export default memo(SongChordsScreen, (prev, next)=>prev.props.route.params.song.id === next.props.route.params.song.id)
 // export default memo(SongChordsScreen, (prev, next)=>true)

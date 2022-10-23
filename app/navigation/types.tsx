@@ -1,7 +1,11 @@
+import { RouteProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FC } from 'react';
 import { Icons } from '../icons/icons';
-import PlaylistsScreen from '../view/PlaylistScreen';
-import SongStackScreen from './SongStack';
+import { Playlist, Song } from '../model/domain/types';
+import PlaylistsScreen from '../view/PlaylistsScreen';
+import PlaylistStackScreen, { PlaylistStackParamList } from './PlaylistStack';
+import SongStackScreen, { SongStackParamList } from './SongStack';
 
 type Screen = {
     component: FC<JSX.Element>,
@@ -11,6 +15,21 @@ type Screen = {
     iconType: any
     iconNotFocused: string,
 }
+
+
+type PlaylistsScreenProps = NativeStackScreenProps<PlaylistStackParamList, 'Playlists'>;
+type PlaylistSongsScreenProps = NativeStackScreenProps<PlaylistStackParamList, 'PlaylistSongs'>;
+type PlaylistSongScreenRouteProps = RouteProp<PlaylistStackParamList, 'Song'>;
+
+type SongsScreenProps = NativeStackScreenProps<SongStackParamList, 'Songs'>;
+type ModalScreenProps = NativeStackScreenProps<SongStackParamList, 'Modal'>;
+type SongChordsScreenRouteProps = RouteProp<SongStackParamList, 'Song'>;
+
+// type ChordsScreenRouteProps = SongChordsScreenRouteProps | PlaylistSongScreenRouteProps
+
+type ChordsScreenProps = NativeStackScreenProps<SongStackParamList & PlaylistStackParamList, 'Song'>;
+
+
 
 const tabs: Array<Screen> = [
     {
@@ -22,7 +41,7 @@ const tabs: Array<Screen> = [
         iconNotFocused: 'search',
     },
     {
-        component: PlaylistsScreen,
+        component: PlaylistStackScreen,
         name: 'Playlists',
         label: 'Playlists',
         iconType: Icons.MaterialIcons,
@@ -32,3 +51,12 @@ const tabs: Array<Screen> = [
 ]
 
 export default tabs
+export type {
+    SongsScreenProps,
+    SongChordsScreenRouteProps,
+    ChordsScreenProps,
+    PlaylistsScreenProps,
+    PlaylistSongsScreenProps,
+    PlaylistSongScreenRouteProps,
+    ModalScreenProps
+}

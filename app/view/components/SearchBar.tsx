@@ -3,15 +3,20 @@ import { IconButton } from '@react-native-material/core';
 import { TextInput, View, TouchableOpacity, Keyboard } from 'react-native';
 import Icon, { Icons } from '../../icons/icons';
 import { useEffectAfterMount } from '../../utils/hooks';
+import { Gesture, TapGestureHandler } from 'react-native-gesture-handler';
 
 
 interface SearchBarProps {
+    visible: boolean,
+    placeholder?: string,
     searchQuery: string,
     onSearch: (query: string) => void
+    onScrollToTop: () => void
+    timeoutMilis?: number
 }
 
 
-const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
+const SearchBar = ({visible, placeholder, searchQuery, onSearch, timeoutMilis=0, onScrollToTop}: SearchBarProps ) => {
     const [query, setQuery ] = useState(searchQuery);
     const [focused, setFocused ] = useState(false);
     console.log('SearchBar rerender')
@@ -23,15 +28,19 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
                 // Keyboard.dismiss()
                 // setFocused(false)
                 onSearch(query)
-            }, 1000)
+            }, timeoutMilis)
             return () => clearTimeout(token)
         }
     }, [query])
 
 
     return (
-        <View style={{height: 50, flexDirection: 'row', alignItems: 'center', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10, borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
-            <Icon style={{marginLeft: 5, marginRight: 5, marginTop: 5}} type={Icons.MaterialIcons} name='search' size={22} color={focused?"#1FC159": "#F7F7F730" }/>
+        <View style={{height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a172d', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}>
+        {/* <View style={{display: !visible? 'none': undefined, height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#111317', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}> */}
+            
+            <TouchableOpacity onPress={()=>onScrollToTop()}>
+            <Icon  style={{marginLeft: 5, marginRight: 5, marginTop: 5}} type={Icons.MaterialIcons} name='search' size={22} color={focused?"#1FC159": "#F7F7F730" }/>
+            </TouchableOpacity>
             <TextInput
             // style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#14161c20', borderStyle:'solid', borderTopWidth:0, borderWidth: 1, borderColor: focused?"#087EA4": "#F7F7F730",  borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
             // style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#0d0f12EE', borderStyle: 'solid', borderWidth: 1, borderColor: focused?"#087EA4": '#00000000',  borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}
@@ -48,18 +57,18 @@ const SearchBar = ({searchQuery, onSearch}: SearchBarProps ) => {
             // inputStyle={{borderWidth: 0}}
             // inputContainerStyle={{borderBottomColor: 'yellow',}}
             // inputStyle={{color: "#F7F7F7", fontSize: 15}}
-            placeholder='Search your favorite song...'
+            placeholder={placeholder ? `Search ${placeholder.toLowerCase()}` : 'Search your favorite song...'}
             // textAlignVertical='bottom'
             textAlignVertical='bottom'
             value={query} onChangeText={(text) => setQuery(text)} 
             />
+            
             {/* {query && <IconButton onPress={() => setQuery("")} icon={<Icon size={22} type={Icons.MaterialIcons} name='clear' color="#F7F7F730" />} />} */}
             {query && <TouchableOpacity style={{marginTop: 5, marginRight: 5}} onPress={() =>{ setFocused(false); setQuery("")}}>
                 <Icon size={22} type={Icons.MaterialIcons} name='clear' color="#F7F7F730" />
                 </TouchableOpacity>}
         </View>
-        
     )
 }
 
-export default memo(SearchBar)
+export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery && prev.visible === next.visible)

@@ -1,8 +1,8 @@
 export type Data<T> = {
-    // ok: boolean,
+    ok: boolean,
     data?: T,
     // error?: string,
-    online?: boolean
+    // online?: boolean
 }
 
 export type Song = {
@@ -21,8 +21,8 @@ export type Song = {
 
 export type Playlist = {
     songsCount: number,
-    playlistId: number,
-    playlistName: string,
+    id: number,
+    name: string,
     timestampVisit: number
 }
 

@@ -1,6 +1,7 @@
 import { Playlist, Song } from "../domain/types";
 
 export interface SongCardProps {
+    // index: number,
     song: Song,
     onSongCardClick: (song: Song) => void
     onFavoritesButtonClick: (song: Song) => void,
@@ -9,6 +10,5 @@ export interface SongCardProps {
 
 export interface PlaylistCardProps {
     playlist: Playlist,
-    // onSongCardClick: (song: Song) => void
-    // onFavoritesButtonClick: (song: Song) => void
+    onPlaylistCardClick: (playlist: Playlist) => void
 }

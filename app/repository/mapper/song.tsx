@@ -36,6 +36,6 @@ export const mapSongChordsApiToDomain = (songChordsApi: SongChordsApi): Song => 
 
 export const mapPlaylistInfoDbToDomain = (playlistInfo: PlaylistInfoDb): Playlist => {
     const {count, playlist_id, name, timestamp_visit} = playlistInfo
-    const playlist: Playlist = {playlistId: playlist_id, playlistName: name, songsCount: count, timestampVisit: timestamp_visit}
+    const playlist: Playlist = {id: playlist_id, name: name, songsCount: count, timestampVisit: timestamp_visit}
     return playlist
 }

@@ -1,18 +1,24 @@
-import React, { useEffect, useRef, useState } from "react"
-import { FlatList, ListRenderItem} from "react-native"
+import React, { memo, useEffect, useRef, useState, useMemo } from "react"
+import { FlatList, ListRenderItem, NativeScrollEvent, NativeSyntheticEvent} from "react-native"
 import { Song } from "../../model/domain/types"
 import { useEffectAfterMount } from "../../utils/hooks"
 import SongCard from "./SongCard"
 import NothingHere from "./NothingHere"
+import ListFooter from "./ListFooter"
+import SearchBar from "./SearchBar"
+// import { FlashList } from "@shopify/flash-list"
+
 
 interface RenderItemProps {
     item: Song,
-    index: number
+    // index: number
 }
 
 interface SongsListProps {
     songs: Song[], 
-    isFetched: boolean,
+    // isFetched: boolean,
+    onScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void,
+    isMoreLoading: boolean,
     flatListRef: React.MutableRefObject<FlatList<Song>>,
     onCardClick: (song: Song)=>void, 
     onFavoritesButtonClick: (song: Song)=>void,
@@ -20,27 +26,44 @@ interface SongsListProps {
     onPageChanged: ()=>void
 }
 
+// const renderItem = ({item: song}: RenderItemProps) => {
+//     return (
+//         <SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick} onMoreButtonClick={onMoreButtonClick}/>
+//     )
+// }
+
 // const SongsList = ({songs, onCardClick, onFavoritesButtonClick, onPageChanged}: SongsListProps) =>{
-const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onMoreButtonClick, isFetched}: SongsListProps) =>{
+const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onMoreButtonClick, isMoreLoading, onPageChanged, onScroll}: SongsListProps) =>{
     console.log('SongsList rerender')
 
-    const renderItem = ({item: song}: RenderItemProps) => {
-        return (
-            <SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick} onMoreButtonClick={onMoreButtonClick}/>
-        )
-    }
     
+    // const memoizedRender = useMemo(()=> renderItem, [songs])
     return (
         <FlatList
             ref={flatListRef}
             contentContainerStyle={{ flexGrow: 1 }}
             data={songs}
+            // estimatedItemSize={80}
+            // onScrollBeginDrag={(e)=>onScroll(e)}
+            // onScrollEndDrag={(e)=>onScroll(e)}
+            // onScroll={(e) => onScroll(e)}
+            // scrollEventThrottle={500}
             showsVerticalScrollIndicator={false}
-            renderItem={renderItem}
+            // renderItem={memoizedRender}
+            renderItem={({item: song})=><SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick} onMoreButtonClick={onMoreButtonClick}/>
+            }
+            onEndReachedThreshold={0}
+            onEndReached={()=>onPageChanged()}
             keyExtractor={item => (item.id).toString()}
-            ListEmptyComponent={isFetched?NothingHere:null}
+            // ListHeaderComponent={()=><SearchBar visible={true} searchQuery={''} onSearch={()=>{}} onScrollToTop={()=>{}}/>}
+            // stickyHeaderIndices={[0]}
+            // stickyHeaderHiddenOnScroll={true}
+            // stickyHeaderHiddenOnScroll={true}
+            ListFooterComponent={isMoreLoading ? ListFooter: null}
+            ListFooterComponentStyle={{paddingBottom: 8}}
         />
     )
 }
 
 export default SongsList
+// export default memo(SongsList, (prev, next) => prev.songs.map(song=>song.id + (+song.isFavorite)) === next.songs.map(song=>song.id + (+song.isFavorite)))

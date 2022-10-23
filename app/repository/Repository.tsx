@@ -19,198 +19,103 @@ class Repository implements IRepository {
     private constructor() { }
 
 
-    findFavoriteSongsIds(songIds: number[]): Promise<Data<Array<number>>> {
-        return new Promise<Data<Array<number>>>((resovle, reject) => {
-            this.dbService.findFavoriteSongIdsBySongIds(songIds).then(data => {
-                if (data.ok && data.data && data.data) {
-                    const songIds = data.data.map(e => e.song_id)
-                    // resovle({ok: true, data: songIds})
-                    resovle({ data: songIds })
-                }
-            }).catch(err => {
-                // reject({ok: false, data: [], error: err})
-                reject('Unable to find favorite songs')
-            })
-        })
+    async findFavoriteSongsIds(songIds: number[]): Promise<Data<Array<number>>> {
+        const result = await this.dbService.findFavoriteSongIdsBySongIds(songIds)
+        if (result.ok && result.data && result.data) {
+            const songIds = result.data.map(e => e.song_id)
+            return { data: songIds , ok: true}
+        }
+        return {ok: false}
     }
 
 
-    searchSongChords(song: Song): Promise<Data<Song>> {
-        return new Promise<Data<Song>>((resolve, reject) => {
-            this.dbService.findSavedSong(song.id).then(result => {
-                // console.log(resDb)
-                if (result.ok && result.data && result.data[0] && result.data[0].id) {
-                    const song = result.data.map(songDb => mapSongDbToDomain(songDb, true))
-                    console.log('Resolve DB')
-                    return { found: true, data: song[0] }
-                }
-                else return { found: false }
-            }).then(resultDb => {
-                if (resultDb.found && resultDb.data) {
-                    resolve({ data: resultDb.data })
-                }
-                else {
-                    this.apiService.getSongChords(song.chordsLink).then(resApi => {
-                        if (resApi.ok && resApi.data) {
-                            const song = mapSongChordsApiToDomain(resApi.data)
-                            console.log('Resolve API')
-                            resolve({ data: song })
-                        }
-                        else {
-                            reject('Could not fetch song')
-                        }
-                    })
-                }
-            }).catch(errDb => {
-                console.log(errDb)
-                reject('Unable to find songs')
-            })
-        })
-    }
-    // searchSong(song: Song): Promise<Data<Song>> {
-    //     return new Promise<Data<Song>>((resolve, reject) => { 
-    //         this.dbService.findSavedSong(song.id).then(resDb => {
-    //             // console.log(resDb)
-    //             if(resDb.ok && resDb.data && resDb.data[0] && resDb.data[0].id){
-    //                 const song = resDb.data.map(songDb => mapSongDbToDomain(songDb, true))
-    //                 console.log('Resolve DB')
-    //                 // resolve({data: song[0], ok: true})
-    //                 return resolve({data: song[0]})
-    //             }
-    //         console.log('Continuing')
-    //         this.apiService.getSongChords(song.chordsLink).then(resApi=>{
-    //             if(resApi.ok && resApi.data){
-    //                 const song = mapSongChordsApiToDomain(resApi.data)
-    //                 console.log('Resolve API')
-    //                 // resolve({data: song, ok: true})
-    //                 resolve({data: song})
-    //             }
-    //         }).catch(errApi=>{
-    //             console.log(errApi)
-    //             // reject({ok: false, error: 'Song can not be fetched'})
-    //             reject('Unable to fetch songs')
-    //         })
-    //     }).catch(errDb => {
-    //         console.log(errDb)
-    //         // reject({ok: false, error: `Song not found in saved`})
-    //         reject('Unable to find songs')
-    //     })
-    // })}
-
-
-    fetchSongs(query: string, page: number, top100: boolean = false, type: number = 300, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
-        return new Promise<Data<Array<Song>>>((resolve, reject) => {
-            this.apiService.getSongs(query, page, top100, type, sortOrder).then(data => {
-                if (data.ok && data.data) {
-                    const songs = data.data.map(song => mapSongApiToDomain(song))
-                    resolve({ data: songs, online: true })
-                }
-                return {online: false}
-            }).catch(err => {
-                console.log('axios error catched')
-                return {online: false}
-            }).then(res => {
-                console.log('Fetching songs from DB')
-                this.dbService.findLastSavedSongs(query, 50, sortOrder).then(data => {
-                    if (data.ok && data.data) {
-                        const songs = data.data.map(song => mapSongDbToDomain(song))
-                        resolve({ data: songs, online: false })
-                    }
-                    reject('Can not find any data...')
-                }).catch(err => {
-                    reject('Unable to search latest saved songs')
-                })
-            })
-        })
+    async searchSongChords(song: Song): Promise<Data<Song>> {
+        const resultDb = await this.dbService.findSavedSong(song.id)
+        if (resultDb.ok && resultDb.data && resultDb.data[0] && resultDb.data[0].id) {
+            const song = resultDb.data.map(songDb => mapSongDbToDomain(songDb, true))
+            return {data: song[0], ok: true}
+        }
+        else {
+            const resultApi = await this.apiService.getSongChords(song.chordsLink)
+            if (resultApi.ok && resultApi.data) {
+                const song = mapSongChordsApiToDomain(resultApi.data)
+                return { data: song , ok: true}
+            }
+        }
+        return {ok: false}
     }
 
-    removeSongFromPlaylist(songId: number, playlistId: number): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            this.dbService.deleteSongFromPlaylist(songId, playlistId).then(data => {
-                if (data.ok && data.result && data.result.rowsAffected > 0) resolve(true)
-                else resolve(false)
-            }).catch(err => {
-                reject('Can not remove song from favorites')
-            })
-        })
+
+    async fetchSongs(query: string, page: number, top100: boolean = false, type: number = 300, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
+        const resultApi = await this.apiService.getSongs(query, page, top100, type, sortOrder)
+        if (resultApi.ok && resultApi.data) {
+            const songs = resultApi.data.map(song => mapSongApiToDomain(song))
+            return { data: songs, ok: true }
+        }
+        const resultDb = await this.dbService.findLastSavedSongs(query, 50, sortOrder)
+        if (resultDb.ok && resultDb.data) {
+            const songs = resultDb.data.map(song => mapSongDbToDomain(song))
+            return { data: songs, ok: false }
+        }
+        return {ok: false}
+    }
+    
+
+    async removeSongFromPlaylist(songId: number, playlistId: number): Promise<boolean> {
+        const result = await this.dbService.deleteSongFromPlaylist(songId, playlistId)
+        if (result.ok && result.result && result.result.rowsAffected > 0){
+            return true
+        }
+        return false
     }
 
-    addSongToPlaylist(song: Song, playlistID: number): Promise<boolean> {
+
+    async addSongToPlaylist(song: Song, playlistID: number): Promise<boolean> {
         const songDb = mapSongDomainToDb(song)
-        return new Promise<boolean>((resolve, reject) => {
-            this.dbService.insertSong(songDb).then(result => {
-                if (result.ok && result.result && result.result.rowsAffected > 0) return result.result.insertId
-                else if (result.ok && result.result && result.result.rowsAffected === 0) return songDb.id
-                else return songDb.id
-            }).then(songId => {
-                return this.dbService.insertSongToPlaylist(songId, playlistID)
-            }).then(result2 => {
-                if (result2.ok && result2.result && result2.result.rowsAffected > 0) resolve(true)
-                else if (result2.ok && result2.result && result2.result.rowsAffected === 0) resolve(false)
-                else resolve(false)
-            }).catch(err => {
-                reject('Something went wrong during insertion')
-            })
-        })
+        const resultInsertSong = await this.dbService.insertSong(songDb)
+        const songId = (resultInsertSong.ok && resultInsertSong.result && resultInsertSong.result.rowsAffected > 0)? resultInsertSong.result.insertId: 
+        (resultInsertSong.ok && resultInsertSong.result && resultInsertSong.result.rowsAffected === 0)? songDb.id: songDb.id
+
+        const resultInsertSongToPlaylist = await this.dbService.insertSongToPlaylist(songId, playlistID)
+        if (resultInsertSongToPlaylist.ok && resultInsertSongToPlaylist.result && resultInsertSongToPlaylist.result.rowsAffected > 0) return true
+        else if (resultInsertSongToPlaylist.ok && resultInsertSongToPlaylist.result && resultInsertSongToPlaylist.result.rowsAffected === 0) return false
+        else return false
     }
 
 
-    findPlaylistInfo(): Promise<Array<Playlist>> {
-        return new Promise<Array<Playlist>>((resolve, reject) => {
-            this.dbService.findPlaylistInfo().then(data=>{
-                if(data.ok && data.data){
-                    const playlistInfos = data.data.map(playlistInfo=>{
-                        return mapPlaylistInfoDbToDomain(playlistInfo)
-                    })
-                    resolve(playlistInfos)
-                }
-            }).catch(err=>{
-                reject('Can not find any playlist data')
-            })
-        })
+    async findPlaylistInfo(): Promise<Data<Array<Playlist>>> {
+        const result = await this.dbService.findPlaylistInfo()
+        if(result.ok && result.data){
+            const playlistInfos = result.data.map(playlistInfo=>{
+            return mapPlaylistInfoDbToDomain(playlistInfo)})
+            return {data: playlistInfos, ok: true}
+        }
+        return {ok: false}
     }
-
-    // searchLastSavedSongs(limit: number=50): Promise<SQLResult<Song>> {
-    //     const result = this.dbService.findLastSavedSongs(limit).then(data=>{
-    //         if(data.ok && data.data){
-    //             const songs = data.data.map(s=>{
-    //                 const song = mapSongDbToDomain(s)
-    //                 return song
-    //             })
-    //             return {ok: data.ok, data: songs}
-    //         }
-    //         else{
-    //             return {ok: data.ok, data: []} 
-    //         }
-
-    //     }).catch(err=>{
-    //         return {ok: false, data: []}
-    //     })
-    //     return result
-    // }
-
-    // searchSongsInPlaylist(playlistId: number, query: string='', numRows: number=-1, sortOrder: string='desc'): Promise<SQLResult<Song>> {
-    //     const result: Promise<SQLResult<Song>> = this.dbService.findSongsInPlaylist(playlistId, query, numRows, sortOrder).then(res => {
-    //         // if(res.ok && res.data && Array.isArray(res.data)){
-    //         if(res.ok && res.data){
-    //             const songs = res.data.map(songDb => mapSongDbToDomain(songDb))
-    //             return {ok: res.ok, data: songs}
-    //         }
-    //         return {ok: res.ok}
-    //     }).catch(err => {
-    //         return {ok: false, error: err}
-    //     })
-    //     return result
-    // }
-
-
-    // createPlaylist(playlist: PlaylistDto): Promise<SQLResult<number>> {
-    //     throw new Error("Method not implemented.");
-    // }
-
-    // findAllPlaylists(name: string = '', sortOrder: string='desc'): Promise<SQLResult<Playlist>> {
-    //     throw new Error("Method not implemented.");
-    // }
+    
+    
+    async findSavedSongs(playlistId: number, query: string, page: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
+        const result = await this.dbService.findSongsInPlaylist(playlistId, query, 50, sortOrder)
+        if(result.ok && result.data){
+            const songs = result.data.map(playlistInfo=>{
+                return mapSongDbToDomain(playlistInfo)
+            })
+            return {data: songs, ok: true}
+        }
+        return {ok: false}
+    }
+    
+    
+    async findLastSavedSongs(query: string, page: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
+        const result = await this.dbService.findLastSavedSongs(query, 50, sortOrder)
+        if(result.ok && result.data){
+            const songs = result.data.map(playlistInfo=>{
+                return mapSongDbToDomain(playlistInfo)
+            })
+            return {data: songs, ok: true}
+        }
+        return {ok: false}
+    }
 
 
     static getInstance(): Repository {
