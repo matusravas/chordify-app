@@ -46,8 +46,8 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onM
             // estimatedItemSize={80}
             // onScrollBeginDrag={(e)=>onScroll(e)}
             // onScrollEndDrag={(e)=>onScroll(e)}
-            // onScroll={(e) => onScroll(e)}
-            // scrollEventThrottle={500}
+            onScroll={(e) => onScroll(e)}
+            scrollEventThrottle={50}
             showsVerticalScrollIndicator={false}
             // renderItem={memoizedRender}
             renderItem={({item: song})=><SongCard song={song} onSongCardClick={onCardClick} onFavoritesButtonClick={onFavoritesButtonClick} onMoreButtonClick={onMoreButtonClick}/>

@@ -1,13 +1,14 @@
-import React, {memo, useState} from 'react';
+import React, {memo, useRef, useState} from 'react';
 import { IconButton } from '@react-native-material/core';
-import { TextInput, View, TouchableOpacity, Keyboard } from 'react-native';
+import { TextInput, View, TouchableOpacity, Keyboard, Animated } from 'react-native';
 import Icon, { Icons } from '../../icons/icons';
 import { useEffectAfterMount } from '../../utils/hooks';
 import { Gesture, TapGestureHandler } from 'react-native-gesture-handler';
 
 
 interface SearchBarProps {
-    visible: boolean,
+    style: any
+    // visible: boolean,
     placeholder?: string,
     searchQuery: string,
     onSearch: (query: string) => void
@@ -16,10 +17,11 @@ interface SearchBarProps {
 }
 
 
-const SearchBar = ({visible, placeholder, searchQuery, onSearch, timeoutMilis=0, onScrollToTop}: SearchBarProps ) => {
+const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, onScrollToTop}: SearchBarProps ) => {
     const [query, setQuery ] = useState(searchQuery);
     const [focused, setFocused ] = useState(false);
     console.log('SearchBar rerender')
+
     useEffectAfterMount(() => {
         console.log(`query_inner: ${query} query_outer: ${searchQuery}`)
         if (query !== searchQuery) {
@@ -33,9 +35,9 @@ const SearchBar = ({visible, placeholder, searchQuery, onSearch, timeoutMilis=0,
         }
     }, [query])
 
-
+    
     return (
-        <View style={{height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a172d', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}>
+        <Animated.View style={{...style, height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a172d', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}>
         {/* <View style={{display: !visible? 'none': undefined, height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#111317', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}> */}
             
             <TouchableOpacity onPress={()=>onScrollToTop()}>
@@ -67,8 +69,8 @@ const SearchBar = ({visible, placeholder, searchQuery, onSearch, timeoutMilis=0,
             {query && <TouchableOpacity style={{marginTop: 5, marginRight: 5}} onPress={() =>{ setFocused(false); setQuery("")}}>
                 <Icon size={22} type={Icons.MaterialIcons} name='clear' color="#F7F7F730" />
                 </TouchableOpacity>}
-        </View>
+        </Animated.View>
     )
 }
 
-export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery && prev.visible === next.visible)
+export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery)
