@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState, useMemo } from "react"
-import { FlatList, ListRenderItem, NativeScrollEvent, NativeSyntheticEvent} from "react-native"
+import { FlatList, ListRenderItem, NativeScrollEvent, NativeSyntheticEvent, Animated} from "react-native"
 import { Song } from "../../model/domain/types"
 import { useEffectAfterMount } from "../../utils/hooks"
 import SongCard from "./SongCard"
@@ -15,7 +15,7 @@ interface RenderItemProps {
 }
 
 interface SongsListProps {
-    songs: Song[], 
+    songs: Song[],
     // isFetched: boolean,
     onScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void,
     isMoreLoading: boolean,
@@ -47,6 +47,10 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onM
             // onScrollBeginDrag={(e)=>onScroll(e)}
             // onScrollEndDrag={(e)=>onScroll(e)}
             onScroll={(e) => onScroll(e)}
+            // onScroll={Animated.event(
+            //     [{nativeEvent: {contentOffset: {y: anim}}}],
+            //     {useNativeDriver: false}
+            // )}
             scrollEventThrottle={50}
             showsVerticalScrollIndicator={false}
             // renderItem={memoizedRender}

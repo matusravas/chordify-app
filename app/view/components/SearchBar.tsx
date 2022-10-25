@@ -37,7 +37,8 @@ const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, o
 
     
     return (
-        <Animated.View style={{...style, height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a172d', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}>
+        // <Animated.View style={{...style, flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a172d', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}>
+        <Animated.View style={{...style, flexDirection: 'row', alignItems: 'center', backgroundColor: '#111317', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}>
         {/* <View style={{display: !visible? 'none': undefined, height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#111317', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}> */}
             
             <TouchableOpacity onPress={()=>onScrollToTop()}>
@@ -73,4 +74,5 @@ const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, o
     )
 }
 
-export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery)
+// export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery)
+export default SearchBar

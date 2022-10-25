@@ -3,7 +3,7 @@ import useSongListViewModel from '../view_model/SongListViewModel';
 import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
 import SongsList from './components/SongList';
-import { View, FlatList, NativeSyntheticEvent, NativeScrollEvent, Animated } from 'react-native'
+import { View, FlatList, NativeSyntheticEvent, NativeScrollEvent, Animated, Text } from 'react-native'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
@@ -11,6 +11,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffectAfterMount } from '../utils/hooks';
 import ModalMenuScreen from './modals/ModalMenuScreen';
 import { SongsScreenProps } from '../navigation/types';
+import useSearchBarAnimation from '../animations/searchbar';
 
 
 
@@ -19,17 +20,39 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const bottomTabBarHeight = useBottomTabBarHeight()
 
   const [showSnack, setShowSnack] = useState(true)
-  // const [showModal, setShowModal] = useState(false)
-  const [isSearchBarOpened, toggleSearchBar] = useState(true)
-  // const [offset, setOffset] = useState(0)
   const offset = useRef(0)
   const direction = useRef<'up'|'down'>('up')
   const _delta = 100
-  // const isSearchBarOpened = useRef(true)
-  // let offset
   const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
-  console.log('SongsScreen rerender')
   const theme = useTheme()
+  const {animIn, animOut, searchBarAnimation} = useSearchBarAnimation()
+  // const animation = new Animated.Value(100);
+
+  // const animOut = useCallback(() => {
+  //   Animated.timing(animation, {
+  //     toValue: 0,
+  //     duration: 500,
+  //     useNativeDriver: false
+  //   }).start()
+  // }, [])
+
+  // const animIn = useCallback(() => {
+  //   Animated.timing(animation, {
+  //     toValue: 100,
+  //     duration: 500,
+  //     useNativeDriver: false
+  //   }).start()
+  // }, [])
+
+
+  // const searchBarAnimation = useRef(animation.interpolate({
+  //   inputRange: [0, 100],
+  //   outputRange: [0, 50],
+  //   extrapolate: 'clamp'
+  // })).current
+  console.log('SongsScreen rerender')
+
+  
   // useEffectAfterMount(()=>{
   //   console.log('effect')
   //   if (!isLoading) searchSongs()
@@ -73,60 +96,11 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
     // console.log(isSearchBarOpened.current)
   }
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-
-
-  const fadeIn = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 1000,
-      useNativeDriver: true
-    }).start();
-  };
-  const translateY = new Animated.Value(0)
-
-  // const translateY = scrollY.interpolate({
-  //   inputRange: [0, 58],
-  //   outputRange: [0, -58]
-  // })
-
-  const anim = useRef(new Animated.Value(0)).current;
-
-
-  const animOut = () => {
-    Animated.timing(anim, {
-      toValue: -58,
-      duration: 250,
-      useNativeDriver: true
-    }).start()
-  }
-
-  const animIn = () => {
-    Animated.timing(anim, {
-      toValue: 0,
-      duration: 250,
-      useNativeDriver: true
-    }).start()
-  }
-
-  // isSearchBarOpened?animIn(): animOut()
-  // isSearchBarOpened?fadeIn(): fadeOut()
-
   return (
     <View style={{ flex: 1, marginBottom: bottomTabBarHeight }}>
-      {/* <Animated.View style={{  transform: [{ translateY: anim }] }}> */}
-        <SearchBar style={{  transform: [{ translateY: anim }] }} timeoutMilis={1000} searchQuery={searchQuery} onSearch={handleChangeSearchQuery} onScrollToTop={() => { flatListRef.current.scrollToOffset({ animated: true, offset: 0 }) }} />
+      {/* <Animated.View style={{height: animationXYZ}}> */}
+        {/* <Text>Hello world</Text> */}
+        <SearchBar style={{height: searchBarAnimation}} timeoutMilis={1000} searchQuery={searchQuery} onSearch={handleChangeSearchQuery} onScrollToTop={() => { flatListRef.current.scrollToOffset({ animated: true, offset: 0 }) }} />
       {/* </Animated.View> */}
       {isLoading ? <ActivityIndicator style={{ marginTop: 10 }} size="large" color='#1FC159' /> :
         <SongsList
