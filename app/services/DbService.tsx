@@ -68,7 +68,7 @@ class DbService implements IDbService{
 
 
     async findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> {
-        const selectQuery = `SELECT  P.ID AS playlist_id, P.NAME, COUNT(S.ID) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit FROM PLAYLIST AS P
+        const selectQuery = `SELECT P.ID AS playlist_id, P.NAME, COUNT(S.ID) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, P.TIMESTAMP_CREATED as timestamp_create FROM PLAYLIST AS P
          LEFT JOIN SONG_PLAYLIST AS SP ON P.ID = SP.PLAYLIST_ID LEFT JOIN SONG AS S ON S.ID = SP.SONG_ID GROUP BY P.ID `
         // const selectQuery = `SELECT COUNT(*) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, SP.PLAYLIST_ID, P.NAME FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
         //  ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID`

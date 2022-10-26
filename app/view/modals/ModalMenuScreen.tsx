@@ -20,12 +20,12 @@ import PlaylistCardModal from "../components/PlaylistCardModal";
 // )
 
 interface ListFooterProps {
-    onIsNewPlaylist: ()=> void
+    onIsNewPlaylist: () => void
 }
 
-const ListFooter = ({onIsNewPlaylist}: ListFooterProps) => (
+const ListFooter = ({ onIsNewPlaylist }: ListFooterProps) => (
     <Pressable style={({ pressed }) => [{
-        backgroundColor: pressed ? '#1FC159AA': '#1FC159CC',
+        backgroundColor: pressed ? '#1FC159AA' : '#1FC159CC',
         borderRadius: 10,
         margin: 8,
         alignItems: 'center',
@@ -41,17 +41,17 @@ const ListFooter = ({onIsNewPlaylist}: ListFooterProps) => (
 
 
 const SelectPlaylistModal = ({ song, playlists, onPlaylistSelected, onIsNewPlaylist }: any) => (
-        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', margin: 8 }}>
-            {/* <ListHeader/> */}
-            <FlatList
-                data={playlists}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => <PlaylistCardModal playlist={item} onPlaylistSelected={onPlaylistSelected} />
-                }
-                keyExtractor={item => (item.id).toString()}
-            />
-            <ListFooter onIsNewPlaylist={onIsNewPlaylist}/>
-        </View>
+    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', margin: 8 }}>
+        {/* <ListHeader/> */}
+        <FlatList
+            data={playlists}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => <PlaylistCardModal playlist={item} onPlaylistSelected={onPlaylistSelected} />
+            }
+            keyExtractor={item => (item.id).toString()}
+        />
+        <ListFooter onIsNewPlaylist={onIsNewPlaylist} />
+    </View>
 )
 
 
@@ -61,7 +61,7 @@ const CreateNewPlaylistModal = ({ song, onSubmit }: any) => {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TextInput value={value} textAlign='center' onChangeText={(text: string) => setValue(text)} selectionColor='#1FC159' placeholderTextColor='#F7F7F750' placeholder="Enter playlist name..." style={{ fontSize: 24, color: '#F7F7F750' }} />
             <Pressable style={({ pressed }) => [{
-                backgroundColor: pressed ? '#1FC159AA': '#1FC159CC',
+                backgroundColor: pressed ? '#1FC159AA' : '#1FC159CC',
                 borderRadius: 10,
                 // width: width / 2,
                 height: 40,
@@ -87,9 +87,11 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [isNewPlaylist, setIsNewPlaylist] = useState(false)
 
-    useFocusEffect(() => {
-        searchPlaylists()
-    })
+    useFocusEffect(
+        useCallback(() => {
+            searchPlaylists()
+        }, [])
+    )
 
     // const handlePlaylistSelected = useCallback((playlist: Playlist) => {
     //     console.log(playlist.name)

@@ -16,14 +16,16 @@ export type Song = {
     chords?: string,
     isFavorite: boolean,
     chordsMetadata?: ChordsMetadata
-    timestampLastVisit?: string,
+    timestampLastVisit?: number,
+    timestampCreate?: number,
 }
 
 export type Playlist = {
     songsCount: number,
     id: number,
     name: string,
-    timestampVisit: number
+    timestampVisit: number,
+    timestampCreated: number,
 }
 
 // export type Playlist = {

@@ -1,10 +1,14 @@
 import Repository from "../repository/Repository"
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useEffect, useCallback, useRef} from 'react'
 import { Song } from "../model/domain/types"
 import { useNetInfo } from "@react-native-community/netinfo"
+import { useEffectAfterMount } from "../utils/hooks"
 
 
 function useSongListViewModel() {
+    // const fetching = useRef(false)
+    console.log('ViewModel')
+    // console.log(fetching.current)
     const repository = Repository.getInstance()
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
@@ -17,7 +21,9 @@ function useSongListViewModel() {
 
     useEffect(()=>{
         console.log('effect')
-        if (!isLoading && !isMoreLoading) searchSongs()
+        if (!isLoading && !isMoreLoading && isConnected !== null) {
+            searchSongs()
+        }
       // }, [route, isConnected])
       }, [searchQuery, currentPage, isConnected])
 
@@ -27,6 +33,7 @@ function useSongListViewModel() {
 
 
     const searchSongs = useCallback(async() => {
+        // fetching.current = true
         currentPage > 1? setIsMoreLoading(true) : setIsLoading(true)
         // setSongs([])
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
@@ -55,6 +62,7 @@ function useSongListViewModel() {
         }catch(err){
             console.log('catch')
         }finally{
+            // fetching.current = false
             currentPage > 1? setIsMoreLoading(false) : setIsLoading(false)
         }
     }, [searchQuery, currentPage])
@@ -131,7 +139,7 @@ function useSongListViewModel() {
         // isError,
         // errorMessage,
         // message,
-        // searchSongs,
+        searchSongs,
         handlePageChanged,
         handleChangeSearchQuery, 
         handleFavoritesChange

@@ -24,7 +24,7 @@ function usePlaylistViewModel() {
     const [playlists, setPlaylists] = useState([] as Playlist[])
 
     // useEffect(() => {
-    //     search()
+    //     searchPlaylists()
     // }, [])
 
     const searchPlaylists = useCallback(async() => {

@@ -1,4 +1,4 @@
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useTheme } from '@react-navigation/native';
 import useSongListViewModel from '../view_model/SongListViewModel';
 import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
@@ -16,7 +16,7 @@ import useSearchBarAnimation from '../animations/searchbar';
 
 
 const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
-  const { songs, searchQuery, isConnected, isLoading, isMoreLoading, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel()
+  const { songs, searchQuery, isConnected, isLoading, isMoreLoading, searchSongs, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel()
   const bottomTabBarHeight = useBottomTabBarHeight()
 
   const [showSnack, setShowSnack] = useState(true)
@@ -28,6 +28,13 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
   // const animation = new Animated.Value(100);
 
+  useFocusEffect(
+    
+    useCallback(()=>{
+      flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
+      // searchSongs()
+    },[])
+  )
   // const animOut = useCallback(() => {
   //   Animated.timing(animation, {
   //     toValue: 0,

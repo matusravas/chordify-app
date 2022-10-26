@@ -74,5 +74,5 @@ const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, o
     )
 }
 
-// export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery)
-export default SearchBar
+export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery)
+// export default SearchBar

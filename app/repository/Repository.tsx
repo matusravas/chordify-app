@@ -93,6 +93,7 @@ class Repository implements IRepository {
 
     async findPlaylistInfo(): Promise<Data<Array<Playlist>>> {
         const result = await this.dbService.findPlaylistInfo()
+        console.log(result)
         if(result.ok && result.data){
             const playlistInfos = result.data.map(playlistInfo=>{
             return mapPlaylistInfoDbToDomain(playlistInfo)})

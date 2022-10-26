@@ -23,9 +23,12 @@ const PlaylistsScreen = ({navigation}: PlaylistsScreenProps) => {
     //       <PlaylistCard playlist={item} onPlaylistCardClick={handlePlaylistCardClick}/>
     // )
 
-    useFocusEffect(()=>{
-      searchPlaylists()
-    })
+    useFocusEffect(
+      useCallback(()=>{
+        searchPlaylists()
+      }, [])
+      // searchPlaylists()
+    ) 
 
     // useEffect(()=> {
       

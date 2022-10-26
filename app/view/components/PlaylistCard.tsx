@@ -14,7 +14,7 @@ export interface PlaylistCardProps {
 }
 
 
-const PlaylistCard = ({index, playlist, onPlaylistCardClick }: PlaylistCardProps) => (
+const PlaylistCard = ({ index, playlist, onPlaylistCardClick }: PlaylistCardProps) => (
   // <TouchableNativeFeedback style={{}} onPress={() => { onPlaylistCardClick(playlist) }} background={TouchableNativeFeedback.Ripple('#1FC15910', false, Platform.getWidth() / (2.05))}>
   <TouchableNativeFeedback style={{}} onPress={() => { onPlaylistCardClick(playlist) }} background={TouchableNativeFeedback.Ripple('#111317', false, Platform.getWidth() / (2.05))}>
     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', padding: 10, alignItems: 'flex-start', backgroundColor: '#0d0f12', borderRadius: 2, marginBottom: 2, marginHorizontal: 1 }}>
@@ -26,13 +26,16 @@ const PlaylistCard = ({index, playlist, onPlaylistCardClick }: PlaylistCardProps
           <Text style={{ color: '#F7F7F750', paddingBottom: 5 }} >
             {playlist.songsCount} songs
           </Text>
-          <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
-            Last edit: {new Date(playlist.timestampVisit).toDateString()}
-          </Text>
+          {playlist.timestampVisit ? <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
+            Edited {new Date(playlist.timestampVisit).toDateString()}
+          </Text> :
+            <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
+              Created {new Date(playlist.timestampCreated).toDateString()}
+            </Text>}
         </View>
       </View>
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'center', marginRight: 12}}>
-        <Icon size={20} type={index > 0? Icons.MaterialCommunityIcons: Icons.MaterialIcons} name={index > 0?'playlist-music-outline': 'favorite'} color={'#1FC159CC'} />
+      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'center', marginRight: 12 }}>
+        <Icon size={20} type={index > 0 ? Icons.Ionicons : Icons.MaterialIcons} name={index > 0 ? 'musical-notes-outline' : 'favorite-outline'} color={'#1FC159'} />
       </View>
     </View>
   </TouchableNativeFeedback>

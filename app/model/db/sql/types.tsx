@@ -10,7 +10,8 @@ export type PlaylistInfoDto = {
     count: number,
     playlist_id: number,
     name: string,
-    timestamp_visit: number
+    timestamp_visit: number,
+    timestamp_create: number,
 }
 
 export type FavoriteSongIds = {
