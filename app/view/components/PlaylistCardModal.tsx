@@ -6,11 +6,11 @@ import Icon, { Icons } from '../../icons/icons';
 
 interface PlaylistCardModalProps {
   playlist: Playlist,
-  onPlaylistSelected: (playlist: Playlist) => void
+  onPlaylistSelected: (playlistId: number) => void
 }
 
 const PlaylistCardModal = ({ playlist, onPlaylistSelected }: PlaylistCardModalProps) => (
-  <TouchableNativeFeedback style={{}} onPress={() => onPlaylistSelected(playlist)} background={TouchableNativeFeedback.Ripple('#111317', false, Platform.getWidth() / (2.05))}>
+  <TouchableNativeFeedback style={{}} onPress={() => onPlaylistSelected(playlist.id)} background={TouchableNativeFeedback.Ripple('#111317', false, Platform.getWidth() / (2.05))}>
 
     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10, borderRadius: 5, borderBottomWidth: 0.2, borderColor: '#1FC159CC', margin: 8 }}>
       {/* <View style={{flexDirection: 'row', alignItems: 'baseline', justifyContent: 'flex-start'}}> */}

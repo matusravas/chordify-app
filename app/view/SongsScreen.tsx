@@ -4,7 +4,7 @@ import { Song } from '../model/domain/types';
 import SearchBar from './components/SearchBar';
 import SongsList from './components/SongList';
 import { View, FlatList, NativeSyntheticEvent, NativeScrollEvent, Animated, Text } from 'react-native'
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState, MutableRefObject } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -29,7 +29,6 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   // const animation = new Animated.Value(100);
 
   useFocusEffect(
-    
     useCallback(()=>{
       flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
       // searchSongs()

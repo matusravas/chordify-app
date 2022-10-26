@@ -11,7 +11,7 @@ export interface IRepository {
     
     addSongToPlaylist(song: Song, playlistID: number): Promise<boolean> // status true/false
 
-    addNewPlaylist(playlistName: string): Promise<boolean> // status true/false
+    addNewPlaylist(playlistName: string): Promise<Data<number>> // status true/false
 
     removeSongFromPlaylist(songId: number, playlistId: number): Promise<boolean> // status true/false
 

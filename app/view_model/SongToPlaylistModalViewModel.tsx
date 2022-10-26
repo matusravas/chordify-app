@@ -40,15 +40,23 @@ function useSongToPlaylistModalViewModel() {
         }
     }, [])
     
-    const handleSaveSongToPlaylist = useCallback(async(playlist: string, song: Song) => {
-        return
+    const handleSaveSongToPlaylist = useCallback(async(song: Song, playlist: number|string) => {
+       
         try {
-            let result = await repository.addNewPlaylist(playlist)
-            if (result) {
-                // result.unshift({id: 0, name: 'Last saved', songsCount: 0, timestampVisit: 0})
-                // setPlaylists(result.data)
+            if(typeof(playlist) === 'number'){
+                const resultAddSong = await repository.addSongToPlaylist(song, playlist)
+                console.log(resultAddSong)
             }
-            // setPlaylists(result)
+            else {
+                let resultAddPlaylist = await repository.addNewPlaylist(playlist)
+                if(resultAddPlaylist.ok && resultAddPlaylist.data) {
+                    const resultAddSong = await repository.addSongToPlaylist(song, resultAddPlaylist.data)
+                    console.log(resultAddSong)
+                }
+                // console.log(result)
+                // if (result) {
+                // }
+            }
         } catch {
 
         }
@@ -56,28 +64,28 @@ function useSongToPlaylistModalViewModel() {
     
     // Todo create only one function it can recieve playlistName | playlist (with ID). Decide aferwards based on the type if 
     // Todo insert playlist as well, when ID is missing and only playlist name was provided
-    const handleSaveSongToNewPlaylist = useCallback(async(playlistName: string, song: Song) => {
-        console.log(song)
-        console.log(playlistName)
-        // return 
-        try {
-            // Todo first add new playlist then retrieve its ID and save song to it
-            let result = await repository.addNewPlaylist(playlistName)
-            if (result) {
-                // result.unshift({id: 0, name: 'Last saved', songsCount: 0, timestampVisit: 0})
-                // setPlaylists(result.data)
-            }
-            // setPlaylists(result)
-        } catch {
+    // const handleSaveSongToNewPlaylist = useCallback(async(playlistName: string, song: Song) => {
+    //     console.log(song)
+    //     console.log(playlistName)
+    //     // return 
+    //     try {
+    //         // Todo first add new playlist then retrieve its ID and save song to it
+    //         let result = await repository.addNewPlaylist(playlistName)
+    //         if (result) {
+    //             // result.unshift({id: 0, name: 'Last saved', songsCount: 0, timestampVisit: 0})
+    //             // setPlaylists(result.data)
+    //         }
+    //         // setPlaylists(result)
+    //     } catch {
 
-        }
-    }, [])
+    //     }
+    // }, [])
 
     return {
         playlists,
         searchPlaylists,
         handleSaveSongToPlaylist,
-        handleSaveSongToNewPlaylist
+        // handleSaveSongToNewPlaylist
     }
 }
 

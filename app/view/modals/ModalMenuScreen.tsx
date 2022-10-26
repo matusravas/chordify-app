@@ -40,7 +40,13 @@ const ListFooter = ({ onIsNewPlaylist }: ListFooterProps) => (
 )
 
 
-const SelectPlaylistModal = ({ song, playlists, onPlaylistSelected, onIsNewPlaylist }: any) => (
+interface SelectPlaylistModalProps {
+    playlists: Array<Playlist>, 
+    onPlaylistSelected: (playlistId: number) => void, 
+    onIsNewPlaylist: () => void 
+}
+
+const SelectPlaylistModal = ({playlists, onPlaylistSelected, onIsNewPlaylist }: SelectPlaylistModalProps) => (
     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', margin: 8 }}>
         {/* <ListHeader/> */}
         <FlatList
@@ -55,7 +61,11 @@ const SelectPlaylistModal = ({ song, playlists, onPlaylistSelected, onIsNewPlayl
 )
 
 
-const CreateNewPlaylistModal = ({ song, onSubmit }: any) => {
+interface CreateNewPlaylistModalProps {
+    onSubmit: (playlistName: string) => void,
+}
+
+const CreateNewPlaylistModal = ({ onSubmit }: CreateNewPlaylistModalProps) => {
     const [value, setValue] = useState('')
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -71,7 +81,7 @@ const CreateNewPlaylistModal = ({ song, onSubmit }: any) => {
                 alignSelf: 'stretch',
                 justifyContent: 'center',
                 padding: 10
-            }]} onPress={() => onSubmit(value, song)}>
+            }]} onPress={() => onSubmit(value)}>
                 <Text color="#F7F7F7AA">Submit</Text>
             </Pressable>
             {/* <View style={{borderBottomWidth: 1 , borderBottomColor: '#000000'}}/> */}
@@ -82,7 +92,7 @@ const CreateNewPlaylistModal = ({ song, onSubmit }: any) => {
 
 const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
     const song = route.params.song
-    const { playlists, searchPlaylists, handleSaveSongToNewPlaylist, handleSaveSongToPlaylist } = useSongToPlaylistModalViewModel()
+    const { playlists, searchPlaylists, handleSaveSongToPlaylist } = useSongToPlaylistModalViewModel()
     // const [modal, setModal] = useState(true)
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [isNewPlaylist, setIsNewPlaylist] = useState(false)
@@ -93,11 +103,10 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
         }, [])
     )
 
-    // const handlePlaylistSelected = useCallback((playlist: Playlist) => {
-    //     console.log(playlist.name)
-    //     console.log(route.params.song)
-    //      // navigation.pop(1)
-    // }, [])
+    const handleSaveSong = useCallback((playlist: number|string) => {
+        handleSaveSongToPlaylist(song, playlist)
+         navigation.pop(1)
+    }, [])
 
 
     const handleIsNewPlaylist = useCallback(() => {
@@ -113,8 +122,8 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
 
     return (
         <View style={{ flex: 1, marginBottom: bottomTabBarHeight }}>
-            {!isNewPlaylist && <SelectPlaylistModal song={song} playlists={playlists} onPlaylistSelected={handleSaveSongToPlaylist} onIsNewPlaylist={handleIsNewPlaylist} />}
-            {isNewPlaylist && <CreateNewPlaylistModal song={song} onSubmit={handleSaveSongToNewPlaylist} />}
+            {!isNewPlaylist && <SelectPlaylistModal playlists={playlists} onPlaylistSelected={handleSaveSong} onIsNewPlaylist={handleIsNewPlaylist} />}
+            {isNewPlaylist && <CreateNewPlaylistModal onSubmit={handleSaveSong} />}
         </View>
 
     )
