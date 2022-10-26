@@ -27,7 +27,7 @@ function usePlaylistViewModel() {
     //     search()
     // }, [])
 
-    const search = async () => {
+    const searchPlaylists = useCallback(async() => {
         try {
             let result = await repository.findPlaylistInfo()
             if (result.ok && result.data && result.data.length > 0) {
@@ -38,11 +38,13 @@ function usePlaylistViewModel() {
         } catch {
 
         }
-    }
+    }, [])
+    
+    
 
     return {
         playlists,
-        search
+        searchPlaylists
     }
 }
 

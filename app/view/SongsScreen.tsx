@@ -20,12 +20,12 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const bottomTabBarHeight = useBottomTabBarHeight()
 
   const [showSnack, setShowSnack] = useState(true)
-  const offset = useRef(0)
-  const direction = useRef<'up'|'down'>('up')
-  const _delta = 100
+  // const offset = useRef(0)
+  // const direction = useRef<'up'|'down'>('up')
+  // const _delta = 100
   const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
   const theme = useTheme()
-  const {animIn, animOut, searchBarAnimation} = useSearchBarAnimation()
+  const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
   // const animation = new Animated.Value(100);
 
   // const animOut = useCallback(() => {
@@ -78,23 +78,7 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
 
 
   // cost scrollHandler = useAnimatedScrollHandler()
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    // console.log('Scrol-------------')
-    const currentOffset = event.nativeEvent.contentOffset.y
-    if (Math.abs(currentOffset - offset.current) > _delta) {
-      // currentOffset > 0 && currentOffset > offset.current ? toggleSearchBar(false): toggleSearchBar(true)
-      const dir = (currentOffset > 0 && currentOffset > offset.current) ? 'down': 'up'
-      if (dir !== direction.current) {
-        dir === 'down' ? animOut() : animIn()
-        direction.current = dir
-      }  //toggleSearchBar(false) : toggleSearchBar(true)
-      // console.log(direction)
-      // console.log(currentOffset, offset)
-      // setOffset(currentOffset)
-      offset.current = currentOffset
-    }
-    // console.log(isSearchBarOpened.current)
-  }
+  
 
   return (
     <View style={{ flex: 1, marginBottom: bottomTabBarHeight }}>

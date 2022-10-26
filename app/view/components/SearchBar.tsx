@@ -7,7 +7,7 @@ import { Gesture, TapGestureHandler } from 'react-native-gesture-handler';
 
 
 interface SearchBarProps {
-    style: any
+    style?: any
     // visible: boolean,
     placeholder?: string,
     searchQuery: string,

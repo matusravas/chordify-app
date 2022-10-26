@@ -83,6 +83,14 @@ class Repository implements IRepository {
     }
 
 
+    async addNewPlaylist(playlistName: string): Promise<boolean> {
+        const result = await this.dbService.createPlaylist(playlistName)
+        if(result.ok && result.data){
+            return true
+        }
+        return false
+    }
+
     async findPlaylistInfo(): Promise<Data<Array<Playlist>>> {
         const result = await this.dbService.findPlaylistInfo()
         if(result.ok && result.data){

@@ -17,13 +17,14 @@ interface RenderItemProps {
 
 
 const PlaylistsScreen = ({navigation}: PlaylistsScreenProps) => {
-    const {playlists, search} = usePlaylistViewModel()
-    const renderItem = ({item}: RenderItemProps) => (
-          <PlaylistCard playlist={item} onPlaylistCardClick={handlePlaylistCardClick}/>
-    )
+    const {playlists, searchPlaylists} = usePlaylistViewModel()
+    
+    // const renderItem = ({item}: RenderItemProps) => (
+    //       <PlaylistCard playlist={item} onPlaylistCardClick={handlePlaylistCardClick}/>
+    // )
 
     useFocusEffect(()=>{
-      search()
+      searchPlaylists()
     })
 
     // useEffect(()=> {
@@ -40,7 +41,7 @@ const PlaylistsScreen = ({navigation}: PlaylistsScreenProps) => {
         style={{paddingVertical: 5, paddingHorizontal: 1}}
             contentContainerStyle={{ flexGrow: 1 }}
             data={playlists}
-            renderItem={renderItem}
+            renderItem={({index, item: playlist}: RenderItemProps) => <PlaylistCard index={index} playlist={playlist} onPlaylistCardClick={handlePlaylistCardClick}/>}
             keyExtractor={(item) => item.id.toString()}
             // numColumns={2}
         />

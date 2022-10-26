@@ -19,7 +19,7 @@ export interface IDbService {
 
     findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> 
 
-    createPlaylist(playlist: PlaylistDto): Promise<SQLResult>
+    createPlaylist(playlistName: string): Promise<SQLResult>
 
     deleteSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult>
     

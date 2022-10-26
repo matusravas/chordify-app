@@ -68,8 +68,10 @@ class DbService implements IDbService{
 
 
     async findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> {
-        const selectQuery = `SELECT COUNT(*) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, SP.PLAYLIST_ID, P.NAME FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
-         ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID`
+        const selectQuery = `SELECT  P.ID AS playlist_id, P.NAME, COUNT(S.ID) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit FROM PLAYLIST AS P
+         LEFT JOIN SONG_PLAYLIST AS SP ON P.ID = SP.PLAYLIST_ID LEFT JOIN SONG AS S ON S.ID = SP.SONG_ID GROUP BY P.ID `
+        // const selectQuery = `SELECT COUNT(*) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, SP.PLAYLIST_ID, P.NAME FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
+        //  ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID`
         return this.executeQuery(selectQuery)
     }
     
@@ -113,9 +115,10 @@ class DbService implements IDbService{
     //     })
     // }
 
-    async createPlaylist(playlist: PlaylistDto): Promise<SQLResult> {
-        const createPlaylist = `INSERT INTO playlist (name, timestamp_created) VALUES (?, ?, ?)`
-        return this.executeQuery(createPlaylist, [playlist.name, playlist.timestamp_created]) 
+    async createPlaylist(playlistName: string): Promise<SQLResult> {
+        const now = new Date().getTime()
+        const createPlaylist = `INSERT INTO playlist (name, timestamp_created, timestamp_visit) VALUES (?, ?, ?)`
+        return this.executeQuery(createPlaylist, [playlistName, now, now]) 
     }
     
     async deleteSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult> {

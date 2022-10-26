@@ -66,7 +66,8 @@ function useSongListViewModel() {
 
     const updateFavoriteSongs = useCallback((song: Song) => {
         console.log('Update fav')
-        console.log(songs.length)
+        // console.log(songs.length)
+        // console.log(song)
         const idx = songs.findIndex(s=>s.id === song.id)
         let newSongs = [...songs]
         if(idx !== -1) {

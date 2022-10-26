@@ -2,11 +2,23 @@ import React, { memo } from 'react';
 import { View, TouchableNativeFeedback, Text } from "react-native"
 import { HStack, VStack, IconButton } from '@react-native-material/core';
 import Icon, { Icons } from '../../icons/icons';
-import { SongCardProps } from '../../model/prop_types/types';
+// import { SongCardProps } from '../../model/prop_types/types';
 import Platform from '../../platform/Platform';
+import { Song } from '../../model/domain/types';
+
+
+export interface SongCardProps {
+  // index: number,
+  song: Song,
+  onSongCardClick: (song: Song) => void
+  onFavoritesButtonClick: (song: Song) => void,
+  onMoreButtonClick: (song: Song) => void
+}
+
 
 const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonClick}: SongCardProps) => (
-      <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#1FC15910', false, Platform.getWidth()/(2.05))}>
+      // <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#1FC15910', false, Platform.getWidth()/(2.05))}>
+      <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#111317', false, Platform.getWidth()/(2.05))}>
       {/* <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#087EA4', false, Platform.getWidth()/(2.05))}> */}
         {/* <View style={{paddingLeft: 10, backgroundColor: index%2===0?'#0d0f12': '#0d0f1220', borderRadius: 5, height: 80, marginBottom: 2, marginHorizontal: 2 }}> */}
         <View style={{paddingLeft: 10, backgroundColor: '#0d0f12', borderRadius: 5, height: 80, marginBottom: 2, marginHorizontal: 1 }}>
@@ -30,6 +42,6 @@ const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonCl
       </TouchableNativeFeedback>
 )
 
-// export default memo(SongCard)
-export default memo(SongCard, (prev, next)=>prev.song.id === next.song.id && prev.song.isFavorite !== next.song.isFavorite)
+export default memo(SongCard)
+// export default memo(SongCard, (prev, next)=>prev.song.id === next.song.id && prev.song.isFavorite === next.song.isFavorite)
 // export default SongCard

@@ -14,6 +14,7 @@ import usePlaylistSongsViewModel from '../view_model/PlaylistSongListViewModel';
 import PlaylistHeader from './components/PlaylistHeader';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PlaylistSongsScreenProps } from '../navigation/types';
+import useSearchBarAnimation from '../animations/searchbar';
 
 
 
@@ -27,6 +28,7 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [showSnack, setShowSnack] = useState(true)
     const [showModal, setShowModal] = useState(false)
+    const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
     console.log('PlaylistSongsScreen rerender')
     
@@ -42,7 +44,7 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     
     const handleMoreButtonClick = useCallback((song: Song) => {
       console.log(song)
-      setShowModal(true)
+      navigation.navigate('Modal', { song: song })
     },[])
 
     // const handleAddToFavorites = (song: Song) => {
@@ -68,12 +70,12 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
         {/* <PlaylistHeader playlist={playlist} /> */}
-        <SearchBar placeholder={playlist.name} searchQuery={searchQuery} onSearch={handleSearch} />
+        <SearchBar style={{height: searchBarAnimation}} placeholder={playlist.name} searchQuery={searchQuery} onSearch={handleSearch} onScrollToTop={()=>flatListRef.current.scrollToOffset({ animated: true, offset: 0 })} />
         {isLoading && <ActivityIndicator style={{marginTop: 10}} size="large" color='#1FC159'/>}
         <SongsList 
               flatListRef={flatListRef}
               // isFetched={!isLoading}
-              // onScroll={()=>{}}
+              onScroll={handleScroll}
               isMoreLoading={false}
               songs={songs} 
               onCardClick={handleCardClick} 
@@ -81,7 +83,6 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
               onMoreButtonClick={handleMoreButtonClick}
               onPageChanged={()=>{}}
               />
-        {showModal && <ModalMenuScreen isOpen={showModal} showModal={setShowModal}/>}
       </View>
     );
   };
