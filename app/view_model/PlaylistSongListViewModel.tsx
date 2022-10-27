@@ -23,20 +23,35 @@ function usePlaylistSongsViewModel(playlistId: number) {
     const repository = Repository.getInstance()
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
-    const [currentPage, setCurrentPage] = useState(1)
+    // const [currentTimestamp, seCurrentTimestamp] = useState(0)
+    const currentTimestamp = useRef(0)
+    const endReached = useRef(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isMoreLoading, setIsMoreLoading] = useState(false)
 
 
-    const searchSongsPlaylist = useCallback(async() => {
-        setIsLoading(true)
-        setSongs([])
+    const searchSongsInPlaylist = useCallback(async() => {
+        if (endReached.current) return
+        currentTimestamp.current > 0? setIsMoreLoading(true) : setIsLoading(true)
+        // setSongs([])
         // console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
         console.log(playlistId)
         try {
-            const resultSongs = playlistId === 0? await repository.findLastSavedSongs(searchQuery, currentPage):
-                await repository.findSavedSongs(playlistId, searchQuery, currentPage)
+            // const resultSongs = playlistId === 0? await repository.findLastSavedSongs(searchQuery, currentTimestampAdded):
+            //! Todo must return minimum || maximum timestamp based on sort to determine if we scrolled all elements
+            //! Todo must return minimum || maximum timestamp based on sort to determine if we scrolled all elements
+            //! Todo must return minimum || maximum timestamp based on sort to determine if we scrolled all elements
+            //! Todo must return minimum || maximum timestamp based on sort to determine if we scrolled all elements
+            //! Todo must return minimum || maximum timestamp based on sort to determine if we scrolled all elements
+            //! Todo must return minimum || maximum timestamp based on sort to determine if we scrolled all elements
+            const resultSongs = await repository.findSavedSongs(playlistId, searchQuery, currentTimestamp.current)
+            // console.log(resultSongs.data.slice(-1)[0].timestampAddedToPlaylist)
             if(resultSongs.ok && resultSongs.data && resultSongs.data.length > 0){
-                // console.log(songsData.data.length)
+                console.log('Data----')
+                console.log(resultSongs.data?.slice(-1)[0])
+                const timestamp = resultSongs.data?.slice(-1)[0].timestampAddedToPlaylist
+                if (timestamp) currentTimestamp.current = timestamp
+                
                 const resultFavorites = await repository.findFavoriteSongsIds(resultSongs.data.map(song => song.id))
                 // console.log(favoritesData)
                 if (resultFavorites.ok && resultFavorites.data && resultFavorites.data.length > 0) {
@@ -46,14 +61,17 @@ function usePlaylistSongsViewModel(playlistId: number) {
                         return song
                     })
                     console.log('songsWithFavorites[0].name')
-                    setSongs(songsWithFavorites) 
+                    currentTimestamp.current > 0? setSongs(prev=>[...prev, ...songsWithFavorites]) : setSongs(songsWithFavorites)
                     // console.log(songs) 
                 }
                 else {
                     console.log('songsData.data')
-                    setSongs(resultSongs.data)
+                    currentTimestamp.current > 0? setSongs(prev=>[...prev, ...resultSongs.data]) : setSongs(resultSongs.data)
                 }
                 // if(songsData.online!==undefined) setIsOnline(songsData.online)
+            }
+            else{
+                endReached.current = true
             }
             // else if(songsData.error) {
             //     console.log('!!!!!!!!!!!!!!!!!!!!!')
@@ -63,16 +81,19 @@ function usePlaylistSongsViewModel(playlistId: number) {
             //     // setErrorMessage(data.error?data.error: '')
             // }
         }catch(err){
+            console.log(err)
             console.log('catch')
         }finally{
+            // currentTimestamp.current > 0? 
+            setIsMoreLoading(false)
             setIsLoading(false)
         }
     }, [searchQuery])
     
     
     useEffect(()=>{
-        searchSongsPlaylist()
-    }, [searchQuery, currentPage])
+        searchSongsInPlaylist()
+    }, [searchQuery])
 
 
     const updateFavoriteSongs = useCallback((song: Song) => {
@@ -133,10 +154,11 @@ function usePlaylistSongsViewModel(playlistId: number) {
     return {
         songs, 
         isLoading,
+        isMoreLoading,
         searchQuery,
         handleChangeSearchQuery,
         handleFavoritesChange,
-        searchSongsPlaylist
+        searchSongsInPlaylist
     }
 }
 

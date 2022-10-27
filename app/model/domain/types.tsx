@@ -17,7 +17,7 @@ export type Song = {
     isFavorite: boolean,
     chordsMetadata?: ChordsMetadata
     timestampLastVisit?: number,
-    timestampCreate?: number,
+    timestampAddedToPlaylist?: number,
 }
 
 export type Playlist = {

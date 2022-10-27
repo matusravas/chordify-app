@@ -15,9 +15,9 @@ export interface IRepository {
 
     removeSongFromPlaylist(songId: number, playlistId: number): Promise<boolean> // status true/false
 
-    findSavedSongs(playlistId: number, query: string, page: number, sortOrder: string): Promise<Data<Array<Song>>>
+    findSavedSongs(playlistId: number, query: string, timestampAdded: number, sortOrder: string): Promise<Data<Array<Song>>>
     
-    findLastSavedSongs(query: string, page: number, sortOrder: string): Promise<Data<Array<Song>>>
+    findLastSavedSongs(query: string, timestampVisit: number, sortOrder: string): Promise<Data<Array<Song>>>
     
     findPlaylistInfo(): Promise<Data<Array<Playlist>>> 
     // ------------------------------------------------------------------------

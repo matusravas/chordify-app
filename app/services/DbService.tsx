@@ -29,22 +29,26 @@ class DbService implements IDbService{
         return this.executeQuery(selectSongs)
     }
 
-    async findSongsInPlaylist(playlistId: number, query: string, numRows: number, sortOrder: string): Promise<SQLResult<SongDto>> {
-        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating'
+    async findSongsInPlaylist(playlistId: number, query: string, timestampAdded: number, sortOrder: string): Promise<SQLResult<SongDto>> {
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, sp.timestamp_added'
         const queryClause = query?`AND (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
-        const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
+        const pagingClause = timestampAdded > 0?`AND sp.timestamp_added ${sortOrder && sortOrder === 'desc'? '<':'>'} ${timestampAdded}`: ''
+        // const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
+        const limitClause = 'LIMIT 50'
         const orderClause = sortOrder?`ORDER BY sp.timestamp_added ${sortOrder.toUpperCase()}` : ''
-        const selectSongs = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON sp.song_id = s.id WHERE (sp.playlist_id = ?) ${queryClause} ${orderClause} ${limitClause}`;
+        const selectSongs = `SELECT ${values} FROM song as s INNER JOIN song_playlist as sp ON sp.song_id = s.id WHERE (sp.playlist_id = ?) ${pagingClause} ${queryClause} ${orderClause} ${limitClause}`;
         console.log(selectSongs)
         return this.executeQuery(selectSongs, [playlistId])
     }
     
-    async findLastSavedSongs(query: string, numRows: number, sortOrder: string): Promise<SQLResult<SongDto>> {
-        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating'
+    async findLastSavedSongs(query: string, timestampVisit: number, sortOrder: string): Promise<SQLResult<SongDto>> {
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.timestamp_visit'
         const queryClause = query?`WHERE (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
-        const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
+        const pagingClause = timestampVisit > 0?`${query?'AND': 'WHERE'} s.timestamp_visit ${sortOrder && sortOrder === 'desc'? '<':'>'} ${timestampVisit}`: ''
+        // const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
+        const limitClause = 'LIMIT 50'
         const orderClause = sortOrder?`ORDER BY timestamp_visit ${sortOrder.toUpperCase()}` : ''
-        const selectSongs = `SELECT ${values} FROM song as s ${queryClause} ${orderClause} ${limitClause}`;
+        const selectSongs = `SELECT ${values} FROM song as s ${queryClause} ${pagingClause} ${orderClause} ${limitClause}`;
         console.log(selectSongs)
         return this.executeQuery(selectSongs)
     }
@@ -69,7 +73,7 @@ class DbService implements IDbService{
 
     async findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> {
         const selectQuery = `SELECT P.ID AS playlist_id, P.NAME, COUNT(S.ID) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, P.TIMESTAMP_CREATED as timestamp_create FROM PLAYLIST AS P
-         LEFT JOIN SONG_PLAYLIST AS SP ON P.ID = SP.PLAYLIST_ID LEFT JOIN SONG AS S ON S.ID = SP.SONG_ID GROUP BY P.ID `
+         LEFT JOIN SONG_PLAYLIST AS SP ON P.ID = SP.PLAYLIST_ID LEFT JOIN SONG AS S ON S.ID = SP.SONG_ID GROUP BY P.ID`
         // const selectQuery = `SELECT COUNT(*) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, SP.PLAYLIST_ID, P.NAME FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
         //  ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID`
         return this.executeQuery(selectQuery)

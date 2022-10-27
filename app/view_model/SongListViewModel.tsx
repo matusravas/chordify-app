@@ -96,17 +96,17 @@ function useSongListViewModel() {
         console.log(song, playlistId)
         if(!song.isFavorite){
             const searchSongChordsAndInsertToFavorites = async() => {
-                let songToInsert = undefined
+                let songWithChords = undefined
                 try{
                     const data = await repository.searchSongChords(song)
                     if(data.data && data.data.chords){
                         // console.log(data)
-                        songToInsert = {chords: data.data.chords, ...song}
+                        songWithChords = {chords: data.data.chords, ...song}
                         // console.log(songToInsert.id)
                         // console.log('---------------------')
 
                         // console.log(songs[0].name)
-                        const resultDb = await repository.addSongToPlaylist(songToInsert, playlistId)
+                        const resultDb = await repository.addSongToPlaylist(songWithChords, playlistId)
                         console.log(resultDb)
                         updateFavoriteSongs(song)
                     }

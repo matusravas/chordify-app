@@ -6,24 +6,18 @@ const useSearchBarAnimation = () => {
     const animation = new Animated.Value(100);
     const offset = useRef(0)
     const direction = useRef<'up'|'down'>('up')
-    const _delta = useRef(0)
+    const _delta = 50 //useRef(100)
     
     const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      // console.log('Scrol-------------')
       const currentOffset = event.nativeEvent.contentOffset.y
-      if (Math.abs(currentOffset - offset.current) > _delta.current) {
-        // currentOffset > 0 && currentOffset > offset.current ? toggleSearchBar(false): toggleSearchBar(true)
-        const dir = (currentOffset > 0 && currentOffset > offset.current) ? 'down': 'up'
-        if (dir !== direction.current) {
-          dir === 'down' ? animOut() : animIn()
-          direction.current = dir
-        }  //toggleSearchBar(false) : toggleSearchBar(true)
-        // console.log(direction)
-        // console.log(currentOffset, offset)
-        // setOffset(currentOffset)
-        offset.current = currentOffset
+      if (Math.abs(currentOffset - offset.current) <= _delta) return
+      const dir = (currentOffset > 0 && currentOffset > offset.current) ? 'down': 'up'
+      if (dir !== direction.current) {
+        dir === 'down' ? animOut() : animIn()
+        direction.current = dir
       }
-      // console.log(isSearchBarOpened.current)
+      // console.log('offset')
+      offset.current = currentOffset
     }, [])
 
     const animOut = useCallback(() => {

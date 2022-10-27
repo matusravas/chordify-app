@@ -10,8 +10,7 @@ import { Image } from "react-native";
 export type SongStackParamList = {
   Songs: undefined,
   Song: { song: Song },
-  Modal: { song: Song },
-  ModalNewPlaylist: { song: Song },
+  Modal: { song: Song},
 }
 
 // const icon = () => <Image source={require('')}/>
@@ -21,7 +20,7 @@ const SongStack = createNativeStackNavigator<SongStackParamList>();
 const SongStackScreen = () => {
   return (
     // <SongStack.Navigator screenOptions={{ animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#1a172d', headerStyle: { backgroundColor: '#1a172d', }, headerTitleStyle: { fontWeight: '400', fontSize: 18 }, headerTintColor: '#F7F7F7AA' }}>
-    <SongStack.Navigator screenOptions={{ animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#0d0f12', headerStyle: { backgroundColor: '#0d0f12', }, headerTitleStyle: { fontWeight: '400', fontSize: 18 }, headerTintColor: '#F7F7F7AA' }}>
+    <SongStack.Navigator id="songs" screenOptions={{ animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#0d0f12', headerStyle: { backgroundColor: '#0d0f12', }, headerTitleStyle: { fontWeight: '400', fontSize: 18 }, headerTintColor: '#F7F7F7AA' }}>
       <SongStack.Screen name="Songs" component={SongsScreen} options={{ headerShown: false }} />
       {/* <SongStack.Screen name="Songs" component={SongsScreen} options={{ headerTitle: (props) => (<SearchBar {...props} />) }}/>   */}
       <SongStack.Screen name="Song" component={ChordsScreen} />
@@ -29,9 +28,10 @@ const SongStackScreen = () => {
       <SongStack.Screen name="Modal" component={ModalMenuScreen} options={{
         presentation: 'containedTransparentModal',
         // headerTintColor: '#fff',
-        headerTitle: 'Add song to playlist',
+        // headerTitle: 'Add song to playlist',
         headerStyle: {backgroundColor: "#000000E5"},
-        headerTitleAlign: 'center',
+        headerTitleStyle: {fontWeight: '500'},
+        // headerTitleAlign: 'center',
         // statusBarColor: "#000000E5",
         animation: 'slide_from_bottom',
         contentStyle: { backgroundColor: "#000000E5" },

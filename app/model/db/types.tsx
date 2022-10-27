@@ -7,14 +7,15 @@ export type SongDto = {
     votes: number,
     rating: number,
     chords?: string
-    timestamp_last_visit?: number
+    timestamp_visit?: number
+    timestamp_added?: number
 }
 
 export type PlaylistDto = {
     id?: number, 
     name: string,
     timestamp_created: number,
-    timestamp_last_visit?: number,
+    timestamp_visit?: number,
 }
 
 export type SongPlaylistDto = {

@@ -24,14 +24,14 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
   // console.log(playlist.playlistId)
     // const [songs, searchQuery, currentPage, setSearchQuery, handleAddToPlaylist] = useSongListViewModel()
     const playlist = route.params.playlist
-    const {songs, isLoading, searchQuery, handleChangeSearchQuery, handleFavoritesChange} = usePlaylistSongsViewModel(playlist.id)
+    const {songs, isLoading, isMoreLoading, searchQuery, handleChangeSearchQuery, handleFavoritesChange, searchSongsInPlaylist} = usePlaylistSongsViewModel(playlist.id)
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [showSnack, setShowSnack] = useState(true)
     const [showModal, setShowModal] = useState(false)
     const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
     console.log('PlaylistSongsScreen rerender')
-    
+    console.log(isLoading)
     useEffect(()=>{
       navigation.setOptions({headerTitle: playlist.name})
     }, [])
@@ -44,7 +44,7 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     
     const handleMoreButtonClick = useCallback((song: Song) => {
       console.log(song)
-      navigation.navigate('Modal', { song: song })
+      navigation.navigate('Modal', { song: song, playlist: playlist })
     },[])
 
     // const handleAddToFavorites = (song: Song) => {
@@ -70,19 +70,20 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
         {/* <PlaylistHeader playlist={playlist} /> */}
-        <SearchBar style={{height: searchBarAnimation}} placeholder={playlist.name} searchQuery={searchQuery} onSearch={handleSearch} onScrollToTop={()=>flatListRef.current.scrollToOffset({ animated: true, offset: 0 })} />
-        {isLoading && <ActivityIndicator style={{marginTop: 10}} size="large" color='#1FC159'/>}
+        {songs.length > 20 && <SearchBar style={{height: searchBarAnimation}} placeholder={playlist.name} searchQuery={searchQuery} onSearch={handleSearch} onScrollToTop={()=>flatListRef.current.scrollToOffset({ animated: true, offset: 0 })} />}
+        {isLoading ? <ActivityIndicator style={{marginTop: 10}} size="large" color='#1FC159'/> :
         <SongsList 
               flatListRef={flatListRef}
               // isFetched={!isLoading}
               onScroll={handleScroll}
-              isMoreLoading={false}
+              isMoreLoading={isMoreLoading}
               songs={songs} 
               onCardClick={handleCardClick} 
               onFavoritesButtonClick={handleFavoritesChange}
               onMoreButtonClick={handleMoreButtonClick}
-              onPageChanged={()=>{}}
+              onPageChanged={searchSongsInPlaylist}
               />
+    }
       </View>
     );
   };

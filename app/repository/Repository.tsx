@@ -95,16 +95,19 @@ class Repository implements IRepository {
         const result = await this.dbService.findPlaylistInfo()
         console.log(result)
         if(result.ok && result.data){
-            const playlistInfos = result.data.map(playlistInfo=>{
+            const favorites = mapPlaylistInfoDbToDomain(result.data.shift()!)
+            let playlistInfos = result.data.sort((a,b)=> a.timestamp_visit - b.timestamp_visit).map(playlistInfo=>{
             return mapPlaylistInfoDbToDomain(playlistInfo)})
+            playlistInfos.unshift(favorites)
             return {data: playlistInfos, ok: true}
         }
         return {ok: false}
     }
     
     
-    async findSavedSongs(playlistId: number, query: string, page: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
-        const result = await this.dbService.findSongsInPlaylist(playlistId, query, 50, sortOrder)
+    async findSavedSongs(playlistId: number, query: string, timestampAdded: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
+        const result = await this.dbService.findSongsInPlaylist(playlistId, query, timestampAdded, sortOrder)
+        
         if(result.ok && result.data){
             const songs = result.data.map(playlistInfo=>{
                 return mapSongDbToDomain(playlistInfo)
@@ -115,8 +118,8 @@ class Repository implements IRepository {
     }
     
     
-    async findLastSavedSongs(query: string, page: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
-        const result = await this.dbService.findLastSavedSongs(query, 50, sortOrder)
+    async findLastSavedSongs(query: string, timestampVisit: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
+        const result = await this.dbService.findLastSavedSongs(query, timestampVisit, sortOrder)
         if(result.ok && result.data){
             const songs = result.data.map(playlistInfo=>{
                 return mapSongDbToDomain(playlistInfo)

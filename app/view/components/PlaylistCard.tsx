@@ -35,7 +35,7 @@ const PlaylistCard = ({ index, playlist, onPlaylistCardClick }: PlaylistCardProp
         </View>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'center', marginRight: 12 }}>
-        <Icon size={20} type={index > 0 ? Icons.Ionicons : Icons.MaterialIcons} name={index > 0 ? 'musical-notes-outline' : 'favorite-outline'} color={'#1FC159'} />
+        <Icon size={20} type={index > 0 ? Icons.Ionicons : Icons.MaterialIcons} name={index > 0 ? 'musical-notes-outline' : 'favorite-outline'} color={'#F7F7F720'} />
       </View>
     </View>
   </TouchableNativeFeedback>

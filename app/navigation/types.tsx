@@ -28,7 +28,8 @@ type SongChordsScreenRouteProps = RouteProp<SongStackParamList, 'Song'>;
 // type ChordsScreenRouteProps = SongChordsScreenRouteProps | PlaylistSongScreenRouteProps
 
 type ChordsScreenProps = NativeStackScreenProps<SongStackParamList & PlaylistStackParamList, 'Song'>;
-type ModalScreenProps = NativeStackScreenProps<SongStackParamList & PlaylistStackParamList, 'Modal'>;
+// type ModalScreenProps = NativeStackScreenProps<SongStackParamList & PlaylistStackParamList, 'Modal'>;
+type ModalScreenProps = NativeStackScreenProps<SongStackParamList | PlaylistStackParamList, 'Modal'>;
 
 
 const tabs: Array<Screen> = [

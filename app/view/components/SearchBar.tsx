@@ -42,6 +42,7 @@ const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, o
         {/* <View style={{display: !visible? 'none': undefined, height: 58, flexDirection: 'row', alignItems: 'center', backgroundColor: '#111317', borderColor: focused?'#1FC159': '#1FC15920', borderBottomWidth: 1, paddingHorizontal: 10,}}> */}
             
             <TouchableOpacity onPress={()=>onScrollToTop()}>
+            
             <Icon  style={{marginLeft: 5, marginRight: 5, marginTop: 5}} type={Icons.MaterialIcons} name='search' size={22} color={focused?"#1FC159": "#F7F7F730" }/>
             </TouchableOpacity>
             <TextInput

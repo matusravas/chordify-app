@@ -9,6 +9,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PlaylistStackParamList } from '../navigation/PlaylistStack';
 import { PlaylistsScreenProps } from '../navigation/types';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface RenderItemProps {
   item: Playlist,
@@ -18,6 +19,7 @@ interface RenderItemProps {
 
 const PlaylistsScreen = ({navigation}: PlaylistsScreenProps) => {
     const {playlists, searchPlaylists} = usePlaylistViewModel()
+    const bottomTabBarHeight = useBottomTabBarHeight()
     
     // const renderItem = ({item}: RenderItemProps) => (
     //       <PlaylistCard playlist={item} onPlaylistCardClick={handlePlaylistCardClick}/>
@@ -41,7 +43,7 @@ const PlaylistsScreen = ({navigation}: PlaylistsScreenProps) => {
 
     return (
         <FlatList
-        style={{paddingVertical: 5, paddingHorizontal: 1}}
+        style={{paddingVertical: 5, paddingHorizontal: 1, marginBottom: bottomTabBarHeight}}
             contentContainerStyle={{ flexGrow: 1 }}
             data={playlists}
             renderItem={({index, item: playlist}: RenderItemProps) => <PlaylistCard index={index} playlist={playlist} onPlaylistCardClick={handlePlaylistCardClick}/>}

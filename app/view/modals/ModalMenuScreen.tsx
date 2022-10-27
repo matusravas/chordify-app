@@ -1,8 +1,8 @@
-import { Box, Text, VStack, } from "@react-native-material/core"
+// import { Box, Text, VStack, } from "@react-native-material/core"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
-import { TouchableOpacity, View, Pressable, BackHandler, FlatList, TextInput, Button } from 'react-native';
+import React, { useCallback, useEffect, useState } from "react";
+import { TouchableOpacity, View, Pressable, BackHandler, FlatList, TextInput, Button, Text, TouchableNativeFeedback } from 'react-native';
 import Icon, { Icons } from "../../icons/icons";
 import { Playlist } from "../../model/domain/types";
 import { ModalScreenProps } from "../../navigation/types";
@@ -34,22 +34,31 @@ const ListFooter = ({ onIsNewPlaylist }: ListFooterProps) => (
     }]} onPress={onIsNewPlaylist}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Icon size={20} type={Icons.MaterialCommunityIcons} name='plus' color={'#F7F7F7AA'} />
-            <Text color="#F7F7F7AA">Create new playlist</Text>
+            <Text style={{ color: "#F7F7F7AA", fontWeight: '500', fontSize: 16 }}>Create new playlist</Text>
         </View>
     </Pressable>
 )
 
 
 interface SelectPlaylistModalProps {
-    playlists: Array<Playlist>, 
-    onPlaylistSelected: (playlistId: number) => void, 
-    onIsNewPlaylist: () => void 
+    playlists: Array<Playlist>,
+    onPlaylistSelected: (playlistId: number) => void,
+    onIsNewPlaylist: () => void
 }
 
-const SelectPlaylistModal = ({playlists, onPlaylistSelected, onIsNewPlaylist }: SelectPlaylistModalProps) => (
-    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', margin: 8 }}>
-        {/* <ListHeader/> */}
+const SelectPlaylistModal = ({ playlists, onPlaylistSelected, onIsNewPlaylist }: SelectPlaylistModalProps) => (
+    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'flex-end', margin: 8, alignItems: 'center' }}>
+        {/* {playlists.map(playlist=>(
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }}>
+            <Icon size={20} type={Icons.MaterialCommunityIcons} name={'playlist-music-outline'} color={'#F7F7F7AA'} />
+            <Text style={{ fontSize: 18, margin: 15, fontWeight: '600', color: '#F7F7F7AA' }}>
+              {playlist.name}
+            </Text>
+          </View>
+        ))} */}
+
         <FlatList
+            style={{flexGrow: 0, marginBottom: 16}}
             data={playlists}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => <PlaylistCardModal playlist={item} onPlaylistSelected={onPlaylistSelected} />
@@ -82,7 +91,7 @@ const CreateNewPlaylistModal = ({ onSubmit }: CreateNewPlaylistModalProps) => {
                 justifyContent: 'center',
                 padding: 10
             }]} onPress={() => onSubmit(value)}>
-                <Text color="#F7F7F7AA">Submit</Text>
+                <Text style={{ color: "#F7F7F7AA" }}>Submit</Text>
             </Pressable>
             {/* <View style={{borderBottomWidth: 1 , borderBottomColor: '#000000'}}/> */}
         </View>
@@ -91,21 +100,49 @@ const CreateNewPlaylistModal = ({ onSubmit }: CreateNewPlaylistModalProps) => {
 
 
 const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
+    const navigator = navigation.getId()
     const song = route.params.song
+    const playlist = route.params.playlist
+    console.log(song, playlist)
+    const title = `${song.artist} - ${song.name}`
     const { playlists, searchPlaylists, handleSaveSongToPlaylist } = useSongToPlaylistModalViewModel()
     // const [modal, setModal] = useState(true)
     const bottomTabBarHeight = useBottomTabBarHeight()
+    const [action, setAction] = useState<'add' | null>(null)
     const [isNewPlaylist, setIsNewPlaylist] = useState(false)
+
+    const items = [
+        {
+            title: song.isFavorite ? 'Saved as Favorite' : 'Add to Favorites',
+            iconType: Icons.MaterialIcons, iconName: 'favorite', color: song.isFavorite ? '#1FC159CC' : '#F7F7F7AA',
+            handler: () => { }
+        },
+        {
+            title: navigator === 'songs' ? 'Add to playlist' : 'Add to another playlist',
+            iconType: Icons.MaterialCommunityIcons, iconName: 'playlist-plus', color: '#F7F7F7AA',
+            handler: () => setAction('add')
+        },
+        ...navigator === 'playlists' ? [
+            {
+                title: 'Remove from this playlist',
+                iconType: Icons.MaterialCommunityIcons, iconName: 'playlist-remove', color: '#F7F7F7AA',
+                handler: () => { }
+            }] : [],
+
+        // {title: 'Add to favorites', titleAlt: 'Remove from favorites', iconType: Icons.MaterialIcons, iconTypeAlt: Icons.MaterialCommunityIcons, iconName: 'favorite-outline', iconNameAlt: 'heart-remove-outline'},
+        // {title: 'Add to playlist', titleAlt: 'Remove from this playlist', iconType: Icons.MaterialCommunityIcons, iconTypeAlt: null, iconName: 'plus', iconNameAlt: null},
+    ]
 
     useFocusEffect(
         useCallback(() => {
+            navigation.setOptions({ headerTitle: title.length > 40 ? `${title.slice(0, 40)}...` : title })
             searchPlaylists()
         }, [])
     )
 
-    const handleSaveSong = useCallback((playlist: number|string) => {
+    const handleSaveSong = useCallback((playlist: number | string) => {
         handleSaveSongToPlaylist(song, playlist)
-         navigation.pop(1)
+        navigation.pop(1)
     }, [])
 
 
@@ -121,10 +158,30 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
     // }, [])
 
     return (
-        <View style={{ flex: 1, marginBottom: bottomTabBarHeight }}>
-            {!isNewPlaylist && <SelectPlaylistModal playlists={playlists} onPlaylistSelected={handleSaveSong} onIsNewPlaylist={handleIsNewPlaylist} />}
-            {isNewPlaylist && <CreateNewPlaylistModal onSubmit={handleSaveSong} />}
+        <View style={{ flex: 1, marginBottom: bottomTabBarHeight, justifyContent: 'center', alignItems: 'center' }}>
+            {!action ? <View>
+                {items.map((item, idx) => (
+                    <TouchableNativeFeedback style={{}} onPress={() => { }} background={TouchableNativeFeedback.Ripple('#111317', false)}>
+                        <View nativeID={idx.toString()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon size={20} type={item.iconType} name={item.iconName} color={item.color} />
+                            <Text onPress={item.handler} style={{ fontSize: 18, margin: 15, fontWeight: '600', color: item.color }}>
+                                {item.title}
+                            </Text>
+                        </View>
+                    </TouchableNativeFeedback>
+                ))}
+            </View> :
+                action === 'add' ? <View style={{ flex: 1 }}>
+                    {!isNewPlaylist && <SelectPlaylistModal playlists={playlists} onPlaylistSelected={handleSaveSong} onIsNewPlaylist={handleIsNewPlaylist} />}
+                    {isNewPlaylist && <CreateNewPlaylistModal onSubmit={handleSaveSong} />}
+                </View> :
+                    <View>
+
+                    </View>
+            }
+
         </View>
+
 
     )
 }
