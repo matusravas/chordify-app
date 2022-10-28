@@ -70,13 +70,13 @@ class Repository implements IRepository {
     }
 
 
-    async addSongToPlaylist(song: Song, playlistID: number): Promise<boolean> {
+    async addSongToPlaylist(song: Song, playlistId: number): Promise<boolean> {
         const songDb = mapSongDomainToDb(song)
         const resultInsertSong = await this.dbService.insertSong(songDb)
         const songId = (resultInsertSong.ok && resultInsertSong.result && resultInsertSong.result.rowsAffected > 0)? resultInsertSong.result.insertId: 
         (resultInsertSong.ok && resultInsertSong.result && resultInsertSong.result.rowsAffected === 0)? songDb.id: songDb.id
-
-        const resultInsertSongToPlaylist = await this.dbService.insertSongToPlaylist(songId, playlistID)
+        const resultUpdatePlaylistTimestampVisit = await this.dbService.updatePlaylistTimestampVisit(playlistId)
+        const resultInsertSongToPlaylist = await this.dbService.insertSongToPlaylist(songId, playlistId)
         if (resultInsertSongToPlaylist.ok && resultInsertSongToPlaylist.result && resultInsertSongToPlaylist.result.rowsAffected > 0) return true
         else if (resultInsertSongToPlaylist.ok && resultInsertSongToPlaylist.result && resultInsertSongToPlaylist.result.rowsAffected === 0) return false
         else return false
@@ -96,7 +96,7 @@ class Repository implements IRepository {
         console.log(result)
         if(result.ok && result.data){
             const favorites = mapPlaylistInfoDbToDomain(result.data.shift()!)
-            let playlistInfos = result.data.sort((a,b)=> a.timestamp_visit - b.timestamp_visit).map(playlistInfo=>{
+            let playlistInfos = result.data.sort((a,b)=> b.timestamp_visit - a.timestamp_visit).map(playlistInfo=>{
             return mapPlaylistInfoDbToDomain(playlistInfo)})
             playlistInfos.unshift(favorites)
             return {data: playlistInfos, ok: true}

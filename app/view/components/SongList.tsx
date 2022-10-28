@@ -63,6 +63,7 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onM
             // stickyHeaderIndices={[0]}
             // stickyHeaderHiddenOnScroll={true}
             // stickyHeaderHiddenOnScroll={true}
+            ListEmptyComponent={NothingHere}
             ListFooterComponent={isMoreLoading ? ListFooter: null}
             ListFooterComponentStyle={{paddingBottom: 8}}
         />

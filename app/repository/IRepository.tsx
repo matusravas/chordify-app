@@ -9,7 +9,7 @@ export interface IRepository {
     
     fetchSongs(query: string, page: number, top100: boolean, type: number, sortOrder: string): Promise<Data<Array<Song>>>
     
-    addSongToPlaylist(song: Song, playlistID: number): Promise<boolean> // status true/false
+    addSongToPlaylist(song: Song, playlistId: number): Promise<boolean> // status true/false
 
     addNewPlaylist(playlistName: string): Promise<Data<number>> // status true/false
 

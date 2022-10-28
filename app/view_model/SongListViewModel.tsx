@@ -91,22 +91,16 @@ function useSongListViewModel() {
     },[])
 
 
-    const handleFavoritesChange = useCallback((song: Song, playlistId: number =1) => {
+    const handleFavoritesChange = useCallback((song: Song) => {
         console.log(songs.length)
-        console.log(song, playlistId)
         if(!song.isFavorite){
             const searchSongChordsAndInsertToFavorites = async() => {
                 let songWithChords = undefined
                 try{
                     const data = await repository.searchSongChords(song)
                     if(data.data && data.data.chords){
-                        // console.log(data)
                         songWithChords = {chords: data.data.chords, ...song}
-                        // console.log(songToInsert.id)
-                        // console.log('---------------------')
-
-                        // console.log(songs[0].name)
-                        const resultDb = await repository.addSongToPlaylist(songWithChords, playlistId)
+                        const resultDb = await repository.addSongToPlaylist(songWithChords, 1)
                         console.log(resultDb)
                         updateFavoriteSongs(song)
                     }
@@ -119,7 +113,7 @@ function useSongListViewModel() {
         }
         else {
             const removeSong = async() => {
-                const resultDb = await repository.removeSongFromPlaylist(song.id, playlistId)
+                const resultDb = await repository.removeSongFromPlaylist(song.id, 1)
                 console.log(resultDb)
                 updateFavoriteSongs(song)
             }

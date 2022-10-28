@@ -20,8 +20,8 @@ interface Props {
     playlist?: Playlist
 }
 
-// function useSongToPlaylistModalViewModel({song, playlist}: Props) {
-function useSongToPlaylistModalViewModel() {
+function useSongToPlaylistModalViewModel(song: Song, playlist?: Playlist) {
+// function useSongToPlaylistModalViewModel() {
     // const {isOnline} = useInternetInfo()
     // console.log(`Is reachable ${isOnline}`)
     // const _ingoreNetworkInfo = netInfo.isConnected? true: false
@@ -36,8 +36,9 @@ function useSongToPlaylistModalViewModel() {
         try {
             let result = await repository.findPlaylistInfo()
             if (result.ok && result.data && result.data.length > 0) {
+                if(playlist) setPlaylists(result.data.filter(e => e.id !== playlist.id && e.id !== 1))
                 // result.unshift({id: 0, name: 'Last saved', songsCount: 0, timestampVisit: 0})
-                setPlaylists(result.data)
+                else setPlaylists(result.data)
             }
             // setPlaylists(result)
         } catch {
@@ -73,6 +74,48 @@ function useSongToPlaylistModalViewModel() {
 
         }
     }, [])
+    
+    
+    const handleRemoveSongFromPlaylist = useCallback(async () => {
+
+        try {
+            if(playlist) {
+                const data = await repository.removeSongFromPlaylist(song.id, playlist?.id)
+            }
+        } catch {
+
+        }
+    }, [])
+
+    const handleFavoritesChange = useCallback((song: Song) => {
+        if (!song.isFavorite) {
+            const searchSongChordsAndInsertToFavorites = async () => {
+                try {
+                    let songToInsert = undefined
+                    const resultChords = await repository.searchSongChords(song)
+                    if (resultChords.data && resultChords.data.chords) {
+                        songToInsert = { chords: resultChords.data.chords, ...song }
+                        const resultInsert = await repository.addSongToPlaylist(songToInsert, 1)
+                    }
+                } catch (err) {
+                    
+                }
+            }
+            searchSongChordsAndInsertToFavorites()
+        }
+        else {
+            const removeSong = async () => {
+                try {
+                    const resultDelete = await repository.removeSongFromPlaylist(song.id, 1)
+                    // updateFavoriteSongs(song)
+                } catch (err) {
+
+                }
+            }
+            removeSong()
+        }
+    }, [])
+
 
     // Todo create only one function it can recieve playlistName | playlist (with ID). Decide aferwards based on the type if 
     // Todo insert playlist as well, when ID is missing and only playlist name was provided
@@ -96,7 +139,9 @@ function useSongToPlaylistModalViewModel() {
     return {
         playlists,
         searchPlaylists,
+        handleFavoritesChange,
         handleSaveSongToPlaylist,
+        handleRemoveSongFromPlaylist
         // handleSaveSongToNewPlaylist
     }
 }

@@ -1,7 +1,7 @@
 // import { Box, Text, VStack, } from "@react-native-material/core"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { TouchableOpacity, View, Pressable, BackHandler, FlatList, TextInput, Button, Text, TouchableNativeFeedback } from 'react-native';
 import Icon, { Icons } from "../../icons/icons";
 import { Playlist } from "../../model/domain/types";
@@ -40,6 +40,14 @@ const ListFooter = ({ onIsNewPlaylist }: ListFooterProps) => (
 )
 
 
+const ListHeader = () => (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {/* <Icon size={20} type={Icons.MaterialCommunityIcons} name='plus' color={'#F7F7F7AA'} /> */}
+        <Text style={{ color: "#F7F7F7AA", fontWeight: '400', fontSize: 18 }}>Select from available playlists</Text>
+    </View>
+)
+
+
 interface SelectPlaylistModalProps {
     playlists: Array<Playlist>,
     onPlaylistSelected: (playlistId: number) => void,
@@ -56,7 +64,7 @@ const SelectPlaylistModal = ({ playlists, onPlaylistSelected, onIsNewPlaylist }:
             </Text>
           </View>
         ))} */}
-
+        <ListHeader />
         <FlatList
             style={{flexGrow: 0, marginBottom: 16}}
             data={playlists}
@@ -102,10 +110,10 @@ const CreateNewPlaylistModal = ({ onSubmit }: CreateNewPlaylistModalProps) => {
 const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
     const navigator = navigation.getId()
     const song = route.params.song
-    const playlist = route.params.playlist
+    const playlist = 'playlist' in route.params? route.params.playlist: undefined
     console.log(song, playlist)
     const title = `${song.artist} - ${song.name}`
-    const { playlists, searchPlaylists, handleSaveSongToPlaylist } = useSongToPlaylistModalViewModel()
+    const { playlists, searchPlaylists, handleFavoritesChange, handleSaveSongToPlaylist, handleRemoveSongFromPlaylist } = useSongToPlaylistModalViewModel(song, playlist)
     // const [modal, setModal] = useState(true)
     const bottomTabBarHeight = useBottomTabBarHeight()
     const [action, setAction] = useState<'add' | null>(null)
@@ -115,7 +123,7 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
         {
             title: song.isFavorite ? 'Saved as Favorite' : 'Add to Favorites',
             iconType: Icons.MaterialIcons, iconName: 'favorite', color: song.isFavorite ? '#1FC159CC' : '#F7F7F7AA',
-            handler: () => { }
+            handler: () => handleFavoritesChange(song)
         },
         {
             title: navigator === 'songs' ? 'Add to playlist' : 'Add to another playlist',
@@ -126,7 +134,7 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
             {
                 title: 'Remove from this playlist',
                 iconType: Icons.MaterialCommunityIcons, iconName: 'playlist-remove', color: '#F7F7F7AA',
-                handler: () => { }
+                handler: handleRemoveSongFromPlaylist
             }] : [],
 
         // {title: 'Add to favorites', titleAlt: 'Remove from favorites', iconType: Icons.MaterialIcons, iconTypeAlt: Icons.MaterialCommunityIcons, iconName: 'favorite-outline', iconNameAlt: 'heart-remove-outline'},
@@ -161,14 +169,14 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
         <View style={{ flex: 1, marginBottom: bottomTabBarHeight, justifyContent: 'center', alignItems: 'center' }}>
             {!action ? <View>
                 {items.map((item, idx) => (
-                    <TouchableNativeFeedback style={{}} onPress={() => { }} background={TouchableNativeFeedback.Ripple('#111317', false)}>
+                    //<TouchableNativeFeedback style={{}} onPress={() => { }} background={TouchableNativeFeedback.Ripple('#111317', false)}>
                         <View nativeID={idx.toString()} style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Icon size={20} type={item.iconType} name={item.iconName} color={item.color} />
                             <Text onPress={item.handler} style={{ fontSize: 18, margin: 15, fontWeight: '600', color: item.color }}>
                                 {item.title}
                             </Text>
                         </View>
-                    </TouchableNativeFeedback>
+                    //</TouchableNativeFeedback>
                 ))}
             </View> :
                 action === 'add' ? <View style={{ flex: 1 }}>

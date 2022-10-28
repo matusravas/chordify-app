@@ -25,7 +25,7 @@ export type Playlist = {
     id: number,
     name: string,
     timestampVisit: number,
-    timestampCreated: number,
+    timestampCreate: number,
 }
 
 // export type Playlist = {

@@ -30,12 +30,12 @@ const PlaylistCard = ({ index, playlist, onPlaylistCardClick }: PlaylistCardProp
             Edited {new Date(playlist.timestampVisit).toDateString()}
           </Text> :
             <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
-              Created {new Date(playlist.timestampCreated).toDateString()}
+              Created {new Date(playlist.timestampCreate).toDateString()}
             </Text>}
         </View>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'center', marginRight: 12 }}>
-        <Icon size={20} type={index > 0 ? Icons.Ionicons : Icons.MaterialIcons} name={index > 0 ? 'musical-notes-outline' : 'favorite-outline'} color={'#F7F7F720'} />
+        <Icon size={20} type={index > 0 ? Icons.Ionicons : Icons.MaterialIcons} name={index > 0 ? 'musical-notes-outline' : 'favorite-outline'} color={'#F7F7F750'} />
       </View>
     </View>
   </TouchableNativeFeedback>

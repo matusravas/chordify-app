@@ -22,5 +22,7 @@ export interface IDbService {
     createPlaylist(playlistName: string): Promise<SQLResult>
 
     deleteSongFromPlaylist(songId: number, playlistId: number): Promise<SQLResult>
+
+    updatePlaylistTimestampVisit(playlistId: number): Promise<SQLResult>
     
 }
