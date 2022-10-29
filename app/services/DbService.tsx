@@ -30,7 +30,7 @@ class DbService implements IDbService{
     }
 
     async findSongsInPlaylist(playlistId: number, query: string, timestampAdded: number, sortOrder: string): Promise<SQLResult<SongDto>> {
-        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, sp.timestamp_added'
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, sp.timestamp_added AS timestamp_added_to_playlist'
         const queryClause = query?`AND (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
         const pagingClause = timestampAdded > 0?`AND sp.timestamp_added ${sortOrder && sortOrder === 'desc'? '<':'>'} ${timestampAdded}`: ''
         // const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
@@ -41,13 +41,13 @@ class DbService implements IDbService{
         return this.executeQuery(selectSongs, [playlistId])
     }
     
-    async findLastSavedSongs(query: string, timestampVisit: number, sortOrder: string): Promise<SQLResult<SongDto>> {
-        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.timestamp_visit'
+    async findLastSavedSongs(query: string, timestampSaved: number, sortOrder: string): Promise<SQLResult<SongDto>> {
+        const values = 's.id, s.name, s.artist, s.chords_link, s.full_url, s.votes, s.rating, s.timestamp_saved'
         const queryClause = query?`WHERE (lower(s.name) LIKE lower('%${query}%') OR lower(s.artist) LIKE lower('%${query}%'))` : ''
-        const pagingClause = timestampVisit > 0?`${query?'AND': 'WHERE'} s.timestamp_visit ${sortOrder && sortOrder === 'desc'? '<':'>'} ${timestampVisit}`: ''
+        const pagingClause = timestampSaved > 0?`${query?'AND': 'WHERE'} s.timestamp_saved ${sortOrder && sortOrder === 'desc'? '<':'>'} ${timestampSaved}`: ''
         // const limitClause = numRows > 0?`LIMIT ${numRows}` : ''
         const limitClause = 'LIMIT 50'
-        const orderClause = sortOrder?`ORDER BY timestamp_visit ${sortOrder.toUpperCase()}` : ''
+        const orderClause = sortOrder?`ORDER BY timestamp_saved ${sortOrder.toUpperCase()}` : ''
         const selectSongs = `SELECT ${values} FROM song as s ${queryClause} ${pagingClause} ${orderClause} ${limitClause}`;
         console.log(selectSongs)
         return this.executeQuery(selectSongs)
@@ -72,7 +72,7 @@ class DbService implements IDbService{
 
 
     async findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> {
-        const selectQuery = `SELECT P.ID AS playlist_id, P.NAME, COUNT(S.ID) AS count, P.TIMESTAMP_VISIT AS timestamp_visit, P.TIMESTAMP_CREATED as timestamp_create FROM PLAYLIST AS P
+        const selectQuery = `SELECT P.ID AS playlist_id, P.NAME, COUNT(S.ID) AS count, P.TIMESTAMP_EDITED AS timestamp_edited, P.TIMESTAMP_CREATED as timestamp_created FROM PLAYLIST AS P
          LEFT JOIN SONG_PLAYLIST AS SP ON P.ID = SP.PLAYLIST_ID LEFT JOIN SONG AS S ON S.ID = SP.SONG_ID GROUP BY P.ID`
         // const selectQuery = `SELECT COUNT(*) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, SP.PLAYLIST_ID, P.NAME FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
         //  ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID`
@@ -82,7 +82,7 @@ class DbService implements IDbService{
     
     async insertSong(song: SongDto): Promise<SQLResult> {
         const timestampNow = new Date().getTime()
-        const insertSong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_visit) 
+        const insertSong = `INSERT OR IGNORE INTO song (id, artist, name, chords_link, full_url, votes, rating, chords, timestamp_saved) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         return this.executeQuery(insertSong, [song.id, song.artist, song.name, song.chords_link, song.full_url, song.votes, song.rating, song.chords?song.chords:'', timestampNow])
     }
@@ -95,7 +95,7 @@ class DbService implements IDbService{
     
     async updatePlaylistTimestampVisit(playlistId: number): Promise<SQLResult> {
         const timestampNow = new Date().getTime()
-        const updatePlaylist = `UPDATE playlist SET timestamp_visit = ? WHERE id = ?`
+        const updatePlaylist = `UPDATE playlist SET timestamp_edited = ? WHERE id = ?`
         return this.executeQuery(updatePlaylist, [timestampNow, playlistId])
     }
 
@@ -127,7 +127,7 @@ class DbService implements IDbService{
 
     async createPlaylist(playlistName: string): Promise<SQLResult> {
         const now = new Date().getTime()
-        const createPlaylist = `INSERT INTO playlist (name, timestamp_created, timestamp_visit) VALUES (?, ?, ?)`
+        const createPlaylist = `INSERT INTO playlist (name, timestamp_created, timestamp_edited) VALUES (?, ?, ?)`
         return this.executeQuery(createPlaylist, [playlistName, now, now]) 
     }
     
@@ -156,7 +156,7 @@ class DbService implements IDbService{
               (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 artist TEXT NOT NULL, name TEXT NOT NULL, chords_link TEXT NOT NULL, full_url TEXT NOT NULL,
                 votes INTEGER NOT NULL, rating NUMBER NOT NULL,
-                chords TEXT NOT NULL, timestamp_visit NUMBER
+                chords TEXT NOT NULL, timestamp_saved NUMBER
                 );`
         await this.executeQuery(query)
       };
@@ -164,7 +164,7 @@ class DbService implements IDbService{
       private createPlaylistTable = async () => {
         const timestampNow = new Date().getTime()
         const query = `CREATE TABLE IF NOT EXISTS playlist
-              (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, timestamp_created NUMBER NOT NULL, timestamp_visit NUMBER);`
+              (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, timestamp_created NUMBER NOT NULL, timestamp_edited NUMBER);`
         const query1 = `INSERT OR IGNORE INTO playlist (id, name, timestamp_created) VALUES (?, ?, ?);`
         await this.executeQuery(query)
         await this.executeQuery(query1, [1, 'Favorites', timestampNow])

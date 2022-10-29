@@ -7,7 +7,7 @@ import { Data, Playlist, Song } from "../model/domain/types";
 import ApiService from "../services/ApiService";
 import DbService from "../services/DbService";
 import { IRepository } from "./IRepository";
-import { mapPlaylistInfoDbToDomain, mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "./mapper/song";
+import { mapPlaylistInfoDbToDomain, mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "./mapper/mapper";
 
 
 class Repository implements IRepository {
@@ -96,7 +96,7 @@ class Repository implements IRepository {
         console.log(result)
         if(result.ok && result.data){
             const favorites = mapPlaylistInfoDbToDomain(result.data.shift()!)
-            let playlistInfos = result.data.sort((a,b)=> b.timestamp_visit - a.timestamp_visit).map(playlistInfo=>{
+            let playlistInfos = result.data.sort((a,b)=> b.timestamp_edited - a.timestamp_edited).map(playlistInfo=>{
             return mapPlaylistInfoDbToDomain(playlistInfo)})
             playlistInfos.unshift(favorites)
             return {data: playlistInfos, ok: true}
@@ -107,7 +107,6 @@ class Repository implements IRepository {
     
     async findSavedSongs(playlistId: number, query: string, timestampAdded: number, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
         const result = await this.dbService.findSongsInPlaylist(playlistId, query, timestampAdded, sortOrder)
-        
         if(result.ok && result.data){
             const songs = result.data.map(playlistInfo=>{
                 return mapSongDbToDomain(playlistInfo)

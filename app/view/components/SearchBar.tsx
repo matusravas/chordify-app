@@ -1,9 +1,7 @@
-import React, {memo, useRef, useState} from 'react';
-import { IconButton } from '@react-native-material/core';
-import { TextInput, View, TouchableOpacity, Keyboard, Animated } from 'react-native';
+import React, {memo, useState} from 'react';
+import { TextInput, TouchableOpacity, Keyboard, Animated } from 'react-native';
 import Icon, { Icons } from '../../icons/icons';
 import { useEffectAfterMount } from '../../utils/hooks';
-import { Gesture, TapGestureHandler } from 'react-native-gesture-handler';
 
 
 interface SearchBarProps {

@@ -17,8 +17,8 @@ export const mapSongDomainToApi = (song: Song): SongApi => {
 }
 
 export const mapSongDbToDomain = (songDb: SongDb, showChords: boolean=false): Song => {
-    const {full_url: fullUrl, chords_link: chordsLink, timestamp_visit: timestampLastVisit, timestamp_added: timestampAddedToPlaylist, chords, ...rest} = songDb
-    const song: Song = {chordsLink, fullUrl, timestampLastVisit, timestampAddedToPlaylist, isFavorite: false, ...rest, ...(showChords && { chords: chords })}
+    const {full_url: fullUrl, chords_link: chordsLink, timestamp_saved: timestampSaved, timestamp_added_to_playlist: timestampAddedToPlaylist, chords, ...rest} = songDb
+    const song: Song = {chordsLink, fullUrl, timestampSaved, timestampAddedToPlaylist, isFavorite: false, ...rest, ...(showChords && { chords: chords })}
     return song
 }
 
@@ -35,7 +35,7 @@ export const mapSongChordsApiToDomain = (songChordsApi: SongChordsApi): Song => 
 }
 
 export const mapPlaylistInfoDbToDomain = (playlistInfo: PlaylistInfoDb): Playlist => {
-    const {count, playlist_id, name, timestamp_visit, timestamp_create} = playlistInfo
-    const playlist: Playlist = {id: playlist_id, name: name, songsCount: count, timestampVisit: timestamp_visit, timestampCreate: timestamp_create}
+    const {count, playlist_id, name, timestamp_edited: timestampEdited, timestamp_created: timestampCreated} = playlistInfo
+    const playlist: Playlist = {id: playlist_id, name: name, songsCount: count, timestampEdited, timestampCreated}
     return playlist
 }

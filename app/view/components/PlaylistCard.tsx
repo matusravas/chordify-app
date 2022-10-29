@@ -26,12 +26,12 @@ const PlaylistCard = ({ index, playlist, onPlaylistCardClick }: PlaylistCardProp
           <Text style={{ color: '#F7F7F750', paddingBottom: 5 }} >
             {playlist.songsCount} songs
           </Text>
-          {playlist.timestampVisit ? <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
-            Edited {new Date(playlist.timestampVisit).toDateString()}
+          {playlist.timestampEdited ? <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
+            Edited {new Date(playlist.timestampEdited).toDateString()}
           </Text> :
-            <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
-              Created {new Date(playlist.timestampCreate).toDateString()}
-            </Text>}
+            index !== 0? <Text style={{ fontSize: 11, color: '#F7F7F750' }}>
+              Created {new Date(playlist.timestampCreated).toDateString()}
+            </Text>: null}
         </View>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'center', marginRight: 12 }}>

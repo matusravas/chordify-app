@@ -11,7 +11,7 @@ interface PlaylistCardModalProps {
 const PlaylistCardModal = ({ playlist, onPlaylistSelected }: PlaylistCardModalProps) => (
   <TouchableNativeFeedback style={{}} onPress={() => onPlaylistSelected(playlist.id)} background={TouchableNativeFeedback.Ripple('#111317', false)}>
     <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-      <Icon size={20} type={Icons.MaterialCommunityIcons} name={'playlist-music-outline'} color={'#F7F7F7AA'} />
+      <Icon size={22} type={Icons.MaterialCommunityIcons} name={'playlist-music-outline'} color={'#F7F7F7AA'} />
       <Text style={{ fontSize: 18, margin: 15, fontWeight: '600', color: '#F7F7F7AA'}}>
         {playlist.name}
       </Text>
