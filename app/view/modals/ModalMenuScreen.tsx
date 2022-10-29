@@ -6,6 +6,7 @@ import { View, Pressable, Text } from 'react-native';
 import Icon, { Icons } from "../../icons/icons";
 import { ModalScreenProps } from "../../navigation/types";
 import useSongToPlaylistModalViewModel from "../../view_model/SongToPlaylistModalViewModel";
+import PressableItem from "../components/PressableItem";
 import CreateNewPlaylistModal from "./CreateNewPlaylistModal";
 import SelectPlaylistModal from "./SelectPlaylistModal";
 
@@ -24,7 +25,7 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
     const items = [
         {
             title: song.isFavorite ? 'Saved as Favorite' : 'Add to Favorites',
-            iconType: Icons.MaterialIcons, iconName: 'favorite', color: song.isFavorite ? '#1FC159CC' : '#F7F7F7AA', colorPressed: song.isFavorite ? '#1FC15920' : '#F7F7F750',
+            iconType: Icons.MaterialIcons, iconName: 'favorite', color: song.isFavorite ? '#1FC159CC' : '#F7F7F7AA', colorPressed: song.isFavorite ? '#1FC15980' : '#F7F7F750',
             handler: () => handleFavoritesChange(song)
         },
         {
@@ -67,18 +68,18 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
                 {!isNewPlaylist && <SelectPlaylistModal playlists={playlists} onPlaylistSelected={handleSaveSong} onIsNewPlaylist={handleIsNewPlaylist} />}
                 {isNewPlaylist && <CreateNewPlaylistModal onSubmit={handleSaveSong} />}
             </View> :
-                <View>
-                    {items.map((item, idx) => (
-                        <Pressable key={idx} children={({ pressed }) => (
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Icon size={20} type={item.iconType} name={item.iconName} color={item.color} />
-                                <Text onPress={item.handler} style={{ fontSize: 18, margin: 15, fontWeight: '600', color: pressed ? item.colorPressed : item.color }}>
-                                    {item.title}
-                                </Text>
-                            </View>
-                            )} />
-                    ))}
-                </View>}
+                (
+                    items.map((item, idx) => (
+                        <PressableItem key={idx}
+                            handler={item.handler}
+                            text={item.title}
+                            color={{color: item.color, colorPressed: item.colorPressed}}
+                            icon={true}
+                            iconStyle={{ iconType: item.iconType, iconName: item.iconName }}
+                        />
+                    ))
+                )
+            }
         </View>
     )
 }

@@ -13,7 +13,7 @@ const CreateNewPlaylistModal = ({ onSubmit }: CreateNewPlaylistModalProps) => {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TextInput value={value} textAlign='center' onChangeText={(text: string) => setValue(text)} selectionColor='#1FC159' placeholderTextColor='#F7F7F750' placeholder="Enter playlist name..." style={{ fontSize: 18, color: '#F7F7F750' }} />
-            <SubmitButton onSubmit={() => onSubmit(value)} text={'Submit'} />
+            <SubmitButton onSubmit={() => value.length > 0 ? onSubmit(value?.charAt(0).toUpperCase() + value.slice(1)): {}} text={'Submit'} />
         </View>
     )
 }
