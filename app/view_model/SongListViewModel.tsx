@@ -5,7 +5,7 @@ import { useNetInfo } from "@react-native-community/netinfo"
 import { useEffectAfterMount } from "../utils/hooks"
 
 
-function useSongListViewModel() {
+function useSongListViewModel(song?: Song) {
     // const fetching = useRef(false)
     console.log('ViewModel')
     // console.log(fetching.current)
@@ -26,6 +26,14 @@ function useSongListViewModel() {
         }
       // }, [route, isConnected])
       }, [searchQuery, currentPage, isConnected])
+
+    useEffect(()=>{
+        console.log('abcdefghijklmnop')
+        console.log(song)
+        if(song){
+            updateFavoriteSongs(song)
+        }
+    }, [song])
 
     // useEffect(()=>{
     //     searchSongs()
@@ -63,7 +71,9 @@ function useSongListViewModel() {
             console.log('catch')
         }finally{
             // fetching.current = false
-            currentPage > 1? setIsMoreLoading(false) : setIsLoading(false)
+            // currentPage > 1? setIsMoreLoading(false) : setIsLoading(false)
+            setIsLoading(false)
+            setIsMoreLoading(false)
         }
     }, [searchQuery, currentPage])
     
@@ -72,10 +82,8 @@ function useSongListViewModel() {
         setCurrentPage(prev=>prev+1)
     }, [currentPage])
 
+
     const updateFavoriteSongs = useCallback((song: Song) => {
-        console.log('Update fav')
-        // console.log(songs.length)
-        // console.log(song)
         const idx = songs.findIndex(s=>s.id === song.id)
         let newSongs = [...songs]
         if(idx !== -1) {

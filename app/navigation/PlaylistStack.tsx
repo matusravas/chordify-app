@@ -7,7 +7,7 @@ import ModalMenuScreen from "../view/modals/ModalMenuScreen";
 
 export type PlaylistStackParamList = {
   Playlists: undefined,
-  PlaylistSongs: {playlist: Playlist},
+  PlaylistSongs: {song: Song|undefined, playlist: Playlist},
   Song: {song: Song},
   Modal: {song: Song, playlist: Playlist}
 }

@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, StyleProp, ViewStyle } from "react-native";
 import { Icons } from "../../icons/icons";
 import Icon from "../../icons/icons";
 import { StyleSheet } from "react-native";
@@ -7,6 +7,7 @@ import { StyleSheet } from "react-native";
 
 interface PressableItemProps {
     handler: () => void,
+    style?: StyleProp<ViewStyle>
     icon?: boolean,
     text: string,
     color?: {color?: string, colorPressed?: string},
@@ -21,7 +22,7 @@ const PressableItem = ({icon=false, ...props}: PressableItemProps) => {
     const iconStyle = {...styles.icon, ...props.iconStyle, ...props.color}
     return (
     <Pressable onPress={props.handler} children={({ pressed }) => (
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={[{...styles.container}, props.style]}>
             {icon && <Icon size={pressed ? iconStyle.sizePressed : iconStyle.size} 
             type={iconStyle.iconType} name={iconStyle.iconName} 
             color={pressed ? iconStyle.colorPressed : iconStyle.color} 
@@ -35,10 +36,7 @@ const PressableItem = ({icon=false, ...props}: PressableItemProps) => {
 }
 
 const styles = StyleSheet.create({
-    // color: {
-    //     color: '#F7F7F7AA', 
-    //     colorPressed: '#F7F7F750'
-    // },
+    container: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
     text: {
         fontSize: 18,
         fontSizePressed: 17,

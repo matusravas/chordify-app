@@ -16,9 +16,9 @@ import useSearchBarAnimation from '../animations/searchbar';
 
 
 const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
-  const { songs, searchQuery, isConnected, isLoading, isMoreLoading, searchSongs, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel()
+  const { songs, searchQuery, isConnected, isLoading, isMoreLoading, searchSongs, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel(route.params?.song)
   const bottomTabBarHeight = useBottomTabBarHeight()
-
+  const song = route.params?.song
   const [showSnack, setShowSnack] = useState(true)
   // const offset = useRef(0)
   // const direction = useRef<'up'|'down'>('up')
@@ -28,12 +28,18 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
   // const animation = new Animated.Value(100);
 
-  useFocusEffect(
-    useCallback(()=>{
-      flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
-      // searchSongs()
-    },[])
-  )
+  // useFocusEffect(
+  //   useCallback(()=>{
+  //     if(song) {
+  //       console.log('---------------------------')
+  //       console.log('kokotko')
+  //       console.log(song)
+  //     }
+  //     // flatListRef.current.scrollToOffset({ animated: true, offset: 0 })
+  //     // searchSongs()
+  //   },[navigation, route])
+  // )
+
   // const animOut = useCallback(() => {
   //   Animated.timing(animation, {
   //     toValue: 0,

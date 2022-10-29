@@ -5,10 +5,11 @@ import SongsScreen from "../view/SongsScreen";
 import ModalMenuScreen from "../view/modals/ModalMenuScreen";
 import Icon, { Icons } from "../icons/icons";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Image } from "react-native";
+import { Button, Image } from "react-native";
+import { ScreenStackHeaderBackButtonImage } from "react-native-screens";
 
 export type SongStackParamList = {
-  Songs: undefined,
+  Songs: {song: Song|undefined},
   Song: { song: Song },
   Modal: { song: Song},
 }

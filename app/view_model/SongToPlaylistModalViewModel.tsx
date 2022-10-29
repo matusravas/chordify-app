@@ -139,10 +139,11 @@ function useSongToPlaylistModalViewModel(song: Song, playlist?: Playlist) {
     return {
         playlists,
         searchPlaylists,
-        handleFavoritesChange,
+        changeFavorite: handleFavoritesChange,
         handleSaveSongToPlaylist,
         handleRemoveSongFromPlaylist
-        // handleSaveSongToNewPlaylist
+        // saveSong: handleSaveSongToPlaylist,
+        // removeSong: handleRemoveSongFromPlaylist
     }
 }
 
