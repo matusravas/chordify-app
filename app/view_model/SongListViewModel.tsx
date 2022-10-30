@@ -3,12 +3,11 @@ import {useState, useEffect, useCallback, useRef} from 'react'
 import { Song } from "../model/domain/types"
 import { useNetInfo } from "@react-native-community/netinfo"
 import { useEffectAfterMount } from "../utils/hooks"
+import { ActionType } from "../model/types"
 
 
-function useSongListViewModel(song?: Song) {
-    // const fetching = useRef(false)
+function useSongListViewModel(song?: Song, actionType?: ActionType) {
     console.log('ViewModel')
-    // console.log(fetching.current)
     const repository = Repository.getInstance()
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
@@ -20,30 +19,22 @@ function useSongListViewModel(song?: Song) {
     const {isConnected} = useNetInfo()
 
     useEffect(()=>{
-        console.log('effect')
         if (!isLoading && !isMoreLoading && isConnected !== null) {
             searchSongs()
         }
-      // }, [route, isConnected])
       }, [searchQuery, currentPage, isConnected])
 
+    
     useEffect(()=>{
-        console.log('abcdefghijklmnop')
-        console.log(song)
-        if(song){
-            updateFavoriteSongs(song)
+        if(song && actionType){
+            updateSongs(song, actionType)
         }
-    }, [song])
+    }, [song, actionType])
 
-    // useEffect(()=>{
-    //     searchSongs()
-    // }, [searchQuery, currentPage])
 
 
     const searchSongs = useCallback(async() => {
-        // fetching.current = true
         currentPage > 1? setIsMoreLoading(true) : setIsLoading(true)
-        // setSongs([])
         console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
         
         try {
@@ -83,11 +74,11 @@ function useSongListViewModel(song?: Song) {
     }, [currentPage])
 
 
-    const updateFavoriteSongs = useCallback((song: Song) => {
+    const updateSongs = useCallback((song: Song, actionType: ActionType) => {
         const idx = songs.findIndex(s=>s.id === song.id)
         let newSongs = [...songs]
         if(idx !== -1) {
-            newSongs[idx] = {...songs[idx], isFavorite: !song.isFavorite}
+            newSongs[idx] = {...songs[idx], isFavorite: actionType === ActionType.FavoritesAdd? true: false}
             setSongs(newSongs)
         }
     }, [songs])
@@ -110,7 +101,7 @@ function useSongListViewModel(song?: Song) {
                         songWithChords = {chords: data.data.chords, ...song}
                         const resultDb = await repository.addSongToPlaylist(songWithChords, 1)
                         console.log(resultDb)
-                        updateFavoriteSongs(song)
+                        updateSongs(song, ActionType.FavoritesAdd)
                     }
                 }catch(err){
                     // setIsError(true)
@@ -123,7 +114,7 @@ function useSongListViewModel(song?: Song) {
             const removeSong = async() => {
                 const resultDb = await repository.removeSongFromPlaylist(song.id, 1)
                 console.log(resultDb)
-                updateFavoriteSongs(song)
+                updateSongs(song, ActionType.FavoritesRemove)
             }
             removeSong()
         }
@@ -141,7 +132,7 @@ function useSongListViewModel(song?: Song) {
         // isError,
         // errorMessage,
         // message,
-        searchSongs,
+        // searchSongs,
         handlePageChanged,
         handleChangeSearchQuery, 
         handleFavoritesChange

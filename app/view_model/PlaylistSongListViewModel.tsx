@@ -1,9 +1,10 @@
 import Repository from "../repository/Repository"
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Song } from "../model/domain/types"
+import { ActionType } from "../model/types"
 
 
-function usePlaylistSongsViewModel(playlistId: number) {
+function usePlaylistSongsViewModel(playlistId: number, song?: Song, actionType?: ActionType) {
     const repository = Repository.getInstance()
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
@@ -11,6 +12,15 @@ function usePlaylistSongsViewModel(playlistId: number) {
     const endReached = useRef(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isMoreLoading, setIsMoreLoading] = useState(false)
+
+
+    useEffect(()=>{
+        console.log('jjjjjjjjjjjjjjjjjjjjjj')
+        if(actionType && song){
+            // updateFavoriteSongs(song)
+            updatePlaylistSongs(song, actionType)
+        }
+    }, [song, actionType])
 
 
     const searchSongsInPlaylist = useCallback(async () => {
@@ -53,12 +63,31 @@ function usePlaylistSongsViewModel(playlistId: number) {
     }, [searchQuery])
 
 
-    const updateFavoriteSongs = useCallback((song: Song) => {
+    // const updateFavoriteSongs = useCallback((song: Song) => {
+    //     const idx = songs.findIndex(s => s.id === song.id)
+    //     let newSongs = [...songs]
+    //     if (idx !== -1) {
+    //         newSongs[idx] = { ...songs[idx], isFavorite: !song.isFavorite }
+    //         console.log(newSongs)
+    //         setSongs(newSongs)
+    //     }
+    // }, [songs])
+    
+    
+    const updatePlaylistSongs = useCallback((song: Song, actionType: ActionType) => {
         const idx = songs.findIndex(s => s.id === song.id)
-        let newSongs = [...songs]
-        if (idx !== -1) {
-            newSongs[idx] = { ...songs[idx], isFavorite: !song.isFavorite }
-            console.log(newSongs)
+        if (idx === -1) return
+        console.log(actionType, song)
+        if (actionType === ActionType.Remove) {
+            console.log('removing')
+            let newSongs = [...songs]
+            newSongs.splice(idx, 1)
+            setSongs(newSongs)
+        }
+        else if (actionType === ActionType.FavoritesAdd || actionType === ActionType.FavoritesRemove) {
+            console.log('favs')
+            let newSongs = [...songs]
+            newSongs[idx] = { ...songs[idx], isFavorite: actionType === ActionType.FavoritesAdd? true: false }
             setSongs(newSongs)
         }
     }, [songs])
@@ -78,7 +107,7 @@ function usePlaylistSongsViewModel(playlistId: number) {
                     if (resultChords.data && resultChords.data.chords) {
                         songToInsert = { chords: resultChords.data.chords, ...song }
                         const resultInsert = await repository.addSongToPlaylist(songToInsert, 1)
-                        updateFavoriteSongs(song)
+                        updatePlaylistSongs(song, ActionType.FavoritesAdd)
                     }
                 } catch (err) {
 
@@ -91,7 +120,7 @@ function usePlaylistSongsViewModel(playlistId: number) {
                 try {
                     const resultDelete = await repository.removeSongFromPlaylist(song.id, 1)
                     // console.log(resultDb)
-                    updateFavoriteSongs(song)
+                    updatePlaylistSongs(song, ActionType.FavoritesRemove)
                 } catch (err) {
 
                 }

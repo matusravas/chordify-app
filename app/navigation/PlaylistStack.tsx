@@ -4,10 +4,11 @@ import PlaylistsScreen from "../view/PlaylistsScreen";
 import PlaylistSongsScreen from "../view/PlaylistSongsScreen";
 import ChordsScreen from "../view/ChordsScreen";
 import ModalMenuScreen from "../view/modals/ModalMenuScreen";
+import { ActionType } from "../model/types";
 
 export type PlaylistStackParamList = {
   Playlists: undefined,
-  PlaylistSongs: {song: Song|undefined, playlist: Playlist},
+  PlaylistSongs: {playlist: Playlist, song?: Song, actionType?: ActionType},
   Song: {song: Song},
   Modal: {song: Song, playlist: Playlist}
 }

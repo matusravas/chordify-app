@@ -7,9 +7,10 @@ import Icon, { Icons } from "../icons/icons";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button, Image } from "react-native";
 import { ScreenStackHeaderBackButtonImage } from "react-native-screens";
+import { ActionType } from "../model/types";
 
 export type SongStackParamList = {
-  Songs: {song: Song|undefined},
+  Songs: {song?: Song, actionType?: ActionType},
   Song: { song: Song },
   Modal: { song: Song},
 }
