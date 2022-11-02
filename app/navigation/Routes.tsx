@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { StyleSheet } from "react-native"
-import { Icons } from '../icons/icons';
+import { Icons } from '../res/icons/icons';
 import PlaylistsScreen from '../view/PlaylistsScreen';
 import PlaylistStackScreen from './PlaylistStack';
 import SongStackScreen from './SongStack';

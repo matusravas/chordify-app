@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FC } from 'react';
-import { Icons } from '../icons/icons';
+import { Icons } from '../res/icons/icons';
 import { Playlist, Song } from '../model/domain/types';
 import PlaylistsScreen from '../view/PlaylistsScreen';
 import PlaylistStackScreen, { PlaylistStackParamList } from './PlaylistStack';

@@ -1,12 +1,8 @@
 import Repository from "../repository/Repository"
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Playlist, Song } from "../model/domain/types"
-import { Icons } from "../icons/icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { SongStackParamList } from "../navigation/SongStack";
-import { PlaylistStackParamList } from "../navigation/PlaylistStack";
+import { Icons } from "../res/icons/icons";
 import { ActionType } from "../model/types";
-
 
 
 interface ModalViewModalProps {
@@ -20,6 +16,7 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
     const [playlists, setPlaylists] = useState([] as Playlist[])
     const [isAddToPlaylist, setIsAddToPlaylist] = useState(false)
     const [actionType, setActionType] = useState<ActionType>()
+    // const [message, setMessage] = useState<string|undefined>()
 
 
     useEffect(() => {
@@ -48,24 +45,31 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
                 if (data.data && data.data.chords) {
                     songWithChords = { chords: data.data.chords, ...song }
                     if (playlistId || playlistName) {
+                        let resultAddSong = undefined
                         if (playlistId) {
-                            const resultAddSong = await repository.addSongToPlaylist(songWithChords, playlistId)
+                            resultAddSong = await repository.addSongToPlaylist(songWithChords, playlistId)
                             console.log(resultAddSong)
                         }
                         if (playlistName) {
                             let resultAddPlaylist = await repository.addNewPlaylist(playlistName)
                             if (resultAddPlaylist.ok && resultAddPlaylist.data) {
-                                const resultAddSong = await repository.addSongToPlaylist(songWithChords, resultAddPlaylist.data)
+                                resultAddSong = await repository.addSongToPlaylist(songWithChords, resultAddPlaylist.data)
                                 console.log(resultAddSong)
                             }
                         }
-                        setActionType(ActionType.Add)
+                        console.log('resultAddSong')
+                        console.log(resultAddSong)
+                        if(resultAddSong && resultAddSong.ok && resultAddSong.data) {
+                            // setMessage(`${song.name} added to playlist`)
+                            setActionType(ActionType.Add)
+                        }
                     }
                     else { //favorites
                         const resultAddSong = await repository.addSongToPlaylist(songWithChords, 1)
                         console.log(resultAddSong)
                         const newSong = { ...song, isFavorite: !song.isFavorite }
                         setSong(newSong)
+                        // setMessage(`${song.name} added to Favorites`)
                         setActionType(ActionType.FavoritesAdd)
                     }
                 }
@@ -73,7 +77,10 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
             if (action === 'remove') {
                 if (playlistId) {
                     const resultDelete = await repository.removeSongFromPlaylist(song.id, playlistId)
-                    if (resultDelete) setActionType(ActionType.Remove)
+                    if (resultDelete) {
+                        // setMessage(`${song.name} removed from playlist`)
+                        setActionType(ActionType.Remove)
+                    }
                 }
                 else {
                     const resultDelete = await repository.removeSongFromPlaylist(song.id, 1)
@@ -81,12 +88,13 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
                         // setRemoved(true)
                         const newSong = { ...song, isFavorite: !song.isFavorite }
                         setSong(newSong)
+                        // setMessage(`${song.name} removed from Favorites`)
                         setActionType(ActionType.FavoritesRemove)
                     }
                 }
             }
         } catch (err) {
-
+            // setMessage(`Error: ${err}`)
         }
     }, [song])
 
@@ -118,6 +126,7 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
         playlists,
         menuItems,
         actionType,
+        // message,
         isAddToPlaylist,
         setIsAddToPlaylist,
         searchPlaylists,

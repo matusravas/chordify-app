@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
-import Icon, { Icons } from '../icons/icons';
+import Icon, { Icons } from '../res/icons/icons';
 import routes from './Routes';
 
 

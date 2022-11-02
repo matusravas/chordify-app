@@ -1,7 +1,7 @@
-import { SongChordsDto as SongChordsApi, SongDto as SongApi} from "../../model/api/types";
-import { PlaylistInfoDto as PlaylistInfoDb } from "../../model/db/sql/types";
-import { SongDto as SongDb, PlaylistDto as PlaylistDb} from "../../model/db/types";
-import { Playlist, Song } from "../../model/domain/types";
+import { SongChordsDto as SongChordsApi, SongDto as SongApi} from "../api/types";
+import { PlaylistInfoDto as PlaylistInfoDb } from "../db/sql/types";
+import { SongDto as SongDb, PlaylistDto as PlaylistDb} from "../db/types";
+import { Playlist, Song } from "../domain/types";
 
 export const mapSongApiToDomain = (songApi: SongApi): Song => {
     const {statistics, full_url, chords_link, ...rest} = songApi

@@ -8,7 +8,7 @@ import { ActionType } from "../model/types";
 
 export type PlaylistStackParamList = {
   Playlists: undefined,
-  PlaylistSongs: {playlist: Playlist, song?: Song, actionType?: ActionType},
+  PlaylistSongs: {playlist: Playlist, song?: Song, actionType?: ActionType, message?: string},
   Song: {song: Song},
   Modal: {song: Song, playlist: Playlist}
 }

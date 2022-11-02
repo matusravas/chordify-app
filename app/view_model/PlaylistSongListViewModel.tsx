@@ -1,13 +1,15 @@
 import Repository from "../repository/Repository"
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Song } from "../model/domain/types"
+import { Playlist, Song } from "../model/domain/types"
 import { ActionType } from "../model/types"
 
 
-function usePlaylistSongsViewModel(playlistId: number, song?: Song, actionType?: ActionType) {
+function usePlaylistSongsViewModel(playlist: Playlist, song: Song|undefined, actionType: ActionType|undefined, message: string|undefined) {
     const repository = Repository.getInstance()
+    const playlistId = playlist.id
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
+    const [snackMessage, setSnackMessage] = useState(message)
     const currentTimestamp = useRef(0)
     const endReached = useRef(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -16,8 +18,8 @@ function usePlaylistSongsViewModel(playlistId: number, song?: Song, actionType?:
 
     useEffect(()=>{
         console.log('jjjjjjjjjjjjjjjjjjjjjj')
-        if(actionType && song){
-            // updateFavoriteSongs(song)
+        console.log(actionType, song)
+        if(actionType !== undefined && song){
             updatePlaylistSongs(song, actionType)
         }
     }, [song, actionType])
@@ -61,17 +63,6 @@ function usePlaylistSongsViewModel(playlistId: number, song?: Song, actionType?:
     useEffect(() => {
         searchSongsInPlaylist()
     }, [searchQuery])
-
-
-    // const updateFavoriteSongs = useCallback((song: Song) => {
-    //     const idx = songs.findIndex(s => s.id === song.id)
-    //     let newSongs = [...songs]
-    //     if (idx !== -1) {
-    //         newSongs[idx] = { ...songs[idx], isFavorite: !song.isFavorite }
-    //         console.log(newSongs)
-    //         setSongs(newSongs)
-    //     }
-    // }, [songs])
     
     
     const updatePlaylistSongs = useCallback((song: Song, actionType: ActionType) => {
@@ -79,16 +70,21 @@ function usePlaylistSongsViewModel(playlistId: number, song?: Song, actionType?:
         if (idx === -1) return
         console.log(actionType, song)
         if (actionType === ActionType.Remove) {
-            console.log('removing')
+            // console.log('removing')
             let newSongs = [...songs]
             newSongs.splice(idx, 1)
             setSongs(newSongs)
+            setSnackMessage(`${song.name} removed from playlist`)
+        }
+        if(actionType === ActionType.Add){
+            setSnackMessage(`${song.name} added to playlist`)
         }
         else if (actionType === ActionType.FavoritesAdd || actionType === ActionType.FavoritesRemove) {
-            console.log('favs')
+            // console.log('favs')
             let newSongs = [...songs]
             newSongs[idx] = { ...songs[idx], isFavorite: actionType === ActionType.FavoritesAdd? true: false }
             setSongs(newSongs)
+            setSnackMessage(`${song.name} ${actionType === ActionType.FavoritesAdd? 'added to': 'removed from'} Favorites`)
         }
     }, [songs])
 
@@ -98,55 +94,41 @@ function usePlaylistSongsViewModel(playlistId: number, song?: Song, actionType?:
     }, [])
 
 
-    const handleFavoritesChange = useCallback((song: Song) => {
-        if (!song.isFavorite) {
-            const searchSongChordsAndInsertToFavorites = async () => {
-                try {
-                    let songToInsert = undefined
-                    const resultChords = await repository.searchSongChords(song)
-                    if (resultChords.data && resultChords.data.chords) {
-                        songToInsert = { chords: resultChords.data.chords, ...song }
-                        const resultInsert = await repository.addSongToPlaylist(songToInsert, 1)
-                        updatePlaylistSongs(song, ActionType.FavoritesAdd)
+    const handleFavoritesChange = useCallback(async (song: Song) => {
+        try {
+            if (!song.isFavorite) {
+                let songToInsert = undefined
+                const resultChords = await repository.searchSongChords(song)
+                if (resultChords.data && resultChords.data.chords) {
+                    songToInsert = { chords: resultChords.data.chords, ...song }
+                    const resultInsert = await repository.addSongToPlaylist(songToInsert, 1)
+                    if (resultInsert.ok && resultInsert.data) updatePlaylistSongs(song, ActionType.FavoritesAdd)
+                }
+            }
+            else {
+                const resultDelete = await repository.removeSongFromPlaylist(song.id, 1)
+                if (resultDelete.ok && resultDelete.data) {
+                    if (playlistId === 1) {
+                            const idx = songs.findIndex(s => s.id === song.id)
+                            let newSongs = [...songs]
+                            newSongs.splice(idx, 1)
+                            setSongs(newSongs)
+                    }  
+                    else {
+                        updatePlaylistSongs(song, ActionType.FavoritesRemove)
                     }
-                } catch (err) {
-
+                    
                 }
             }
-            searchSongChordsAndInsertToFavorites()
-        }
-        else if (song.isFavorite && playlistId !== 1) {
-            const removeSong = async () => {
-                try {
-                    const resultDelete = await repository.removeSongFromPlaylist(song.id, 1)
-                    // console.log(resultDb)
-                    updatePlaylistSongs(song, ActionType.FavoritesRemove)
-                } catch (err) {
-
-                }
-            }
-            removeSong()
-        }
-        else {
-            const removeSong = async () => {
-                try {
-                    const resultDelete = await repository.removeSongFromPlaylist(song.id, 1)
-                    const idx = songs.findIndex(s => s.id === song.id)
-                    let newSongs = [...songs]
-                    newSongs.splice(idx, 1)
-                    setSongs(newSongs)
-                } catch (err) {
-
-                }
-            }
-            removeSong()
-
-        }
+    } catch (err) {
+        console.error(err)
+    }
     }, [songs])
 
 
     return {
         songs,
+        snackMessage,
         isLoading,
         isMoreLoading,
         searchQuery,

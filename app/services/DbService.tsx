@@ -1,9 +1,7 @@
-import { Response } from "../model/api/types";
-import { Song } from "../model/domain/types";
 import { IDbService } from "./IDbService";
-import {openDatabase, enablePromise, ResultSet, ResultSetRowList, SQLiteDatabase} from 'react-native-sqlite-storage';
-import { SongDto, PlaylistDto } from "../model/db/types";
-import { FavoriteSongIds as FavoriteSongId, InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types";
+import {openDatabase, enablePromise} from 'react-native-sqlite-storage';
+import { SongDto } from "../model/db/types";
+import { FavoriteSongIds as FavoriteSongId, PlaylistInfoDto, SQLResult } from "../model/db/sql/types";
 
 class DbService implements IDbService{
     static _instance: DbService
@@ -25,7 +23,6 @@ class DbService implements IDbService{
 
     async findFavoriteSongIdsBySongIds(songIds: Array<number>): Promise<SQLResult<FavoriteSongId>>{
         const selectSongs = `SELECT sp.song_id FROM song_playlist as sp WHERE (sp.playlist_id = 1 AND sp.song_id IN (${[...songIds]}))`
-        // console.log(selectSongs)
         return this.executeQuery(selectSongs)
     }
 
@@ -194,6 +191,9 @@ class DbService implements IDbService{
                         // console.log(result)
                         resolve({data: result.rows.raw(), result: result, ok: true})
                     })
+                }).catch(err=>{
+                    console.error(err)
+                    reject(err)
                 })
             }).catch(err=>{
                 console.log('Can not connect to DB. '+ err)

@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { View, TouchableNativeFeedback, Text } from "react-native"
 import { HStack, VStack, IconButton } from '@react-native-material/core';
-import Icon, { Icons } from '../../icons/icons';
+import Icon, { Icons } from '../../res/icons/icons';
 // import { PlaylistCardProps } from '../../model/prop_types/types';
-import Platform from '../../platform/Platform';
+import Platform from '../../res/platform/Platform';
 import { Playlist } from '../../model/domain/types';
 
 

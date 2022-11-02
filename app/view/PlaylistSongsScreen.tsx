@@ -4,10 +4,11 @@ import SongsList from './components/SongList';
 import {View, FlatList} from 'react-native'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { ActivityIndicator } from '@react-native-material/core';
+import { ActivityIndicator, Box, Snackbar, Button } from '@react-native-material/core';
 import usePlaylistSongsViewModel from '../view_model/PlaylistSongListViewModel';
 import { PlaylistSongsScreenProps } from '../navigation/types';
-import useSearchBarAnimation from '../animations/searchbar';
+import useSearchBarAnimation from '../res/animations/searchbar';
+import CustomSnackbar from './components/Snackbar';
 
 
 
@@ -16,10 +17,12 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     console.log(route.params)
     const playlist = route.params.playlist
     const actionType = route.params.actionType
+    const message = route.params.message
     const song = route.params.song
-    const {songs, isLoading, isMoreLoading, searchQuery, handleChangeSearchQuery, handleFavoritesChange, searchSongsInPlaylist} = usePlaylistSongsViewModel(playlist.id, song, actionType)
+    const {songs, snackMessage, isLoading, isMoreLoading, searchQuery, handleChangeSearchQuery, handleFavoritesChange, searchSongsInPlaylist} = usePlaylistSongsViewModel(playlist, song, actionType, message)
     const bottomTabBarHeight = useBottomTabBarHeight()
     const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
+    const [snack, setSnack] = useState(true)
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
     console.log('PlaylistSongsScreen rerender')
 
@@ -52,7 +55,8 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
               onMoreButtonClick={handleMoreButtonClick}
               onPageChanged={searchSongsInPlaylist}
               />
-    }
+        }
+        {(snackMessage) && <CustomSnackbar key={new Date().getTime()} message={snackMessage} buttonText={'Ok'}/>}
       </View>
     );
   };

@@ -1,7 +1,5 @@
-import { ResultSet, ResultSetRowList } from "react-native-sqlite-storage"
-import { InsertSongToPlaylist, PlaylistInfoDto, SQLResult } from "../model/db/sql/types"
-import { PlaylistDto, SongDto } from "../model/db/types"
-import { Song, } from "../model/domain/types"
+import { PlaylistInfoDto, SQLResult } from "../model/db/sql/types"
+import { SongDto } from "../model/db/types"
 
 export interface IDbService {
     

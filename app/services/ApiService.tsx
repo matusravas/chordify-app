@@ -31,35 +31,14 @@ class ApiService implements IApiService {
             //     return status >= 200 || status <= 300 ? true : false
             // }
         }).then(res => {
-            // reject('Axios error')
             resolve({ ok: res.data.ok, data: res.data.data })
         }).catch(err => {
-            // console.error(err)
-            reject('Axios error')
+            console.error(err)
+            reject('Unable to fetch data')
         })
         )
     }
 
-    // async getSongDetails(chordsLink: string): Promise<Response<SongDto>> {
-    //     return axios({
-    //         method: 'GET',
-    //         url: `${this._baseURL}/song?tab=${chordsLink}`,
-    //         responseType: 'json',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json',
-    //             Authorization: this._apiToken
-    //         },
-    //         validateStatus: function (status) {
-    //             return status >= 200 || status <= 300 ? true : false
-    //         }
-    //     }).then(res => {
-    //         return {ok: res.data.ok, data: res.data.data as SongDto}
-    //     }).catch(err => {
-    //         console.error(err)
-    //         return {ok: false, data: {} as SongDto}
-    //     })
-    // }
 
     async getSongChords(chordsLink: string): Promise<Response<SongChordsDto>> {
         return new Promise<Response<SongChordsDto>>((resolve, reject) => axios({
@@ -78,7 +57,7 @@ class ApiService implements IApiService {
             resolve({ ok: res.data.ok, data: res.data.data })
         }).catch(err => {
             console.error(err)
-            reject('Can not fetch song chords')
+            reject('Unable not fetch song chords')
         })
         )
     }

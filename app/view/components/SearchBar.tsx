@@ -1,6 +1,6 @@
 import React, {memo, useState} from 'react';
 import { TextInput, TouchableOpacity, Keyboard, Animated } from 'react-native';
-import Icon, { Icons } from '../../icons/icons';
+import Icon, { Icons } from '../../res/icons/icons';
 import { useEffectAfterMount } from '../../utils/hooks';
 
 

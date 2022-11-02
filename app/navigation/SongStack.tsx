@@ -3,14 +3,14 @@ import { Song } from "../model/domain/types";
 import ChordsScreen from "../view/ChordsScreen";
 import SongsScreen from "../view/SongsScreen";
 import ModalMenuScreen from "../view/modals/ModalMenuScreen";
-import Icon, { Icons } from "../icons/icons";
+import Icon, { Icons } from "../res/icons/icons";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button, Image } from "react-native";
 import { ScreenStackHeaderBackButtonImage } from "react-native-screens";
 import { ActionType } from "../model/types";
 
 export type SongStackParamList = {
-  Songs: {song?: Song, actionType?: ActionType},
+  Songs: {song?: Song, actionType?: ActionType, message?: string},
   Song: { song: Song },
   Modal: { song: Song},
 }

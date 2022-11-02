@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import { Pressable, View, Text, StyleProp, ViewStyle } from "react-native";
-import { Icons } from "../../icons/icons";
-import Icon from "../../icons/icons";
+import { Icons } from "../../res/icons/icons";
+import Icon from "../../res/icons/icons";
 import { StyleSheet } from "react-native";
 
 

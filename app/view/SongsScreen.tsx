@@ -7,14 +7,16 @@ import React, { memo, useCallback, useRef, useState } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
 import { SongsScreenProps } from '../navigation/types';
-import useSearchBarAnimation from '../animations/searchbar';
+import useSearchBarAnimation from '../res/animations/searchbar';
+import CustomSnackbar from './components/Snackbar';
 
 
 
 const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const song = route.params?.song
   const actionType = route.params?.actionType
-  const { songs, searchQuery, isConnected, isLoading, isMoreLoading, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel(song, actionType)
+  const message = route.params?.message
+  const { songs, searchQuery, snackMessage, isConnected, isLoading, isMoreLoading, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel(song, actionType, message)
   const bottomTabBarHeight = useBottomTabBarHeight()
   const [showSnack, setShowSnack] = useState(true)
   const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
@@ -51,6 +53,7 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
       {(!isConnected && showSnack) && <Box >
         <Snackbar action={<Button variant="text" title="Dismiss" color="#1FC159BB" compact onPress={() => { setShowSnack(false) }} />} message="You are currently offline..." style={{ position: "absolute", backgroundColor: '#111317DD', start: 16, end: 16, bottom: 8 }} />
       </Box>}
+      {snackMessage && <CustomSnackbar key={new Date().getTime()} message={snackMessage}/>}
     </View>
   );
 };

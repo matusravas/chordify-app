@@ -6,12 +6,13 @@ import { useEffectAfterMount } from "../utils/hooks"
 import { ActionType } from "../model/types"
 
 
-function useSongListViewModel(song?: Song, actionType?: ActionType) {
+function useSongListViewModel(song: Song|undefined, actionType: ActionType|undefined, message: string|undefined) {
     console.log('ViewModel')
     const repository = Repository.getInstance()
     const [songs, setSongs] = useState([] as Song[])
     const [searchQuery, setSearchQuery] = useState('')
     const [isTop100, setIsTop100] = useState(false)
+    const [snackMessage, setSnackMessage] = useState(message)
     const [currentPage, setCurrentPage] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
     const [isMoreLoading, setIsMoreLoading] = useState(false)
@@ -26,11 +27,16 @@ function useSongListViewModel(song?: Song, actionType?: ActionType) {
 
     
     useEffect(()=>{
-        if(song && actionType){
+        if(song && actionType !== undefined){
             updateSongs(song, actionType)
+            switch(actionType){
+                case ActionType.FavoritesAdd: setSnackMessage(`${song?.name} added to Favorites`); break;
+                case ActionType.FavoritesRemove: setSnackMessage(`${song?.name} removed from Favorites`); break;
+                case ActionType.Add: setSnackMessage(`${song?.name} added to playlist`); break;
+                case ActionType.Remove: setSnackMessage(`${song?.name} removed from playlist`); break;
+            }
         }
     }, [song, actionType])
-
 
 
     const searchSongs = useCallback(async() => {
@@ -80,6 +86,8 @@ function useSongListViewModel(song?: Song, actionType?: ActionType) {
         if(idx !== -1) {
             newSongs[idx] = {...songs[idx], isFavorite: actionType === ActionType.FavoritesAdd? true: false}
             setSongs(newSongs)
+            // setSnackMessage(`${song.name} ${actionType === ActionType.FavoritesAdd? 'added to': 'removed from'} Favorites`)
+            // console.log(`${song.name} ${actionType === ActionType.FavoritesAdd? 'added to': 'removed from'} Favorites`)
         }
     }, [songs])
     
@@ -90,33 +98,22 @@ function useSongListViewModel(song?: Song, actionType?: ActionType) {
     },[])
 
 
-    const handleFavoritesChange = useCallback((song: Song) => {
+    const handleFavoritesChange = useCallback(async (song: Song) => {
         console.log(songs.length)
         if(!song.isFavorite){
-            const searchSongChordsAndInsertToFavorites = async() => {
-                let songWithChords = undefined
-                try{
-                    const data = await repository.searchSongChords(song)
-                    if(data.data && data.data.chords){
-                        songWithChords = {chords: data.data.chords, ...song}
-                        const resultDb = await repository.addSongToPlaylist(songWithChords, 1)
-                        console.log(resultDb)
-                        updateSongs(song, ActionType.FavoritesAdd)
-                    }
-                }catch(err){
-                    // setIsError(true)
-                    // setErrorMessage(err)
-                }
-            }
-            searchSongChordsAndInsertToFavorites()
+            let songWithChords = undefined
+            const data = await repository.searchSongChords(song)
+            if(data.data && data.data.chords){
+                songWithChords = {chords: data.data.chords, ...song}
+                const resultDb = await repository.addSongToPlaylist(songWithChords, 1)
+                console.log(resultDb)
+                updateSongs(song, ActionType.FavoritesAdd)
+            }      
         }
         else {
-            const removeSong = async() => {
-                const resultDb = await repository.removeSongFromPlaylist(song.id, 1)
-                console.log(resultDb)
-                updateSongs(song, ActionType.FavoritesRemove)
-            }
-            removeSong()
+            const resultDb = await repository.removeSongFromPlaylist(song.id, 1)
+            console.log(resultDb)
+            updateSongs(song, ActionType.FavoritesRemove)
         }
     }, [songs])
 
@@ -128,6 +125,7 @@ function useSongListViewModel(song?: Song, actionType?: ActionType) {
         isLoading,
         isMoreLoading,
         isConnected,
+        snackMessage,
         // isOnline,
         // isError,
         // errorMessage,

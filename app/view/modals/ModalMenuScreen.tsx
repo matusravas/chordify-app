@@ -2,12 +2,13 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import { View, Pressable } from 'react-native';
-import Icon, { Icons } from "../../icons/icons";
+import Icon, { Icons } from "../../res/icons/icons";
 import { ModalScreenProps } from "../../navigation/types";
 import useModalViewModel from "../../view_model/ModalViewModel";
 import PressableItem from "../components/PressableItem";
 import CreateNewPlaylistModal from "./CreateNewPlaylistModal";
 import SelectPlaylistModal from "./SelectPlaylistModal";
+import { useEffectAfterMount } from "../../utils/hooks";
 
 
 const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
@@ -26,17 +27,25 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
                 headerTitle: title.length > 30 ? `${title.slice(0, 30)}...` : title,
                 headerLeft: () =>
                     <Pressable onPress={() => {
-                        console.log(song, actionType)
-                        console.log(route.params.song)
-                        actionType
-                            ? navigation.navigate(parentScreen, { ...(song && { song }), ...(playlist && { playlist }), ...(actionType && { actionType }) })
-                            : navigation.pop()
+                        navigation.pop()
+                        // console.log(song, actionType)
+                        // console.log(route.params.song)
+                        // actionType !== undefined
+                        //     ? navigation.navigate(parentScreen, { ...(song && { song }), ...(playlist && { playlist }), ...(actionType && { actionType }) , ...(message && { message }) })
+                        //     : navigation.pop()
                     }}>
                         <Icon type={Icons.MaterialCommunityIcons} name={'close'} color={'#F7F7F7'} style={{ marginRight: 30 }} />
                     </Pressable>
             })
         }, [song, actionType])
     )
+
+
+    useEffectAfterMount(()=>{
+        actionType !== undefined
+        ? navigation.navigate(parentScreen, { ...(song && { song }), ...(playlist && { playlist }), ...(actionType !== undefined && { actionType }) })
+        : navigation.pop()
+    }, [actionType])
 
 
     const handleSaveToPlaylist = useCallback((playlist: number | string) => {
