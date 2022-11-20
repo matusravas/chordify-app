@@ -32,7 +32,7 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
 
 
     const handleCardClick = useCallback((song: Song) => {
-      navigation.navigate('Song', {song: song})
+      navigation.navigate('Song', {song: song, playlist: playlist})
     },[])
     
     
@@ -43,7 +43,7 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
   
     return (
       <View style={{flex: 1, marginBottom: bottomTabBarHeight}}>
-        {songs.length > 20 && <SearchBar style={{height: searchBarAnimation}} placeholder={playlist.name} searchQuery={searchQuery} onSearch={handleChangeSearchQuery} onScrollToTop={()=>flatListRef.current.scrollToOffset({ animated: true, offset: 0 })} />}
+        {songs.length > 20 && <SearchBar style={{height: searchBarAnimation}} editable={!isLoading} placeholder={playlist.name} searchQuery={searchQuery} onSearch={handleChangeSearchQuery} onScrollToTop={()=>flatListRef.current.scrollToOffset({ animated: true, offset: 0 })} />}
         {isLoading ? <ActivityIndicator style={{marginTop: 10}} size="large" color='#1FC159'/> :
         <SongsList 
               flatListRef={flatListRef}

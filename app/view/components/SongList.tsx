@@ -1,11 +1,9 @@
-import React, { memo, useEffect, useRef, useState, useMemo } from "react"
-import { FlatList, ListRenderItem, NativeScrollEvent, NativeSyntheticEvent, Animated} from "react-native"
+import React from "react"
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent} from "react-native"
 import { Song } from "../../model/domain/types"
-import { useEffectAfterMount } from "../../utils/hooks"
 import SongCard from "./SongCard"
 import NothingHere from "./NothingHere"
 import ListFooter from "./ListFooter"
-import SearchBar from "./SearchBar"
 // import { FlashList } from "@shopify/flash-list"
 
 

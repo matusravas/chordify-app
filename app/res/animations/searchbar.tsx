@@ -20,6 +20,10 @@ const useSearchBarAnimation = () => {
       offset.current = currentOffset
     }, [])
 
+    const getCurrentScrollOffset = useCallback(() => {return offset.current},[])
+    
+    // const setCurrentScrollOffset = useCallback((offset_: number) => {offset.current = offset_},[])
+
     const animOut = useCallback(() => {
         Animated.timing(animation, {
           toValue: 0,
@@ -44,7 +48,7 @@ const useSearchBarAnimation = () => {
       })).current
     
     // return {handleScroll, animIn, animOut, searchBarAnimation}
-    return {handleScroll, searchBarAnimation}
+    return {handleScroll, searchBarAnimation, getCurrentScrollOffset}
 }
 
 export default useSearchBarAnimation

@@ -11,7 +11,7 @@ import { ActionType } from "../model/types";
 
 export type SongStackParamList = {
   Songs: {song?: Song, actionType?: ActionType, message?: string},
-  Song: { song: Song },
+  Song: { song: Song},
   Modal: { song: Song},
 }
 
@@ -22,7 +22,7 @@ const SongStack = createNativeStackNavigator<SongStackParamList>();
 const SongStackScreen = () => {
   return (
     // <SongStack.Navigator screenOptions={{ animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#1a172d', headerStyle: { backgroundColor: '#1a172d', }, headerTitleStyle: { fontWeight: '400', fontSize: 18 }, headerTintColor: '#F7F7F7AA' }}>
-    <SongStack.Navigator id="songs" screenOptions={{ animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#0d0f12', headerStyle: { backgroundColor: '#0d0f12', }, headerTitleStyle: { fontWeight: '400', fontSize: 18 }, headerTintColor: '#F7F7F7AA' }}>
+    <SongStack.Navigator id="songs" screenOptions={{ animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#0d0f12', headerStyle: { backgroundColor: '#0d0f12', }, headerTitleStyle: { fontWeight: '400', fontSize: 18 }, headerTintColor: '#FFFFFF' }}>
       <SongStack.Screen name="Songs" component={SongsScreen} options={{ headerShown: false }} />
       {/* <SongStack.Screen name="Songs" component={SongsScreen} options={{ headerTitle: (props) => (<SearchBar {...props} />) }}/>   */}
       <SongStack.Screen name="Song" component={ChordsScreen} />

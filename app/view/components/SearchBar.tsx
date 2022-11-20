@@ -6,6 +6,7 @@ import { useEffectAfterMount } from '../../utils/hooks';
 
 interface SearchBarProps {
     style?: any
+    editable?: boolean,
     // visible: boolean,
     placeholder?: string,
     searchQuery: string,
@@ -15,7 +16,7 @@ interface SearchBarProps {
 }
 
 
-const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, onScrollToTop}: SearchBarProps ) => {
+const SearchBar = ({style, editable, placeholder, searchQuery, onSearch, timeoutMilis=0, onScrollToTop}: SearchBarProps ) => {
     const [query, setQuery ] = useState(searchQuery);
     const [focused, setFocused ] = useState(false);
     console.log('SearchBar rerender')
@@ -56,6 +57,7 @@ const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, o
             placeholderTextColor='#F7F7F740'
             onFocus={()=>setFocused(true)}
             onBlur={()=>{Keyboard.dismiss();setFocused(false)}}
+            editable={editable}
             // inputStyle={{borderWidth: 0}}
             // inputContainerStyle={{borderBottomColor: 'yellow',}}
             // inputStyle={{color: "#F7F7F7", fontSize: 15}}
@@ -73,5 +75,5 @@ const SearchBar = ({style, placeholder, searchQuery, onSearch, timeoutMilis=0, o
     )
 }
 
-export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery)
+export default memo(SearchBar, (prev, next)=>prev.searchQuery === next.searchQuery && prev.editable === next.editable)
 // export default SearchBar

@@ -24,7 +24,7 @@ const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonCl
         <View style={{paddingLeft: 10, backgroundColor: '#0d0f12', borderRadius: 5, height: 80, marginBottom: 2, marginHorizontal: 1 }}>
           <HStack fill justify='between'> // #F7F7F7
             <VStack fill={4} justify='between' style={{paddingBottom: 10, paddingTop: 10}}>
-              <Text numberOfLines={1} ellipsizeMode='tail' style={{marginTop: 5, fontSize: 16, fontWeight: '500', color: '#F7F7F7AA'}}>
+              <Text numberOfLines={1} ellipsizeMode='tail' style={{marginTop: 5, marginRight: 15, fontSize: 15, fontWeight: '500', color: '#F7F7F7AA'}}>
                 {song.artist} - {song.name}
               </Text>
               <VStack>
