@@ -17,10 +17,10 @@ class ApiService implements IApiService {
         return this._instance || (this._instance = new this());
     }
 
-    async getSongs(query: string, page: number, top100: boolean, type: number, sortOrder: string): Promise<Response<SongDto[]>> {
+    async getSongs(query: string, page: number, todaysTop: boolean, type: number, sortOrder: string): Promise<Response<SongDto[]>> {
         return new Promise<Response<SongDto[]>>((resolve, reject) => axios({
             method: 'GET',
-            url: `${this._baseURL}/songs?query=${query}&page=${page}&type=${type}&sort_order=${sortOrder}&top100=${top100}`,
+            url: `${this._baseURL}/songs?query=${query}&page=${page}&type=${type}&sort_order=${sortOrder}&top100=${!todaysTop}`,
             responseType: 'json',
             headers: {
                 Accept: 'application/json',

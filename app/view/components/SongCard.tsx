@@ -29,7 +29,7 @@ const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonCl
               </Text>
               <VStack>
               <Text style={{fontSize: 11, color: '#F7F7F750'}}>
-                votes: {song.votes} | rating: {song.rating}
+               hits: {song.hits > 1000000? (song.hits/1000000).toFixed(1) + 'M': song.hits > 1000? (song.hits/1000).toFixed(1) + 'k': song.hits} | votes: {song.votes > 1000? (song.votes/1000).toFixed(1) + 'k': song.votes} | rating: {song.rating}
               </Text>
               </VStack>
             </VStack>

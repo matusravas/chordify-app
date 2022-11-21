@@ -11,7 +11,7 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
     const [songs, setSongs] = useState(()=>[] as Song[])
     console.log(songs.length)
     const [searchQuery, setSearchQuery] = useState('')
-    const [isTop100, setIsTop100] = useState(false)
+    const [isTodaysTop, setIsTodaysTop] = useState(true)
     const [snackMessage, setSnackMessage] = useState(message)
     const [currentPage, setCurrentPage] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
@@ -23,7 +23,7 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
         if (!isLoading && !isMoreLoading && isConnected !== null) {
             searchSongs()
         }
-      }, [searchQuery, currentPage, isConnected])
+      }, [searchQuery, currentPage, isConnected, isTodaysTop])
 
     
     useEffect(()=>{
@@ -70,10 +70,10 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
     const searchSongs = useCallback(async() => {
     // const searchSongs = async() => {
         currentPage > 1? setIsMoreLoading(true) : setIsLoading(true)
-        console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}`)
+        console.log(`Performing search, query: ${searchQuery}, page: ${currentPage}, today\'s top ${isTodaysTop}`)
         
         try {
-            const songsData = await repository.fetchSongs(searchQuery, currentPage, isTop100)
+            const songsData = await repository.fetchSongs(searchQuery, currentPage, isTodaysTop)
             if(songsData.ok && songsData.data && songsData.data.length > 0){
                 // console.log(songsData.data.length)
                 await updateFavoriteSongs(songsData.data)
@@ -87,7 +87,7 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
             setIsMoreLoading(false)
         }
     // }
-    }, [searchQuery, currentPage])
+    }, [searchQuery, currentPage, isTodaysTop])
     
     
     const handlePageChanged = useCallback(()=>{
@@ -119,6 +119,13 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
     }, [])
 
 
+    const handleChipSelectionChange = useCallback((selection: 'today'|'all-time') => {
+        console.log(selection)
+        console.log('-----------------------------')
+        setIsTodaysTop(selection === 'today'? true: false)
+    }, [isTodaysTop])
+
+
     const handleFavoritesChange = useCallback(async (song: Song) => {
     // const handleFavoritesChange = async (song: Song) => {
         console.log(songs.length)
@@ -148,6 +155,7 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
         isLoading,
         isMoreLoading,
         isConnected,
+        isTodaysTop,
         snackMessage,
         // isOnline,
         // isError,
@@ -155,6 +163,7 @@ function useSongListViewModel(song: Song|undefined, actionType: ActionType|undef
         // message,
         searchSongs,
         updateFavoriteSongs,
+        handleChipSelectionChange,
         handlePageChanged,
         handleChangeSearchQuery, 
         handleFavoritesChange

@@ -5,14 +5,14 @@ import { Playlist, Song } from "../domain/types";
 
 export const mapSongApiToDomain = (songApi: SongApi): Song => {
     const {statistics, full_url, chords_link, ...rest} = songApi
-    const song: Song = {votes: statistics.votes, rating: statistics.rating, 
+    const song: Song = {votes: statistics.votes, rating: statistics.rating, hits: statistics.hits,
         chordsLink: chords_link, fullUrl: full_url, isFavorite: false, ...rest}
     return song
 }
 
 export const mapSongDomainToApi = (song: Song): SongApi => {
-    const {fullUrl: full_url, chordsLink: chords_link, rating, votes, ...rest} = song
-    const songApi: SongApi = {statistics: {votes, rating}, chords_link, full_url, ...rest}
+    const {fullUrl: full_url, chordsLink: chords_link, rating, votes, hits, ...rest} = song
+    const songApi: SongApi = {statistics: {votes, rating, hits}, chords_link, full_url, ...rest}
     return songApi
 }
 

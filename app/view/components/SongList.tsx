@@ -41,6 +41,9 @@ const SongsList = ({flatListRef, songs, onCardClick, onFavoritesButtonClick, onM
             ref={flatListRef}
             contentContainerStyle={{ flexGrow: 1 }}
             data={songs}
+            // keyboardDismissMode={'on-drag'}
+            // keyboardShouldPersistTaps={'always'}
+            // keyboardDismissMode={'none'}
             // estimatedItemSize={80}
             // onScrollBeginDrag={(e)=>onScroll(e)}
             // onScrollEndDrag={(e)=>onScroll(e)}

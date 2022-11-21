@@ -2,7 +2,7 @@ import { Animated, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { useCallback, useRef } from 'react';
 
 
-const useSearchBarAnimation = () => {
+const useSearchBarAnimation = (height: number) => {
     const animation = new Animated.Value(100);
     const offset = useRef(0)
     const direction = useRef<'up'|'down'>('up')
@@ -43,7 +43,7 @@ const useSearchBarAnimation = () => {
     
       const searchBarAnimation = useRef(animation.interpolate({
         inputRange: [0, 100],
-        outputRange: [0, 50],
+        outputRange: [0, height],
         extrapolate: 'clamp'
       })).current
     

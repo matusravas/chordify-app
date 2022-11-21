@@ -17,12 +17,12 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const song = useRef(route.params?.song)
   const actionType = route.params?.actionType
   const message = route.params?.message
-  const { songs, searchQuery, snackMessage, isConnected, isLoading, isMoreLoading,
-     updateFavoriteSongs, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel(song.current, actionType, message)
+  const { songs, searchQuery, snackMessage, isConnected, isLoading, isMoreLoading, isTodaysTop,
+     handleChipSelectionChange, handleChangeSearchQuery, handlePageChanged, handleFavoritesChange } = useSongListViewModel(song.current, actionType, message)
   const bottomTabBarHeight = useBottomTabBarHeight()
   const [showSnack, setShowSnack] = useState(true)
   const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
-  const { handleScroll, searchBarAnimation, getCurrentScrollOffset } = useSearchBarAnimation()
+  const { handleScroll, searchBarAnimation, getCurrentScrollOffset } = useSearchBarAnimation(100)
 
   console.log('SongsScreen rerender')
   // useFocusEffect(
@@ -50,7 +50,7 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
 
   return (
     <View style={{ flex: 1, marginBottom: bottomTabBarHeight }}>
-      <SearchBar style={{ height: searchBarAnimation }} editable={!isLoading} timeoutMilis={1000} searchQuery={searchQuery} onSearch={handleChangeSearchQuery} onScrollToTop={() => { flatListRef.current.scrollToOffset({ animated: true, offset: 0 }) }} />
+      <SearchBar style={{ height: searchBarAnimation }} todaysTop={isTodaysTop} onChipSelection={handleChipSelectionChange} editable={!isLoading} timeoutMilis={1000} searchQuery={searchQuery} onSearch={handleChangeSearchQuery} onScrollToTop={() => { flatListRef.current.scrollToOffset({ animated: true, offset: 0 }) }} />
       {isLoading ? <ActivityIndicator style={{ marginTop: 10 }} size="large" color='#1FC159' /> :
         <SongsList
           flatListRef={flatListRef}

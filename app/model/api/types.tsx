@@ -15,7 +15,8 @@ export type SongDto = {
 
 export type StatisticsDto = { 
     votes: number, 
-    rating: number 
+    rating: number,
+    hits: number 
 }
 
 export type ChordsMetadataDto = {

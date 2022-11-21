@@ -49,9 +49,9 @@ class Repository implements IRepository {
     }
 
 
-    async fetchSongs(query: string, page: number, top100: boolean = false, type: number = 300, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
+    async fetchSongs(query: string, page: number, todaysTop: boolean = false, type: number = 300, sortOrder: string = 'desc'): Promise<Data<Array<Song>>> {
         try {
-            const resultApi = await this.apiService.getSongs(query, page, top100, type, sortOrder)
+            const resultApi = await this.apiService.getSongs(query, page, todaysTop, type, sortOrder)
             if (resultApi.ok && resultApi.data) {
                 const songs = resultApi.data.map(song => mapSongApiToDomain(song))
                 return { data: songs, ok: true }

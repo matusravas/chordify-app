@@ -21,7 +21,7 @@ const PlaylistSongsScreen = ({navigation, route}: PlaylistSongsScreenProps) => {
     const song = route.params.song
     const {songs, snackMessage, isLoading, isMoreLoading, searchQuery, handleChangeSearchQuery, handleFavoritesChange, searchSongsInPlaylist} = usePlaylistSongsViewModel(playlist, song, actionType, message)
     const bottomTabBarHeight = useBottomTabBarHeight()
-    const {handleScroll, searchBarAnimation} = useSearchBarAnimation()
+    const {handleScroll, searchBarAnimation} = useSearchBarAnimation(50)
     const [snack, setSnack] = useState(true)
     const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
     console.log('PlaylistSongsScreen rerender')

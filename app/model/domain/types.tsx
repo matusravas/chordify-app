@@ -13,6 +13,7 @@ export type Song = {
     fullUrl: string, 
     votes: number, 
     rating: number,
+    hits: number,
     chords?: string,
     isFavorite: boolean,
     chordsMetadata?: ChordsMetadata
