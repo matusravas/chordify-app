@@ -1,8 +1,8 @@
-import { Data, Playlist, Song } from "../model/domain/types";
+import { Data, Playlist, PlaylistItem, Song } from "../model/domain/types";
 import ApiService from "../services/ApiService";
 import DbService from "../services/DbService";
 import { IRepository } from "./IRepository";
-import { mapPlaylistInfoDbToDomain, mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "../model/mapper/mapper";
+import { mapPlaylistInfoDbToDomain, mapPlaylistItemDbToDomain, mapSongApiToDomain, mapSongChordsApiToDomain, mapSongDbToDomain, mapSongDomainToDb } from "../model/mapper/mapper";
 
 
 class Repository implements IRepository {
@@ -110,7 +110,7 @@ class Repository implements IRepository {
         }
     }
 
-    async findPlaylistInfo(): Promise<Data<Array<Playlist>>> {
+    async findPlaylistInfo(songId?: number): Promise<Data<Array<Playlist>>> {
         try {
             const result = await this.dbService.findPlaylistInfo()
             console.log(result)
@@ -121,6 +121,22 @@ class Repository implements IRepository {
                 })
                 playlistInfos.unshift(favorites)
                 return { data: playlistInfos, ok: true }
+            }
+            return { ok: false }
+        } catch (err: any) {
+            return { ok: false, error: err }
+        }
+    }
+    
+    async findAvailablePlaylists(songId: number): Promise<Data<Array<PlaylistItem>>> {
+        try {
+            const result = await this.dbService.findAvailablePlaylists(songId)
+            // console.log(result)
+            if (result.ok && result.data) {
+                let playlistItems = result.data.map(playlistItem => {
+                    return mapPlaylistItemDbToDomain(playlistItem)
+                })
+                return { data: playlistItems, ok: true }
             }
             return { ok: false }
         } catch (err: any) {

@@ -1,13 +1,8 @@
-import React, { useState, useEffect, useMemo, memo } from 'react';
-import { ScrollView, useWindowDimensions, View, Text, Pressable } from "react-native"
-import axios from 'axios';
-import RenderHtml, { Document } from "react-native-render-html";
-import Html from "react-native-render-html";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import Repository from '../repository/Repository';
-import { Song } from '../model/domain/types';
-import { useNavigation } from '@react-navigation/native';
-import { ChordsScreenProps, SongChordsScreenRouteProps } from '../navigation/types';
+import React, { memo, useEffect } from 'react';
+import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
+import RenderHtml from "react-native-render-html";
+import { ChordsScreenProps } from '../navigation/types';
 import Icon, { Icons } from '../res/icons/icons';
 import useSongChordsViewModel from '../view_model/SongChordsViewModel';
 

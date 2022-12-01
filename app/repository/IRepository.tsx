@@ -1,4 +1,4 @@
-import { Data, Playlist, Song } from "../model/domain/types"
+import { Data, Playlist, PlaylistItem, Song } from "../model/domain/types"
 
 export interface IRepository {
 
@@ -20,6 +20,9 @@ export interface IRepository {
     findLastSavedSongs(query: string, timestampVisit: number, sortOrder: string): Promise<Data<Array<Song>>>
     
     findPlaylistInfo(): Promise<Data<Array<Playlist>>> 
+    
+    findAvailablePlaylists(songId: number): Promise<Data<Array<PlaylistItem>>>
+ 
     // ------------------------------------------------------------------------
     
     

@@ -1,7 +1,6 @@
-import { FlatList, Text, View } from "react-native"
-import Icon, { Icons } from "../../res/icons/icons"
+import { FlatList, View } from "react-native"
 import { Playlist } from "../../model/domain/types"
-// import PlaylistCardModal from "../components/PlaylistCardModal"
+import Icon, { Icons } from "../../res/icons/icons"
 import PressableItem from "../components/PressableItem"
 import SubmitButton from "../components/SubmitButton"
 

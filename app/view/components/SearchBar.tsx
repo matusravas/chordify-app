@@ -78,9 +78,9 @@ const SearchBar = ({ style, editable, placeholder, searchQuery, onSearch, timeou
                     <Icon size={22} type={Icons.MaterialIcons} name='clear' color="#F7F7F730" />
                 </TouchableOpacity>}
             </View>
-            {onChipSelection && todaysTop !== undefined && <View style={{ flexDirection: 'row', justifyContent: 'flex-start'}}>
+            {!searchQuery && onChipSelection && todaysTop !== undefined && <View style={{ flexDirection: 'row', justifyContent: 'flex-start'}}>
                 <Chip style={{margin: 10, backgroundColor: todaysTop? '#1FC15920': '#111317', borderWidth: 0.2, borderColor: '#1FC159'}} labelStyle={{color: '#F7F7F7'}} label={'Today\'s top'} onPress={() => onChipSelection('today')} />
-                <Chip style={{margin: 10, backgroundColor: !todaysTop? '#1FC15920': '#111317', borderWidth: 0.2, borderWidth:0.2, borderColor: '#1FC159' }} labelStyle={{color: '#F7F7F7'}} label={'Top100'} onPress={() => onChipSelection('all-time')} />
+                <Chip style={{margin: 10, backgroundColor: !todaysTop? '#1FC15920': '#111317', borderWidth: 0.2, borderColor: '#1FC159' }} labelStyle={{color: '#F7F7F7'}} label={'Top100'} onPress={() => onChipSelection('all-time')} />
             </View>}
         </Animated.View>
     )

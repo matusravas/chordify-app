@@ -4,8 +4,6 @@ import { Song } from "../../model/domain/types"
 import SongCard from "./SongCard"
 import NothingHere from "./NothingHere"
 import ListFooter from "./ListFooter"
-// import { FlashList } from "@shopify/flash-list"
-
 
 interface RenderItemProps {
     item: Song,

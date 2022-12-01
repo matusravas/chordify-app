@@ -1,8 +1,8 @@
-import Repository from "../repository/Repository"
-import {useState, useEffect, useCallback, useRef} from 'react'
-import { Song } from "../model/domain/types"
 import { useNetInfo } from "@react-native-community/netinfo"
+import { useCallback, useEffect, useState } from 'react'
+import { Song } from "../model/domain/types"
 import { ActionType } from "../model/types"
+import Repository from "../repository/Repository"
 
 
 function useSongListViewModel(song: Song|undefined, actionType: ActionType|undefined, message: string|undefined) {

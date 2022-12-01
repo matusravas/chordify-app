@@ -1,7 +1,7 @@
 import { IDbService } from "./IDbService";
 import {openDatabase, enablePromise} from 'react-native-sqlite-storage';
 import { SongDto } from "../model/db/types";
-import { FavoriteSongIds as FavoriteSongId, PlaylistInfoDto, SQLResult } from "../model/db/sql/types";
+import { FavoriteSongIds as FavoriteSongId, PlaylistInfoDto, PlaylistItemDto, SQLResult } from "../model/db/sql/types";
 
 class DbService implements IDbService{
     static _instance: DbService
@@ -74,6 +74,12 @@ class DbService implements IDbService{
         // const selectQuery = `SELECT COUNT(*) AS count, MAX(S.TIMESTAMP_VISIT) AS timestamp_visit, SP.PLAYLIST_ID, P.NAME FROM SONG AS S INNER JOIN SONG_PLAYLIST AS SP
         //  ON S.ID = SP.SONG_ID INNER JOIN PLAYLIST AS P ON P.ID = SP.PLAYLIST_ID GROUP BY SP.PLAYLIST_ID`
         return this.executeQuery(selectQuery)
+    }
+    
+    
+    async findAvailablePlaylists(songId: number): Promise<SQLResult<PlaylistItemDto>> {
+        const selectQuery = `SELECT p.id AS id, p.name AS name FROM PLAYLIST AS p WHERE p.id NOT IN (SELECT sp.playlist_id FROM SONG_PLAYLIST AS sp WHERE sp.song_id = ?) GROUP BY p.id ORDER BY p.name`
+        return this.executeQuery(selectQuery, [songId])
     }
     
     

@@ -1,14 +1,14 @@
-import { Song } from '../model/domain/types';
-import SearchBar from './components/SearchBar';
-import SongsList from './components/SongList';
-import {View, FlatList} from 'react-native'
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator } from '@react-native-material/core';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { ActivityIndicator, Box, Snackbar, Button } from '@react-native-material/core';
-import usePlaylistSongsViewModel from '../view_model/PlaylistSongListViewModel';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { Song } from '../model/domain/types';
 import { PlaylistSongsScreenProps } from '../navigation/types';
 import useSearchBarAnimation from '../res/animations/searchbar';
+import usePlaylistSongsViewModel from '../view_model/PlaylistSongListViewModel';
+import SearchBar from './components/SearchBar';
 import CustomSnackbar from './components/Snackbar';
+import SongsList from './components/SongList';
 
 
 

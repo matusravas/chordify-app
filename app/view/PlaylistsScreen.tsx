@@ -1,15 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
-import { FlatList, View } from "react-native"
-import { Text } from '@react-native-material/core';
-import usePlaylistViewModel from '../view_model/PlaylistViewModel';
-import { Playlist } from '../model/domain/types';
-import PlaylistCard from './components/PlaylistCard';
-import useSongListViewModel from '../view_model/SongListViewModel';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PlaylistStackParamList } from '../navigation/PlaylistStack';
-import { PlaylistsScreenProps } from '../navigation/types';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback } from 'react';
+import { FlatList } from "react-native";
+import { Playlist } from '../model/domain/types';
+import { PlaylistsScreenProps } from '../navigation/types';
+import usePlaylistViewModel from '../view_model/PlaylistViewModel';
+import PlaylistCard from './components/PlaylistCard';
 
 interface RenderItemProps {
   item: Playlist,

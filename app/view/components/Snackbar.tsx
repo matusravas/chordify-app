@@ -1,4 +1,4 @@
-import { Box, Button, Snackbar } from "@react-native-material/core"
+import { Box } from "@react-native-material/core"
 import React, { useState } from "react"
 import { Text, View } from "react-native"
 

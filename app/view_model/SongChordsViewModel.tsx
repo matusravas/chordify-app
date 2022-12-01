@@ -1,6 +1,6 @@
+import { useCallback, useEffect, useState } from 'react'
+import { Song } from "../model/domain/types"
 import Repository from "../repository/Repository"
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Playlist, Song } from "../model/domain/types"
 
 // const useInternetInfo = () => {
 //     const {isInternetReachable} = useNetInfo()

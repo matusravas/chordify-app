@@ -1,15 +1,14 @@
-import useSongListViewModel from '../view_model/SongListViewModel';
-import { Song } from '../model/domain/types';
-import SearchBar from './components/SearchBar';
-import SongsList from './components/SongList';
-import { View, FlatList } from 'react-native'
-import React, { memo, useCallback, useRef, useState } from 'react';
+import { ActivityIndicator, Box, Button, Snackbar } from '@react-native-material/core';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { ActivityIndicator, Snackbar, Box, Button } from '@react-native-material/core';
+import React, { memo, useCallback, useRef, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { Song } from '../model/domain/types';
 import { SongsScreenProps } from '../navigation/types';
 import useSearchBarAnimation from '../res/animations/searchbar';
+import useSongListViewModel from '../view_model/SongListViewModel';
+import SearchBar from './components/SearchBar';
 import CustomSnackbar from './components/Snackbar';
-import { useFocusEffect } from '@react-navigation/native';
+import SongsList from './components/SongList';
 
 
 
@@ -22,7 +21,7 @@ const SongsScreen = ({ navigation, route }: SongsScreenProps) => {
   const bottomTabBarHeight = useBottomTabBarHeight()
   const [showSnack, setShowSnack] = useState(true)
   const flatListRef = useRef() as React.MutableRefObject<FlatList<Song>>
-  const { handleScroll, searchBarAnimation, getCurrentScrollOffset } = useSearchBarAnimation(100)
+  const { handleScroll, searchBarAnimation, getCurrentScrollOffset } = useSearchBarAnimation(searchQuery? 50: 100)
 
   console.log('SongsScreen rerender')
   // useFocusEffect(

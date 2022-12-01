@@ -1,6 +1,6 @@
 import Repository from "../repository/Repository"
 import { useState, useEffect, useCallback } from 'react'
-import { Playlist, Song } from "../model/domain/types"
+import { Playlist, PlaylistItem, Song } from "../model/domain/types"
 import { Icons } from "../res/icons/icons";
 import { ActionType } from "../model/types";
 
@@ -13,7 +13,7 @@ interface ModalViewModalProps {
 function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
     const repository = Repository.getInstance()
     const [song, setSong] = useState(props.song)
-    const [playlists, setPlaylists] = useState([] as Playlist[])
+    const [playlists, setPlaylists] = useState([] as PlaylistItem[])
     const [isAddToPlaylist, setIsAddToPlaylist] = useState(false)
     const [actionType, setActionType] = useState<ActionType>()
     // const [message, setMessage] = useState<string|undefined>()
@@ -26,15 +26,17 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
 
     const searchPlaylists = useCallback(async () => {
         try {
-            let result = await repository.findPlaylistInfo()
+            console.log(song)
+            let result = await repository.findAvailablePlaylists(song.id)
             if (result.ok && result.data && result.data.length > 0) {
+                console.log(result.data)
                 if (playlist) setPlaylists(result.data.filter(e => e.id !== playlist.id && e.id !== 1))
                 else setPlaylists(result.data)
             }
         } catch {
 
         }
-    }, [])
+    }, [song])
 
 
     const handleSongChanged = useCallback(async (action: 'add' | 'remove', playlistId?: number, playlistName?: string) => {

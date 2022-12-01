@@ -1,4 +1,4 @@
-import { PlaylistInfoDto, SQLResult } from "../model/db/sql/types"
+import { PlaylistInfoDto, SQLResult, PlaylistItemDto } from "../model/db/sql/types"
 import { SongDto } from "../model/db/types"
 
 export interface IDbService {
@@ -16,6 +16,8 @@ export interface IDbService {
     findLastSavedSongs(query: string, timestampSaved: number, sortOrder: string): Promise<SQLResult<SongDto>>
 
     findPlaylistInfo(): Promise<SQLResult<PlaylistInfoDto>> 
+    
+    findAvailablePlaylists(songId: number): Promise<SQLResult<PlaylistItemDto>> 
 
     createPlaylist(playlistName: string): Promise<SQLResult>
 

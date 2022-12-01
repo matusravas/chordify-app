@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { View, TouchableNativeFeedback, Text } from "react-native"
 import { HStack, VStack, IconButton } from '@react-native-material/core';
 import Icon, { Icons } from '../../res/icons/icons';
-// import { SongCardProps } from '../../model/prop_types/types';
 import Platform from '../../res/platform/Platform';
 import { Song } from '../../model/domain/types';
 
@@ -15,6 +14,8 @@ export interface SongCardProps {
   onMoreButtonClick: (song: Song) => void
 }
 
+
+const formatNumber = (n: number) => n > 1000000? (n/1000000).toFixed(1) + 'M': n > 1000? (n/1000).toFixed(1) + 'k': n
 
 const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonClick}: SongCardProps) => (
       // <TouchableNativeFeedback style={{}} onLongPress={()=>{}} onPress={()=>onSongCardClick(song)} background={TouchableNativeFeedback.Ripple('#1FC15910', false, Platform.getWidth()/(2.05))}>
@@ -29,7 +30,7 @@ const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonCl
               </Text>
               <VStack>
               <Text style={{fontSize: 11, color: '#F7F7F750'}}>
-               hits: {song.hits > 1000000? (song.hits/1000000).toFixed(1) + 'M': song.hits > 1000? (song.hits/1000).toFixed(1) + 'k': song.hits} | votes: {song.votes > 1000? (song.votes/1000).toFixed(1) + 'k': song.votes} | rating: {song.rating}
+              {song.hits > 0 ? `hits: ${formatNumber(song.hits)} |`: ''} votes: {formatNumber(song.votes)} | rating: {song.rating}
               </Text>
               </VStack>
             </VStack>

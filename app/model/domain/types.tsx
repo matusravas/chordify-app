@@ -29,6 +29,11 @@ export type Playlist = {
     timestampCreated: number,
 }
 
+export type PlaylistItem = {
+    id: number,
+    name: string,
+}
+
 // export type Playlist = {
 //     id?: number, 
 //     name: string,

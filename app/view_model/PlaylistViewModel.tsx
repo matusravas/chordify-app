@@ -1,8 +1,6 @@
-import Repository from "../repository/Repository"
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Playlist, Song } from "../model/domain/types"
-import { useEffectAfterMount } from "../utils/hooks"
-import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import { useCallback, useState } from 'react';
+import { Playlist } from "../model/domain/types";
+import Repository from "../repository/Repository";
 
 // const useInternetInfo = () => {
 //     const {isInternetReachable} = useNetInfo()

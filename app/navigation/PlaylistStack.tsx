@@ -19,7 +19,7 @@ const PlaylistStackScreen = () => {
   return (
     // <PlaylistStack.Navigator screenOptions={{animation: 'slide_from_right', headerShadowVisible: true, headerStyle: {backgroundColor: '#201640'}, headerTitleStyle: {fontWeight: '400', fontSize: 18}, headerTintColor: '#F7F7F7AA'}}>
     // <PlaylistStack.Navigator screenOptions={{animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#1a172d', headerStyle: {backgroundColor: '#1a172d'}, headerTitleStyle: {fontWeight: '400', fontSize: 18}, headerTintColor: '#F7F7F7AA'}}>
-    <PlaylistStack.Navigator id="playlists" screenOptions={{animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#0d0f12', headerStyle: {backgroundColor: '#0d0f12'}, headerTitleStyle: {fontWeight: '400', fontSize: 18}, headerTintColor: 'FFFFFF'}}>
+    <PlaylistStack.Navigator id="playlists" screenOptions={{animation: 'slide_from_right', headerShadowVisible: false, statusBarColor: '#0d0f12', headerStyle: {backgroundColor: '#0d0f12'}, headerTitleStyle: {fontWeight: '400', fontSize: 18}, headerTintColor: '#FFFFFF'}}>
      {/* <PlaylistStack.Screen name="Playlists" component={PlaylistsScreen} options={{headerShown: false}}/>   */}
      <PlaylistStack.Screen name="Playlists" component={PlaylistsScreen} options={{headerShown: false}}/>  
      <PlaylistStack.Screen name="PlaylistSongs" component={PlaylistSongsScreen}/>  
