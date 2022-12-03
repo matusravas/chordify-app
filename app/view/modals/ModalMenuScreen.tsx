@@ -12,8 +12,6 @@ import { useEffectAfterMount } from "../../utils/hooks";
 
 
 const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
-    const parentStack = navigation.getId()
-    const parentScreen = parentStack === 'songs' ? 'Songs' : 'PlaylistSongs'
     const playlist = 'playlist' in route.params ? route.params.playlist : undefined
     const title = `${route.params.song.artist} - ${route.params.song.name}`
     const { playlists, song, actionType, menuItems, isAddToPlaylist, setIsAddToPlaylist, handleSongChanged } = useModalViewModel({ song: route.params.song, playlist })
@@ -28,11 +26,6 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
                 headerLeft: () =>
                     <Pressable onPress={() => {
                         navigation.pop()
-                        // console.log(song, actionType)
-                        // console.log(route.params.song)
-                        // actionType !== undefined
-                        //     ? navigation.navigate(parentScreen, { ...(song && { song }), ...(playlist && { playlist }), ...(actionType && { actionType }) , ...(message && { message }) })
-                        //     : navigation.pop()
                     }}>
                         <Icon type={Icons.MaterialCommunityIcons} name={'close'} color={'#F7F7F7'} style={{ marginRight: 30 }} />
                     </Pressable>
@@ -42,9 +35,8 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
 
 
     useEffectAfterMount(()=>{
-        actionType !== undefined
-        ? navigation.navigate(parentScreen, { ...(song && { song }), ...(playlist && { playlist }), ...(actionType !== undefined && { actionType }) })
-        : navigation.pop()
+        route.params.sendDataToParent({song: song, playlist, action: actionType})
+        navigation.pop()
     }, [actionType])
 
 
@@ -70,7 +62,8 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
             </View> :
                 (
                     menuItems.map((item, idx) => (
-                        <PressableItem key={idx}
+                        <PressableItem 
+                            key={idx}
                             style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
                             handler={item.handler}
                             text={item.title}
@@ -78,6 +71,7 @@ const ModalMenuScreen = ({ route, navigation }: ModalScreenProps) => {
                             icon={true}
                             iconStyle={{ iconType: item.iconType, iconName: item.iconName }}
                         />
+
                     ))
                 )
             }

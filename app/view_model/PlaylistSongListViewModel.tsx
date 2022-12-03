@@ -69,14 +69,14 @@ function usePlaylistSongsViewModel(playlist: Playlist, song: Song|undefined, act
         const idx = songs.findIndex(s => s.id === song.id)
         if (idx === -1) return
         console.log(actionType, song)
-        if (actionType === ActionType.Remove) {
+        if (actionType === ActionType.PlaylistRemove) {
             // console.log('removing')
             let newSongs = [...songs]
             newSongs.splice(idx, 1)
             setSongs(newSongs)
             setSnackMessage(`${song.name} removed from playlist`)
         }
-        if(actionType === ActionType.Add){
+        if(actionType === ActionType.PlaylistAdd){
             setSnackMessage(`${song.name} added to playlist`)
         }
         else if (actionType === ActionType.FavoritesAdd || actionType === ActionType.FavoritesRemove) {

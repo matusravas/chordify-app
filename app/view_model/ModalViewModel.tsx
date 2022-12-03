@@ -16,12 +16,11 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
     const [playlists, setPlaylists] = useState([] as PlaylistItem[])
     const [isAddToPlaylist, setIsAddToPlaylist] = useState(false)
     const [actionType, setActionType] = useState<ActionType>()
-    // const [message, setMessage] = useState<string|undefined>()
 
 
     useEffect(() => {
-        searchPlaylists()
-    }, [])
+        isAddToPlaylist && searchPlaylists()
+    }, [isAddToPlaylist])
 
 
     const searchPlaylists = useCallback(async () => {
@@ -30,7 +29,7 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
             let result = await repository.findAvailablePlaylists(song.id)
             if (result.ok && result.data && result.data.length > 0) {
                 console.log(result.data)
-                if (playlist) setPlaylists(result.data.filter(e => e.id !== playlist.id && e.id !== 1))
+                if (playlist) setPlaylists(result.data.filter(e => e.id !== playlist.id || e.id !== 1))
                 else setPlaylists(result.data)
             }
         } catch {
@@ -63,7 +62,7 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
                         console.log(resultAddSong)
                         if(resultAddSong && resultAddSong.ok && resultAddSong.data) {
                             // setMessage(`${song.name} added to playlist`)
-                            setActionType(ActionType.Add)
+                            setActionType(ActionType.PlaylistAdd)
                         }
                     }
                     else { //favorites
@@ -81,7 +80,7 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
                     const resultDelete = await repository.removeSongFromPlaylist(song.id, playlistId)
                     if (resultDelete) {
                         // setMessage(`${song.name} removed from playlist`)
-                        setActionType(ActionType.Remove)
+                        setActionType(ActionType.PlaylistRemove)
                     }
                 }
                 else {
@@ -112,7 +111,7 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
             iconType: Icons.MaterialCommunityIcons, iconName: 'playlist-plus', color: '#F7F7F7AA', colorPressed: '#F7F7F750',
             handler: () => setIsAddToPlaylist(true)
         },
-        ...playlist && playlist.id !== 1 && actionType !== ActionType.Remove ? [
+        ...playlist && playlist.id !== 1 && actionType !== ActionType.PlaylistRemove ? [
             {
                 title: 'Remove from this playlist',
                 iconType: Icons.MaterialCommunityIcons, iconName: 'playlist-remove', color: '#F7F7F7AA', colorPressed: '#F7F7F750',
@@ -128,7 +127,6 @@ function useModalViewModel({ playlist, ...props }: ModalViewModalProps) {
         playlists,
         menuItems,
         actionType,
-        // message,
         isAddToPlaylist,
         setIsAddToPlaylist,
         searchPlaylists,

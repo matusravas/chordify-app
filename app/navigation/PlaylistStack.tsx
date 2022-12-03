@@ -1,16 +1,17 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Playlist, Song } from "../model/domain/types";
-import PlaylistsScreen from "../view/PlaylistsScreen";
-import PlaylistSongsScreen from "../view/PlaylistSongsScreen";
+import { Action } from "../model/types";
 import ChordsScreen from "../view/ChordsScreen";
 import ModalMenuScreen from "../view/modals/ModalMenuScreen";
-import { ActionType } from "../model/types";
+import PlaylistSongsScreen from "../view/PlaylistSongsScreen";
+import PlaylistsScreen from "../view/PlaylistsScreen";
 
 export type PlaylistStackParamList = {
   Playlists: undefined,
-  PlaylistSongs: {playlist: Playlist, song?: Song, actionType?: ActionType, message?: string},
-  Song: {song: Song, playlist: Playlist},
-  Modal: {song: Song, playlist: Playlist}
+  // PlaylistSongs: {playlist: Playlist, song?: Song, actionType?: ActionType, message?: string},
+  PlaylistSongs: {playlist: Playlist, song?: Song},
+  Song: {song: Song, playlist: Playlist, sendDataToParent: (data: Action) => void},
+  Modal: {song: Song, playlist: Playlist, sendDataToParent: (data: Action) => void}
 }
 
 const PlaylistStack = createNativeStackNavigator<PlaylistStackParamList>();

@@ -8,8 +8,8 @@ class ApiService implements IApiService {
 
     private _apiToken = '2lpbxtDLNIO4yKgIQOjaJxw8qBzSkbvh'
 
-    private _baseURL = 'https://chordify-ws.herokuapp.com/api'
-    // private const _baseURL = 'http://10.0.2.2:5000'
+    // private _baseURL = 'https://chordify-ws.herokuapp.com/api'
+    private _baseURL = 'http://10.0.2.2:5000'
 
     private constructor() { }
 
@@ -57,7 +57,7 @@ class ApiService implements IApiService {
             resolve({ ok: res.data.ok, data: res.data.data })
         }).catch(err => {
             console.error(err)
-            reject('Unable not fetch song chords')
+            reject('Unable to fetch song chords')
         })
         )
     }

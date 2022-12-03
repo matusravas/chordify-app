@@ -30,8 +30,8 @@ const Router = () => {
                   >{screen.label}
                   </Text>
                 </View>
-              )
-
+              ),
+              unmountOnBlur: screen.unmountOnBlur
             }} />
         ))}
       </TabBar.Navigator>

@@ -4,6 +4,7 @@ import { Song } from "../../model/domain/types"
 import SongCard from "./SongCard"
 import NothingHere from "./NothingHere"
 import ListFooter from "./ListFooter"
+import { Action } from "../../model/types"
 
 interface RenderItemProps {
     item: Song,
@@ -17,7 +18,7 @@ interface SongsListProps {
     isMoreLoading: boolean,
     flatListRef: React.MutableRefObject<FlatList<Song>>,
     onCardClick: (song: Song)=>void, 
-    onFavoritesButtonClick: (song: Song)=>void,
+    onFavoritesButtonClick: (data: Action)=>void,
     onMoreButtonClick: (song: Song)=>void,
     onPageChanged: ()=>void
 }

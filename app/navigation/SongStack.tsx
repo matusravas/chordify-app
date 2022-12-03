@@ -1,18 +1,15 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Song } from "../model/domain/types";
+import { Action } from "../model/types";
 import ChordsScreen from "../view/ChordsScreen";
-import SongsScreen from "../view/SongsScreen";
 import ModalMenuScreen from "../view/modals/ModalMenuScreen";
-import Icon, { Icons } from "../res/icons/icons";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Image } from "react-native";
-import { ScreenStackHeaderBackButtonImage } from "react-native-screens";
-import { ActionType } from "../model/types";
+import SongsScreen from "../view/SongsScreen";
 
 export type SongStackParamList = {
-  Songs: {song?: Song, actionType?: ActionType, message?: string},
-  Song: { song: Song},
-  Modal: { song: Song},
+  // Songs: {song?: Song, actionType?: ActionType, message?: string},
+  Songs: {song?: Song},
+  Song: { song: Song, sendDataToParent: (data: Action) => void},
+  Modal: { song: Song, sendDataToParent: (data: Action) => void},
 }
 
 // const icon = () => <Image source={require('')}/>

@@ -4,13 +4,14 @@ import { HStack, VStack, IconButton } from '@react-native-material/core';
 import Icon, { Icons } from '../../res/icons/icons';
 import Platform from '../../res/platform/Platform';
 import { Song } from '../../model/domain/types';
+import { Action, ActionType } from '../../model/types';
 
 
 export interface SongCardProps {
   // index: number,
   song: Song,
   onSongCardClick: (song: Song) => void
-  onFavoritesButtonClick: (song: Song) => void,
+  onFavoritesButtonClick: (song: Action) => void,
   onMoreButtonClick: (song: Song) => void
 }
 
@@ -35,7 +36,7 @@ const SongCard = ({song, onSongCardClick, onFavoritesButtonClick, onMoreButtonCl
               </VStack>
             </VStack>
             <HStack fill={1} style={{justifyContent:'flex-end', alignItems: 'center', paddingTop: 2}} >
-              <IconButton style={{width: 40}} onPress={()=>onFavoritesButtonClick(song)} icon={<Icon size={20} type={Icons.MaterialIcons} name={song.isFavorite?'favorite':'favorite-outline'} color={song.isFavorite?'#1FC159':'#F7F7F720'}/>}/>
+              <IconButton style={{width: 40}} onPress={()=>onFavoritesButtonClick({song, action: song.isFavorite? ActionType.FavoritesRemove: ActionType.FavoritesAdd})} icon={<Icon size={20} type={Icons.MaterialIcons} name={song.isFavorite?'favorite':'favorite-outline'} color={song.isFavorite?'#1FC159':'#F7F7F720'}/>}/>
               <IconButton style={{width: 40, margin:4}} onPress={()=>{onMoreButtonClick(song)}} icon={<Icon size={20} type={Icons.MaterialCommunityIcons} name='dots-vertical' color={'#F7F7F720'}/>}/>
             </HStack>
           </HStack>

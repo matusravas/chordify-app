@@ -1,5 +1,5 @@
 import { FlatList, View } from "react-native"
-import { Playlist } from "../../model/domain/types"
+import { PlaylistItem } from "../../model/domain/types"
 import Icon, { Icons } from "../../res/icons/icons"
 import PressableItem from "../components/PressableItem"
 import SubmitButton from "../components/SubmitButton"
@@ -16,7 +16,7 @@ import SubmitButton from "../components/SubmitButton"
 
 
 interface SelectPlaylistModalProps {
-    playlists: Array<Playlist>,
+    playlists: Array<PlaylistItem>,
     onPlaylistSelected: (playlistId: number) => void,
     onIsNewPlaylist: () => void
 }

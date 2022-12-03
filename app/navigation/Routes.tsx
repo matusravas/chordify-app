@@ -43,6 +43,7 @@ type Screen = {
   iconFocused: string
   iconType: any
   iconNotFocused: string,
+  unmountOnBlur: boolean,
 }
 
 const routes: Array<Screen> = [
@@ -53,6 +54,7 @@ const routes: Array<Screen> = [
     iconType: Icons.MaterialIcons,
     iconFocused: 'search',
     iconNotFocused: 'search',
+    unmountOnBlur: true,
   },
   {
     component: PlaylistStackScreen,
@@ -61,6 +63,7 @@ const routes: Array<Screen> = [
     iconType: Icons.MaterialIcons,
     iconFocused: 'library-music',
     iconNotFocused: 'library-music',
+    unmountOnBlur: true,
   },
 ]
 
